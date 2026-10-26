@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Woodshed</title>
-<meta name="description" content="A practice room for any instrument: practice timer, session planner, tuner and intonation map, metronome, rhythm trainer, drone, recorder and practice log." />
+<meta name="description" content="A practice room for any instrument with practice timer, session planner, tuner and intonation map, metronome, rhythm trainer, drone, recorder and practice log." />
 <meta name="theme-color" content="#ffffff" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -881,12 +881,12 @@
       <div class="page-head">
         <div>
           <h1 id="hTuner">Tuner &amp; intonation map</h1>
-          <p>Map the tuning of every note on your instrument. Choose your instrument in the menu, then turn on Sample notes to save each sustained note to the matrix.</p>
+          <p>Map the tuning of every note on your instrument. Choose your instrument in the menu, then turn on record notes to save each sustained note to the chart.</p>
         </div>
         <div class="actions">
           <button id="demoBtn" class="btn" type="button"></button>
           <button id="sampleBtn" class="btn btn-toggle" type="button" aria-pressed="false">
-            <span class="switch" aria-hidden="true"><i></i></span><span>Sample notes</span>
+            <span class="switch" aria-hidden="true"><i></i></span><span>Record notes</span>
           </button>
           <button id="micBtn" class="btn btn-primary" type="button"></button>
         </div>
@@ -1088,7 +1088,7 @@
               <div class="field"><label for="trainEvery">Every … bars</label><input class="input num" id="trainEvery" type="number" min="1" max="64" value="4" /></div>
               <div class="field"><label for="trainTarget">Stop at BPM</label><input class="input num" id="trainTarget" type="number" min="30" max="260" value="140" /></div>
             </div>
-            <p class="note-small" style="margin-top:10px">Start a passage below performance tempo and let the trainer push it up while you play it on repeat.</p>
+            <p class="note-small" style="margin-top:10px">.</p>
           </div>
         </div>
       </div>
@@ -1170,11 +1170,11 @@
               <div class="field"><label for="rhyVol">Volume</label><input type="range" id="rhyVol" min="0" max="1" step="0.01" /></div>
               <div class="field"><label for="rhyOffset">Timing correction <span class="num" id="rhyOffsetTxt">0 ms</span></label><input type="range" id="rhyOffset" min="-150" max="150" step="5" /></div>
             </div>
-            <p class="note-small">If your notes keep showing as late even when you feel in time, your speakers or Bluetooth headphones are adding delay. Move Timing correction to the right until it evens out.</p>
+            <p class="note-small">If there are any delays you can adjust timing.</p>
           </div>
         </section>
         <section class="panel">
-          <div class="panel-head"><div><h2>Your timing</h2><p>Every loop is scored, and the notes above change color as you play them.</p></div></div>
+          <div class="panel-head"><div><h2>Your timing</h2><p></p></div></div>
           <dl class="tiles rhy-tiles">
             <div class="tile"><dt>Last loop</dt><dd id="rLast">–</dd></div>
             <div class="tile"><dt>Best</dt><dd id="rBest">–</dd></div>
@@ -1244,7 +1244,7 @@
               <label for="droneVol">Volume</label>
               <input type="range" id="droneVol" min="0" max="1" step="0.01" value="0.5" />
             </div>
-            <p class="note-small">The fifth is tuned pure (3:2), so it sounds without beats. Listen for beats between your note and the drone, and adjust until they disappear.</p>
+            <p class="note-small">The fifth is tuned pure so it sounds without any beats. So Listen for beats between your note and the drone and adjust your pitch until they disappear.</p>
           </div>
         </div>
       </div>
@@ -1298,7 +1298,7 @@
           </section>
         </div>
         <section class="panel">
-          <div class="panel-head"><div><h2>Add practice</h2><p>For time you practiced without the app.</p></div></div>
+          <div class="panel-head"><div><h2>Add practice</h2><p></p></div></div>
           <form class="add-form" id="addForm">
             <div class="field"><label for="addDate">Date</label><input class="input" id="addDate" type="date" required /></div>
             <div class="field"><label for="addMin">Minutes</label><input class="input num" id="addMin" type="number" min="1" max="600" value="30" required /></div>
@@ -3019,8 +3019,8 @@
   }
   function takeUrl(t) { return rec.urls[t.id] || (rec.urls[t.id] = URL.createObjectURL(t.blob)); }
   function renderTakes() {
-    recEls.sub.textContent = rec.takes.length ? rec.takes.length + (rec.takes.length === 1 ? ' recording' : ' recordings') + ', newest first.' : 'Your recordings, newest first.';
-    if (!rec.takes.length) { recEls.takes.innerHTML = '<li class="empty">No takes yet. Record a passage, then listen back for tone, time and tuning.</li>'; return; }
+    recEls.sub.textContent = rec.takes.length ? rec.takes.length + (rec.takes.length === 1 ? ' recording' : ' recordings') + ', newest first.' : 'Your recordings.';
+    if (!rec.takes.length) { recEls.takes.innerHTML = '<li class="empty">No takes yet.</li>'; return; }
     recEls.takes.innerHTML = rec.takes.map(t => {
       const ext = /mp4/.test(t.type) ? 'm4a' : /ogg/.test(t.type) ? 'ogg' : 'webm';
       const file = t.name.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') + '.' + ext;
@@ -3473,9 +3473,9 @@
   const rhyRun = { on: false, timer: 0, ev: [], evIdx: 0, loop: 0, loopStart: 0, loopLen: 0, beatDur: 0.75, minGap: 0.5, beatQ: [], expected: [], loops: {}, shownLoop: -1, shownBeat: null, history: [], best: 0, streak: 0, mic: null };
   const rhyBars = () => Math.max(1, Math.round(rhy.cells.length / rhy.beats));
   const MODE_HINTS = {
-    listen: 'Hear how the rhythm should sound, with a click on the beat.',
+    listen: 'Hear how the rhythm should sound.',
     tap: 'Tap every note of the rhythm on the pad (or the Space bar) while the click keeps the beat.',
-    mic: 'Play every note of the rhythm on your instrument. Tongue or attack each note clearly so the microphone can hear it.'
+    mic: 'Play every note of the rhythm on your instrument.'
   };
 
   function accentStarts() {
