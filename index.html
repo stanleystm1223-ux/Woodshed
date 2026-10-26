@@ -68,7 +68,7 @@
     overflow-y: auto;
   }
   .brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
-  .mark { width: 36px; height: 36px; border-radius: 9px; background: var(--text); display: grid; place-items: center; flex: none; }
+  .mark { width: 36px; height: 36px; border-radius: 3px; background: var(--text); display: grid; place-items: center; flex: none; }
   .mark svg { width: 24px; height: 24px; }
   .brand strong { display: block; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
   .brand span { display: block; font-size: 12.5px; color: var(--text-3); }
@@ -77,7 +77,7 @@
   .menu-label { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); padding: 0 10px 6px; }
   .menu a {
     display: flex; align-items: center; gap: 11px;
-    height: 40px; padding: 0 10px; border-radius: 8px;
+    height: 40px; padding: 0 10px; border-radius: 3px;
     color: var(--text-2); text-decoration: none; font-weight: 500; font-size: 14.5px;
     white-space: nowrap;
   }
@@ -91,7 +91,7 @@
   .running { display: flex; flex-direction: column; gap: 6px; }
   .run-chip {
     display: flex; align-items: center; gap: 8px; width: 100%;
-    height: 34px; padding: 0 10px; border-radius: 8px; cursor: pointer;
+    height: 34px; padding: 0 10px; border-radius: 3px; cursor: pointer;
     border: 1px solid var(--accent-hi); background: var(--accent-tint); color: var(--accent);
     font-size: 13px; font-weight: 600; text-align: left;
   }
@@ -109,12 +109,12 @@
   /* ---------- Controls ---------- */
   .select {
     position: relative; display: flex; align-items: center; gap: 8px;
-    height: 38px; padding: 0 28px 0 11px;
-    border: 1px solid var(--line); border-radius: 8px; background: var(--bg); cursor: pointer;
+    height: 38px; padding: 0 0 0 11px;
+    border: 1px solid var(--line); border-radius: 3px; background: var(--bg); cursor: pointer;
   }
   .select:hover { border-color: var(--line-2); }
   .select > span { font-size: 12.5px; color: var(--text-3); }
-  .select select { appearance: none; -webkit-appearance: none; background: transparent; border: 0; height: 100%; padding: 0; cursor: pointer; font-weight: 600; font-size: 14px; min-width: 0; flex: 1; }
+  .select select { appearance: none; -webkit-appearance: none; background: transparent; border: 0; height: 100%; padding: 0 30px 0 0; cursor: pointer; font-weight: 600; font-size: 14px; min-width: 0; flex: 1; }
   .select select:focus-visible { outline: none; }
   .select:focus-within { border-color: var(--accent-hi); }
   .select::after {
@@ -124,7 +124,7 @@
   }
 
   .btn {
-    height: 40px; padding: 0 15px; border-radius: 8px;
+    height: 40px; padding: 0 15px; border-radius: 3px;
     border: 1px solid var(--line-2); background: var(--bg);
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap;
@@ -140,9 +140,9 @@
   .btn-quiet { height: 32px; padding: 0 11px; font-size: 13px; font-weight: 500; border-color: var(--line); color: var(--text-2); }
   .btn-quiet:hover { color: var(--text); }
   .btn.is-on { border-color: var(--accent-hi); color: var(--accent); background: var(--accent-tint); }
-  .btn-big { height: 52px; padding: 0 26px; font-size: 16px; border-radius: 10px; }
+  .btn-big { height: 52px; padding: 0 26px; font-size: 16px; border-radius: 4px; }
 
-  .switch { position: relative; width: 30px; height: 18px; border-radius: 9px; flex: none; background: var(--line); transition: background-color .2s; }
+  .switch { position: relative; width: 30px; height: 18px; border-radius: 3px; flex: none; background: var(--line); transition: background-color .2s; }
   .switch i { position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .2s; }
   [aria-pressed="true"] > .switch { background: var(--accent-hi); }
   [aria-pressed="true"] > .switch i { transform: translateX(12px); }
@@ -152,18 +152,18 @@
   .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   .field > label, .field-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
   .input {
-    height: 38px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line);
+    height: 38px; padding: 0 10px; border-radius: 3px; border: 1px solid var(--line);
     background: var(--bg); min-width: 0;
   }
   .input:focus { outline: none; border-color: var(--accent-hi); }
   textarea.input { height: auto; min-height: 96px; padding: 9px 10px; resize: vertical; line-height: 1.45; }
 
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; padding: 2px; background: var(--sunken); flex-wrap: wrap; }
-  .seg button { height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 3px; padding: 2px; background: var(--sunken); flex-wrap: wrap; }
+  .seg button { height: 32px; padding: 0 12px; border: 0; border-radius: 3px; background: transparent; cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(0,0,0,.05); }
 
   /* ---------- Panels ---------- */
-  .panel { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+  .panel { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; min-width: 0; }
   .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; }
   .panel-head h2 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.005em; }
   .panel-head p { margin-top: 3px; font-size: 13px; color: var(--text-2); max-width: 62ch; }
@@ -212,7 +212,7 @@
 
   .meter { margin-top: 16px; }
   .meter-track {
-    position: relative; height: 56px; border-radius: 8px; border: 1px solid var(--line);
+    position: relative; height: 56px; border-radius: 3px; border: 1px solid var(--line);
     background: linear-gradient(90deg, rgba(45,107,214,.14), rgba(45,107,214,.03) 38%, transparent 45%, transparent 55%, rgba(211,58,71,.03) 62%, rgba(211,58,71,.14));
     overflow: hidden;
   }
@@ -231,11 +231,11 @@
   .meter-nums span:first-child { transform: none; }
   .meter-nums span:last-child { transform: translateX(-100%); }
 
-  .trace-wrap { position: relative; margin-top: 12px; height: 108px; border-radius: 8px; border: 1px solid var(--line); background: #fbfbf9; overflow: hidden; }
+  .trace-wrap { position: relative; margin-top: 12px; height: 108px; border-radius: 3px; border: 1px solid var(--line); background: #fbfbf9; overflow: hidden; }
   .trace-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .trace-cap { position: absolute; right: 10px; bottom: 6px; font-size: 11.5px; color: var(--text-3); pointer-events: none; }
 
-  .hud { display: flex; align-items: center; gap: 14px; padding: 13px 22px; border-top: 1px solid var(--line); min-height: 62px; background: #fbfbf9; border-radius: 0 0 12px 12px; }
+  .hud { display: flex; align-items: center; gap: 14px; padding: 13px 22px; border-top: 1px solid var(--line); min-height: 62px; background: #fbfbf9; border-radius: 0 0 4px 4px; }
   .hud-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--line-2); }
   .hud[data-state="armed"] .hud-dot { background: var(--accent-hi); animation: pulse 1.4s ease-in-out infinite; }
   .hud[data-state="settle"] .hud-dot, .hud[data-state="capture"] .hud-dot { background: var(--accent-hi); }
@@ -252,7 +252,7 @@
   .matrix { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; padding: 0 20px; }
   .cell {
     position: relative; min-height: 100px; padding: 10px 11px 12px;
-    border-radius: 9px; border: 1px solid var(--line);
+    border-radius: 3px; border: 1px solid var(--line);
     background: linear-gradient(160deg, var(--c1, #fff), var(--c2, #fff));
     display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
     text-align: left; cursor: pointer; overflow: hidden;
@@ -286,7 +286,7 @@
   .legend-scale { display: flex; align-items: center; gap: 12px; flex: 1 1 340px; max-width: 520px; font-size: 12.5px; color: var(--text-2); }
   .legend-bar-wrap { flex: 1; }
   .legend-bar {
-    height: 10px; border-radius: 5px;
+    height: 10px; border-radius: 2px;
     background: linear-gradient(90deg,
       hsl(222, 90%, 50%) 0%, hsl(210, 86%, 71%) 41.6%,
       hsl(152, 78%, 50%) 41.7%, hsl(152, 78%, 50%) 58.3%,
@@ -298,12 +298,12 @@
   .legend-ticks span:last-child { transform: translateX(-100%); }
   .legend-keys { display: flex; gap: 16px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; }
   .legend-keys span { display: inline-flex; align-items: center; gap: 7px; }
-  .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+  .sw { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
   .sw-empty { border: 1px dashed var(--line-2); }
   .sw-live { border: 1.5px solid var(--accent-hi); }
 
   /* Analytics */
-  .count-pill { flex: none; font-size: 12.5px; font-weight: 600; color: var(--text-2); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  .count-pill { flex: none; font-size: 12.5px; font-weight: 600; color: var(--text-2); padding: 4px 10px; border-radius: 3px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
   .score { display: flex; gap: 18px; align-items: center; padding: 0 20px 18px; }
   .ring-wrap { position: relative; width: 100px; height: 100px; flex: none; }
   .ring { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -327,13 +327,13 @@
   .reg-name { font-weight: 600; }
   .reg-range { color: var(--text-3); font-size: 12px; }
   .reg-val { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-3); }
-  .reg-bar { position: relative; height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
+  .reg-bar { position: relative; height: 8px; border-radius: 2px; background: var(--sunken); overflow: hidden; }
   .reg-bar::before { content: ""; position: absolute; top: 0; bottom: 0; left: 41.67%; width: 16.66%; background: rgba(15,154,99,.12); }
   .reg-bar::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(24,25,27,.3); }
-  .reg-bar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; transition: left .5s, width .5s; }
+  .reg-bar i { position: absolute; top: 0; bottom: 0; border-radius: 2px; transition: left .5s, width .5s; }
 
   .insights { display: flex; flex-direction: column; gap: 10px; }
-  .insight { position: relative; padding: 13px 14px 13px 16px; border-radius: 10px; background: #fbfbf9; border: 1px solid var(--line); overflow: hidden; }
+  .insight { position: relative; padding: 13px 14px 13px 16px; border-radius: 4px; background: #fbfbf9; border: 1px solid var(--line); overflow: hidden; }
   .insight::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--tone, var(--accent-hi)); }
   .insight[data-tone="sharp"] { --tone: var(--sharp); }
   .insight[data-tone="flat"] { --tone: var(--flat); }
@@ -349,19 +349,19 @@
   .insight li::before { content: ""; position: absolute; left: 1px; top: .58em; width: 5px; height: 5px; border-radius: 50%; background: var(--tone); }
 
   /* Inspector */
-  .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text-2); cursor: pointer; font-size: 18px; line-height: 1; display: grid; place-items: center; flex: none; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 3px; border: 1px solid var(--line); background: var(--bg); color: var(--text-2); cursor: pointer; font-size: 18px; line-height: 1; display: grid; place-items: center; flex: none; }
   .icon-btn:hover { color: var(--text); border-color: var(--line-2); }
   .insp-title { display: flex; align-items: flex-start; gap: 12px; }
   .insp-title .cell-note { font-size: 38px; }
   .insp-sub { font-size: 13px; color: var(--text-2); margin-top: 6px; font-variant-numeric: tabular-nums; }
   .insp-body { padding: 0 20px 18px; }
   .insp-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 14px; margin: 0 0 14px; }
-  .insp-chart { display: block; width: 100%; height: 64px; border-radius: 8px; background: #fbfbf9; border: 1px solid var(--line); }
+  .insp-chart { display: block; width: 100%; height: 64px; border-radius: 3px; background: #fbfbf9; border: 1px solid var(--line); }
   .insp-cap { font-size: 12px; color: var(--text-3); margin: 6px 0 14px; }
   .insp-empty { font-size: 13.5px; color: var(--text-2); margin-bottom: 14px; }
   .tuner-foot { margin-top: 18px; display: flex; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; color: var(--text-3); font-size: 12.5px; }
 
-  kbd { display: inline-block; min-width: 20px; padding: 1px 6px; margin: 0 4px 0 10px; border-radius: 5px; border: 1px solid var(--line-2); background: var(--bg); color: var(--text-2); font: 600 11.5px var(--sans); text-align: center; }
+  kbd { display: inline-block; min-width: 20px; padding: 1px 6px; margin: 0 4px 0 10px; border-radius: 2px; border: 1px solid var(--line-2); background: var(--bg); color: var(--text-2); font: 600 11.5px var(--sans); text-align: center; }
   kbd:first-child { margin-left: 0; }
 
   /* ================= Session ================= */
@@ -372,8 +372,8 @@
   .clock { font-family: var(--mono); font-size: 84px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; }
   .clock.is-over { color: var(--accent); }
   .clock-sub { margin-top: 6px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
-  .progress { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
-  .progress i { display: block; height: 100%; width: 0; background: var(--text); border-radius: 4px; transition: width .3s linear; }
+  .progress { height: 8px; border-radius: 2px; background: var(--sunken); overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--text); border-radius: 2px; transition: width .3s linear; }
   .progress.is-over i { background: var(--accent-hi); }
   .now-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .tool-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: none; }
@@ -383,7 +383,7 @@
   .plan { list-style: none; margin: 0; padding: 0 20px; display: flex; flex-direction: column; gap: 6px; }
   .plan-row {
     display: grid; grid-template-columns: 26px minmax(0, 1fr) 74px 120px 32px; gap: 8px; align-items: center;
-    padding: 6px 6px 6px 8px; border-radius: 9px; border: 1px solid transparent;
+    padding: 6px 6px 6px 8px; border-radius: 3px; border: 1px solid transparent;
   }
   .plan-row:hover { background: #fbfbf9; }
   .plan-row.is-current { border-color: var(--text); background: var(--bg); }
@@ -433,7 +433,7 @@
   .drone-info { font-size: 13.5px; color: var(--text-2); text-align: right; font-variant-numeric: tabular-nums; }
   .drone-info strong { display: block; color: var(--text); font-size: 15px; }
   .pitches { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
-  .pitch { height: 52px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 18px; font-weight: 600; }
+  .pitch { height: 52px; border-radius: 3px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 18px; font-weight: 600; }
   .pitch:hover { border-color: var(--line-2); background: #fbfbf9; }
   .pitch[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
   .wave { height: 46px; display: flex; align-items: center; gap: 3px; }
@@ -447,13 +447,13 @@
   .rec-btn { width: 112px; height: 112px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; display: grid; place-items: center; transition: transform .15s; }
   .rec-btn:hover { transform: scale(1.03); }
   .rec-btn i { width: 46px; height: 46px; border-radius: 50%; background: var(--sharp); transition: border-radius .2s, width .2s, height .2s; }
-  .rec-btn.is-on i { width: 34px; height: 34px; border-radius: 6px; }
+  .rec-btn.is-on i { width: 34px; height: 34px; border-radius: 3px; }
   .rec-time { font-family: var(--mono); font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
   .rec-status { font-size: 14px; color: var(--text-2); min-height: 20px; }
   .rec-level { width: min(320px, 100%); height: 6px; border-radius: 3px; background: var(--sunken); overflow: hidden; }
   .rec-level i { display: block; height: 100%; width: 0; background: var(--sharp); }
   .takes { list-style: none; margin: 0; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
-  .take { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+  .take { border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
   .take-top { display: flex; align-items: center; gap: 10px; }
   .take-top .input { flex: 1; height: 34px; font-weight: 600; }
   .take-meta { font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -464,7 +464,7 @@
 
   /* ================= Log ================= */
   .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
-  .tile { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .tile { border: 1px solid var(--line); border-radius: 4px; padding: 16px 18px; }
   .tile dt { font-size: 12.5px; color: var(--text-2); font-weight: 500; }
   .tile dd { margin: 6px 0 0; font-family: var(--mono); font-size: 30px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
   .tile dd small { font-family: var(--sans); font-size: 13px; color: var(--text-3); font-weight: 500; letter-spacing: 0; margin-left: 3px; }
@@ -474,24 +474,24 @@
   .chart-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line); pointer-events: none; }
   .chart-grid span { position: absolute; right: 0; top: -16px; font-size: 11px; color: var(--text-3); background: var(--bg); padding-left: 4px; font-variant-numeric: tabular-nums; }
   .bar-hit { flex: 1; height: 100%; display: flex; align-items: flex-end; cursor: default; position: relative; }
-  .bar-hit i { display: block; width: 100%; background: var(--accent-hi); border-radius: 4px 4px 0 0; min-height: 0; }
+  .bar-hit i { display: block; width: 100%; background: var(--accent-hi); border-radius: 2px 2px 0 0; min-height: 0; }
   .bar-hit.is-today i { background: var(--text); }
   .bar-hit:hover i { filter: brightness(.9); }
-  .bar-hit:hover::after { content: ""; position: absolute; inset: 0; background: rgba(24,25,27,.04); border-radius: 4px; pointer-events: none; }
+  .bar-hit:hover::after { content: ""; position: absolute; inset: 0; background: rgba(24,25,27,.04); border-radius: 2px; pointer-events: none; }
   .chart-x { display: flex; gap: 2px; margin-top: 6px; font-size: 11px; color: var(--text-3); }
   .chart-x span { flex: 1; text-align: center; white-space: nowrap; overflow: visible; }
   .tip {
     position: absolute; z-index: 5; pointer-events: none; transform: translate(-50%, -100%);
-    background: var(--text); color: #fff; font-size: 12.5px; padding: 6px 9px; border-radius: 7px; white-space: nowrap;
+    background: var(--text); color: #fff; font-size: 12.5px; padding: 6px 9px; border-radius: 3px; white-space: nowrap;
     box-shadow: 0 6px 18px rgba(0,0,0,.18);
   }
   .tip b { display: block; font-weight: 600; }
   .sessions { list-style: none; margin: 0; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 8px; }
-  .sess { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
+  .sess { border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
   .sess-date { font-weight: 600; font-size: 14.5px; }
   .sess-dur { font-family: var(--mono); font-weight: 600; font-size: 14px; text-align: right; }
   .sess-blocks { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
-  .sess-blocks span { font-size: 12px; color: var(--text-2); background: var(--sunken); border-radius: 6px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+  .sess-blocks span { font-size: 12px; color: var(--text-2); background: var(--sunken); border-radius: 3px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
   .sess-notes { grid-column: 1 / -1; font-size: 13.5px; color: var(--text-2); white-space: pre-wrap; }
   .sess-del { grid-column: 2; grid-row: 1; justify-self: end; }
   .sess-head { display: flex; align-items: center; gap: 10px; }
@@ -515,7 +515,7 @@
   .pb-block { flex: 1; min-width: 0; color: rgba(255,255,255,.9); text-decoration: none; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pb-block:hover { text-decoration: underline; }
   .pb-actions { display: flex; gap: 8px; margin-left: auto; flex: none; }
-  .pb-actions button { height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,.65); background: transparent; color: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .pb-actions button { height: 34px; padding: 0 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,.65); background: transparent; color: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
   .pb-actions button:hover { background: rgba(255,255,255,.12); }
   .pb-actions #pbFinish { background: #fff; color: var(--blue); border-color: #fff; }
   .pbar.is-paused #pbFinish { color: #4161a8; }
@@ -530,7 +530,7 @@
   .a4-ctl input::-webkit-inner-spin-button, .a4-ctl input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   .a4-ctl input:focus { outline: none; }
   .a4-ctl .hz { color: var(--text-3); font-size: 12.5px; margin-left: -3px; }
-  .a4-ctl button { width: 28px; height: 28px; flex: none; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; padding: 0; }
+  .a4-ctl button { width: 28px; height: 28px; flex: none; border-radius: 3px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; padding: 0; }
   .a4-ctl button:hover { background: var(--sunken); }
 
   /* ================= Rhythm ================= */
@@ -549,7 +549,7 @@
   .rbar { position: relative; display: flex; border-left: 2px solid var(--text); padding: 0 4px; }
   .rbar-end { border-left: 2px solid var(--text); box-shadow: -5px 0 0 -3px var(--text); padding: 0; width: 6px; }
   .rbar-num { position: absolute; top: -16px; left: 6px; font-size: 11px; color: var(--text-3); font-weight: 600; }
-  .rbeat { width: 86px; flex: none; border: 0; background: transparent; border-radius: 8px; padding: 0; cursor: pointer; transition: background-color .08s; }
+  .rbeat { width: 86px; flex: none; border: 0; background: transparent; border-radius: 3px; padding: 0; cursor: pointer; transition: background-color .08s; }
   .rbeat.grp { box-shadow: inset 1px 0 0 var(--line-2); }
   .rbeat svg { display: block; width: 100%; height: auto; }
   .rbeat:hover { background: var(--sunken); }
@@ -570,15 +570,15 @@
   svg .nh.r-early, svg .nh.r-late { fill: var(--sharp); }
   svg .nh.r-miss { fill: #fff; stroke: #a3a49f; stroke-width: 1.6; }
 
-  .beat-edit { border-top: 1px solid var(--line); padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; background: #fbfbf9; border-radius: 0 0 12px 12px; }
+  .beat-edit { border-top: 1px solid var(--line); padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; background: #fbfbf9; border-radius: 0 0 4px 4px; }
   .be-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
   .be-top strong { font-size: 15px; }
   .be-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px 24px; align-items: start; }
   .pads { display: flex; gap: 6px; flex-wrap: wrap; }
-  .pad { min-width: 46px; flex: 1 1 46px; max-width: 80px; height: 42px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; font-weight: 600; color: var(--text-2); }
+  .pad { min-width: 46px; flex: 1 1 46px; max-width: 80px; height: 42px; border-radius: 3px; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; font-weight: 600; color: var(--text-2); }
   .pad[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
   .palette { display: flex; gap: 6px; flex-wrap: wrap; }
-  .pal { width: 62px; padding: 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
+  .pal { width: 62px; padding: 2px; border-radius: 3px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
   .pal:hover { border-color: var(--line-2); }
   .pal[aria-pressed="true"] { border-color: var(--accent-hi); box-shadow: 0 0 0 1px var(--accent-hi); }
   .pal svg { display: block; width: 100%; height: auto; }
@@ -591,7 +591,7 @@
   .rhy-bpm .num { font-size: 44px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
   .rhy-bpm small { font-size: 12px; color: var(--text-3); }
   .rhy-status { font-size: 14px; font-weight: 600; color: var(--blue); min-height: 20px; }
-  .tap-pad { width: 100%; height: 120px; border-radius: 14px; border: 2px dashed var(--line-2); background: var(--bg); cursor: pointer; font-size: 17px; font-weight: 600; color: var(--text-2); touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+  .tap-pad { width: 100%; height: 120px; border-radius: 4px; border: 2px dashed var(--line-2); background: var(--bg); cursor: pointer; font-size: 17px; font-weight: 600; color: var(--text-2); touch-action: manipulation; user-select: none; -webkit-user-select: none; }
   .tap-pad:active, .tap-pad.hit { background: var(--accent-tint); border-color: var(--accent-hi); color: var(--accent); }
   .mic-meter { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-2); }
   .mic-meter .rec-level { flex: 1; width: auto; }
@@ -601,7 +601,7 @@
   .rhy-tiles .rt-text { font-family: var(--sans); font-size: 17px !important; letter-spacing: 0; line-height: 1.3; }
   .rhist { display: flex; align-items: flex-end; gap: 4px; height: 72px; border-bottom: 1px solid var(--line-2); }
   .rhist div { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; }
-  .rhist i { display: block; width: 100%; border-radius: 4px 4px 0 0; background: var(--accent-hi); }
+  .rhist i { display: block; width: 100%; border-radius: 2px 2px 0 0; background: var(--accent-hi); }
   .rhist span { font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
   .rhist-empty { font-size: 13px; color: var(--text-3); align-self: center; margin: auto; }
   .rlegend { display: flex; gap: 8px 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-2); margin-bottom: 10px; }
@@ -620,11 +620,54 @@
     .pb-time { font-size: 19px; }
   }
 
+  /* ---------- AI assistant ---------- */
+  .ai-fab {
+    position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+    display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 18px;
+    border: 0; border-radius: 3px; background: var(--text); color: #fff; font-weight: 600; font-size: 14.5px; cursor: pointer;
+    box-shadow: 0 10px 28px -10px rgba(0,0,0,.45);
+  }
+  .ai-fab:hover { background: #33353a; }
+  .ai-fab svg { width: 18px; height: 18px; }
+  .ai-panel {
+    position: fixed; top: var(--pbar-h); right: 0; bottom: 0; z-index: 46; width: min(420px, 100vw);
+    display: flex; flex-direction: column; background: var(--bg); border-left: 1px solid var(--line);
+    box-shadow: -18px 0 40px -24px rgba(0,0,0,.35);
+  }
+  .ai-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+  .ai-head h2 { font-size: 17px; font-weight: 700; }
+  .ai-head p { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+  .ai-body { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .ai-setup { display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+  .ai-setup ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; color: var(--text-2); }
+  .ai-setup code { font-family: var(--mono); font-size: 12.5px; background: var(--sunken); padding: 1px 4px; border-radius: 2px; }
+  .ai-setup .row { display: flex; gap: 8px; }
+  .ai-setup .row .input { flex: 1; }
+  .ai-note { font-size: 12px; color: var(--text-3); }
+  .msg { max-width: 92%; padding: 10px 12px; border-radius: 4px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+  .msg.user { align-self: flex-end; background: var(--text); color: #fff; white-space: pre-wrap; }
+  .msg.bot { align-self: flex-start; background: var(--sunken); }
+  .msg.bot p { margin: 0 0 8px; } .msg.bot p:last-child { margin-bottom: 0; }
+  .msg.bot ul, .msg.bot ol { margin: 0 0 8px; padding-left: 20px; }
+  .msg.bot h4 { font-size: 14px; margin: 4px 0 6px; }
+  .msg.bot code { font-family: var(--mono); font-size: 12.5px; }
+  .msg.err { align-self: stretch; background: #fdecee; color: #8f1d27; }
+  .msg.typing::after { content: "▍"; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .ai-suggest { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ai-suggest button { border: 1px solid var(--line-2); background: var(--bg); border-radius: 3px; padding: 7px 10px; font-size: 13px; cursor: pointer; text-align: left; }
+  .ai-suggest button:hover { background: var(--sunken); }
+  .ai-form { display: flex; gap: 8px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); align-items: flex-end; }
+  .ai-form textarea { flex: 1; min-height: 42px; max-height: 140px; resize: none; }
+  .ai-foot { display: flex; gap: 12px; padding: 0 18px 10px; font-size: 12.5px; }
+  .ai-foot button { border: 0; background: none; padding: 0; color: var(--text-2); cursor: pointer; text-decoration: underline; font-size: 12.5px; }
+  @media (max-width: 720px) { .ai-fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } }
+
   /* ---------- Toast ---------- */
   .toast {
     position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: min(560px, calc(100vw - 32px));
     transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
-    padding: 11px 16px; border-radius: 10px; background: var(--text); color: #fff;
+    padding: 11px 16px; border-radius: 4px; background: var(--text); color: #fff;
     font-size: 14px; box-shadow: 0 14px 34px -10px rgba(0, 0, 0, .35);
     transition: opacity .25s, transform .25s;
   }
@@ -659,7 +702,7 @@
     }
     .rail-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .brand span { display: none; }
-    .mark { width: 30px; height: 30px; border-radius: 8px; }
+    .mark { width: 30px; height: 30px; border-radius: 3px; }
     .mark svg { width: 20px; height: 20px; }
     .menu { flex-direction: row; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; gap: 4px; }
     .menu::-webkit-scrollbar { display: none; }
@@ -791,7 +834,6 @@
       <div class="page-head">
         <div>
           <h1 id="hSession">Practice session</h1>
-          <p>Plan today's practice in blocks, then run the timer. Each block links to the tool you need, and finished sessions go into your log.</p>
         </div>
       </div>
       <div class="session-layout">
@@ -985,7 +1027,6 @@
       <div class="page-head">
         <div>
           <h1 id="hMet">Metronome</h1>
-          <p>It keeps ticking when you switch to another tool. Press Space to start or stop, and the arrow keys to change the tempo.</p>
         </div>
       </div>
       <div class="met-layout">
@@ -1058,7 +1099,6 @@
       <div class="page-head">
         <div>
           <h1 id="hRhy">Rhythm trainer</h1>
-          <p>Pick a rhythm or build your own, then listen to it, tap along, or play it on your instrument and get scored on your timing.</p>
         </div>
       </div>
       <section class="panel">
@@ -1158,7 +1198,6 @@
       <div class="page-head">
         <div>
           <h1 id="hDrone">Drone</h1>
-          <p>Hold a steady reference pitch for long tones, scales and intonation work. It keeps sounding while you use the tuner or metronome.</p>
         </div>
       </div>
       <div class="drone-layout">
@@ -1216,7 +1255,6 @@
       <div class="page-head">
         <div>
           <h1 id="hRec">Recorder</h1>
-          <p>Record a take, then listen back. Recordings stay on this device until you delete them.</p>
         </div>
       </div>
       <div class="rec-layout">
@@ -1240,7 +1278,6 @@
       <div class="page-head">
         <div>
           <h1 id="hLog">Practice log</h1>
-          <p>Every finished session lands here. You can also add practice you did away from the app.</p>
         </div>
       </div>
       <dl class="tiles">
@@ -1274,6 +1311,50 @@
 
   </div>
 </div>
+<button class="ai-fab" id="aiFab" type="button" aria-controls="aiPanel" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg>
+  Ask AI
+</button>
+<aside class="ai-panel" id="aiPanel" hidden role="dialog" aria-labelledby="aiTitle">
+  <div class="ai-head">
+    <div>
+      <h2 id="aiTitle">Practice assistant</h2>
+      <p>Ask about practicing, your instrument, or your own data in the app.</p>
+    </div>
+    <button class="icon-btn" id="aiClose" type="button" aria-label="Close the assistant">×</button>
+  </div>
+  <div class="ai-body" id="aiBody">
+    <div class="ai-setup" id="aiSetup" hidden>
+      <strong>Connect the assistant</strong>
+      <p>The assistant runs on Claude. It needs an Anthropic API key, which is stored only in this browser and sent only to Anthropic.</p>
+      <ol>
+        <li>Sign in at <code>console.anthropic.com</code></li>
+        <li>Go to <strong>API keys</strong> and create a key</li>
+        <li>Paste it below (it starts with <code>sk-ant-</code>)</li>
+      </ol>
+      <div class="row">
+        <input class="input" id="aiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" aria-label="Anthropic API key" />
+        <button class="btn btn-primary" id="aiKeySave" type="button">Save</button>
+      </div>
+      <p class="ai-note">Each question costs a small amount on your Anthropic account. Don't save your key on a shared computer.</p>
+    </div>
+    <div id="aiMsgs" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div class="ai-suggest" id="aiSuggest">
+      <button type="button">Which of my notes are most out of tune, and how do I fix them?</button>
+      <button type="button">How much have I practiced this week?</button>
+      <button type="button">Make me a 30-minute practice plan for today</button>
+      <button type="button">How do I use the rhythm trainer?</button>
+    </div>
+  </div>
+  <form class="ai-form" id="aiForm">
+    <textarea class="input" id="aiInput" rows="1" placeholder="Ask a question…" aria-label="Your question"></textarea>
+    <button class="btn btn-primary" id="aiSend" type="submit">Send</button>
+  </form>
+  <div class="ai-foot">
+    <button type="button" id="aiClear">Clear chat</button>
+    <button type="button" id="aiForget">Change API key</button>
+  </div>
+</aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <noscript><p style="padding:24px">Woodshed needs JavaScript enabled.</p></noscript>
 
@@ -3877,6 +3958,239 @@
   }
 
   /* =========================================================
+     AI assistant: Claude, called from the browser with the
+     player's own API key, given a snapshot of their app data
+     ========================================================= */
+  const AI_MODEL = 'claude-opus-5-5';
+  const AI_SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.133.0/+esm';
+  const AI_SYSTEM = [
+    'You are the practice assistant inside Woodshed, a practice-room web app for musicians. You help the player with practicing, their instrument, music theory, and their own data in the app.',
+    '',
+    'The app has these tabs: Session (plan practice in timed blocks; the blue bar at the top shows the running practice timer), Tuner (a live tuner plus an intonation matrix: with "Sample notes" on, each sustained note is saved with its average offset in cents, and coaching tips appear), Metronome (tap tempo, subdivisions, speed trainer), Rhythm (preset or custom rhythms with Listen, Tap along, or Play along through the mic, scored per loop), Drone (a reference pitch with an optional pure fifth or octave), Recorder (record and play back takes), and Practice log (minutes per day, streak, sessions). The instrument and A4 tuning are set in the menu under "Your setup". The "Ask AI" button opens this chat.',
+    '',
+    'Each request includes a JSON snapshot of the player\'s current app data. Use it whenever a question is about them: quote their real numbers (notes, cents, minutes, scores) instead of speaking generally. When the data needed is not there yet (for example, no notes sampled), say so plainly and explain how to get it in the app.',
+    'Cents: positive is sharp, negative is flat, and within ±5 cents counts as in tune. Note names in the intonation matrix are written pitch for the selected instrument.',
+    '',
+    'Write for a student musician: short, concrete and friendly. Lead with the answer, then give a few practical steps. Use short paragraphs or brief bullet lists, no tables. Give technique advice that fits the instrument in the snapshot.'
+  ].join('\n');
+  const aiEls = {
+    fab: $('aiFab'), panel: $('aiPanel'), close: $('aiClose'), body: $('aiBody'), setup: $('aiSetup'), key: $('aiKey'), keySave: $('aiKeySave'),
+    msgs: $('aiMsgs'), suggest: $('aiSuggest'), form: $('aiForm'), input: $('aiInput'), send: $('aiSend'), clear: $('aiClear'), forget: $('aiForget')
+  };
+  const ai = { history: [], busy: false, sdk: null };
+  const aiKey = () => store_.get('ws.aiKey', '');
+  const round1 = v => Math.round(v * 10) / 10;
+
+  function loadSdk() {
+    if (!ai.sdk) ai.sdk = import(AI_SDK_URL).then(m => m.default || m.Anthropic).catch(e => { ai.sdk = null; throw e; });
+    return ai.sdk;
+  }
+
+  function notesFromRaw(raw) {
+    return Object.keys(raw || {}).map(k => {
+      const r = raw[k];
+      if (!r || !(r.n > 0)) return null;
+      const mean = r.sum / r.n;
+      return { midi: Number(k), mean: mean, sd: Math.sqrt(Math.max(0, r.sq / r.n - mean * mean)), takes: r.takes || 1 };
+    }).filter(Boolean).sort((a, b) => a.midi - b.midi);
+  }
+
+  // Everything the assistant may need to answer questions about this player
+  function appSnapshot() {
+    const I = inst();
+    const byInstrument = {};
+    Object.keys(INSTRUMENTS).forEach(k => {
+      const notes = notesFromRaw(k === state.instrument ? store : store_.get('sit.v1.data.' + k, null));
+      if (!notes.length) return;
+      const regs = INSTRUMENTS[k].regs, total = regs[regs.length - 1].hi - regs[0].lo + 1;
+      byInstrument[INSTRUMENTS[k].label] = {
+        notes_sampled: notes.length + ' of ' + total,
+        notes: notes.map(n => ({ note: noteText(n.midi), avg_cents: round1(n.mean), wobble_cents: round1(n.sd), takes: n.takes }))
+      };
+    });
+    const st = computeStats();
+    const byDay = {};
+    log.forEach(e => { const k = dayKey(e.date); byDay[k] = (byDay[k] || 0) + e.secs; });
+    const today = new Date(); today.setHours(12, 0, 0, 0);
+    const dayAt = back => { const d = new Date(today); d.setDate(d.getDate() - back); return d; };
+    let week = 0, streak = 0;
+    for (let i = 0; i < 7; i++) week += byDay[dayKey(dayAt(i))] || 0;
+    const start = byDay[dayKey(today)] ? 0 : 1;
+    while (byDay[dayKey(dayAt(start + streak))]) streak++;
+    const b = sess && plan[sess.idx];
+    return {
+      today: new Date().toDateString(),
+      open_tab: state.view,
+      setup: {
+        instrument: I.label,
+        transposition: I.transpose ? 'written pitch is ' + I.transpose + ' semitones above concert pitch' : 'concert pitch',
+        matrix_range: noteText(rangeLo()) + ' to ' + noteText(rangeHi()),
+        tuning_a4_hz: state.a4
+      },
+      intonation: {
+        current_instrument_summary: st.count ? {
+          score_out_of_100: Math.round(st.score), notes_in_tune_pct: Math.round(st.inTune / st.count * 100),
+          avg_deviation_cents: round1(st.meanAbs), overall_lean_cents: round1(st.meanAll), avg_wobble_cents: round1(st.avgSd)
+        } : 'no notes sampled yet for this instrument',
+        coaching_tips_shown: buildInsights(st).map(it => it.title),
+        sampled_notes_by_instrument: byInstrument
+      },
+      practice_log: {
+        sessions_total: log.length,
+        minutes_today: Math.round((byDay[dayKey(today)] || 0) / 60),
+        minutes_last_7_days: Math.round(week / 60),
+        day_streak: streak,
+        recent_sessions: log.slice(0, 15).map(e => ({
+          date: new Date(e.date).toDateString(), minutes: Math.round(e.secs / 60),
+          blocks: (e.blocks || []).map(x => x.name + ' ' + Math.max(1, Math.round(x.secs / 60)) + 'm').join(', '),
+          notes: e.notes || ''
+        }))
+      },
+      practice_session_now: sess ? {
+        status: sess.running ? 'practicing' : 'paused', minutes_so_far: Math.round(sess.elapsed / 60),
+        current_block: b ? b.name : 'free practice', session_notes: sessEls.notes.value.trim()
+      } : 'not in a practice session',
+      session_plan: plan.map(x => x.name + ' (' + x.min + ' min, tool: ' + x.tool + ')'),
+      metronome: { bpm: met.bpm, beats_per_bar: met.beats, notes_per_beat: met.sub, running: metRun.on, speed_trainer: met.trainOn ? '+' + met.trainStep + ' BPM every ' + met.trainEvery + ' bars up to ' + met.trainTarget : 'off' },
+      rhythm_trainer: {
+        rhythm: rhy.name, time_signature: rhy.beats + '/' + rhy.unit, groups: rhy.groups || undefined,
+        pattern: rhy.cells.join(' ') + '  (one group per beat; x = note, - = rest)',
+        bpm: rhy.bpm, mode: rhy.mode, recent_loop_scores_pct: rhyRun.history, best_loop_pct: rhyRun.best || undefined,
+        saved_rhythms: myRhythms.map(r => r.name)
+      },
+      drone: { pitch: pcText(drone.pc) + drone.oct + ' (' + drone.names + ' names)', sound: drone.sound, fifth: drone.fifth, octave_above: drone.octUp, playing: droneRun.on },
+      recordings: rec.takes.slice(0, 20).map(t => t.name + ' (' + clockText(t.duration) + ')')
+    };
+  }
+
+  // Small, safe Markdown: headings, bullet and numbered lists, bold, inline code
+  function mdLite(src) {
+    const inline = t => t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    const out = [];
+    let list = null;
+    const close = () => { if (list) { out.push('</' + list + '>'); list = null; } };
+    esc(src).split('\n').forEach(line => {
+      const t = line.trim();
+      let m;
+      if (!t) close();
+      else if ((m = t.match(/^#{1,6}\s+(.*)/))) { close(); out.push('<h4>' + inline(m[1]) + '</h4>'); }
+      else if ((m = t.match(/^[-*•]\s+(.*)/))) { if (list !== 'ul') { close(); out.push('<ul>'); list = 'ul'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+      else if ((m = t.match(/^\d+[.)]\s+(.*)/))) { if (list !== 'ol') { close(); out.push('<ol>'); list = 'ol'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+      else { close(); out.push('<p>' + inline(t) + '</p>'); }
+    });
+    close();
+    return out.join('');
+  }
+
+  function addMsg(kind, text) {
+    const el = document.createElement('div');
+    el.className = 'msg ' + kind;
+    if (kind === 'user' || kind === 'err') el.textContent = text; else el.innerHTML = mdLite(text);
+    aiEls.msgs.appendChild(el);
+    aiEls.body.scrollTop = aiEls.body.scrollHeight;
+    return el;
+  }
+
+  function aiErrorText(err, A) {
+    if (!A) return 'The assistant could not load. Check your internet connection and try again.';
+    if (err instanceof A.AuthenticationError) return 'Your API key was not accepted. Choose "Change API key" below and paste it again.';
+    if (err instanceof A.PermissionDeniedError) return 'This API key is not allowed to use Claude. Check the key in the Anthropic Console.';
+    if (err instanceof A.RateLimitError) return 'Too many questions at once. Wait a moment, then try again.';
+    if (err instanceof A.APIConnectionError) return 'Could not reach Anthropic. Check your internet connection and try again.';
+    if (err instanceof A.BadRequestError && /credit|balance|billing/i.test(err.message || '')) return 'Your Anthropic account is out of credit. Add credit in the Anthropic Console under Billing.';
+    if (err instanceof A.APIError) return 'The assistant ran into an error' + (err.status ? ' (' + err.status + ')' : '') + '. Try again in a moment.';
+    return 'Something went wrong: ' + ((err && err.message) || err);
+  }
+
+  async function aiAsk(question) {
+    const q = question.trim();
+    if (!q || ai.busy) return;
+    if (!aiKey()) { showAiSetup(true); aiEls.key.focus(); toast('Add your Anthropic API key first.'); return; }
+    ai.busy = true;
+    aiEls.send.disabled = true;
+    aiEls.suggest.hidden = true;
+    aiEls.input.value = '';
+    sizeAiInput();
+    addMsg('user', q);
+    ai.history.push({ role: 'user', content: q });
+    const bubble = addMsg('bot typing', '');
+    let text = '', A = null;
+    try {
+      A = await loadSdk();
+      const client = new A({ apiKey: aiKey(), dangerouslyAllowBrowser: true });
+      const stream = client.beta.messages.stream({
+        model: AI_MODEL,
+        max_tokens: 16000,
+        output_config: { effort: 'low' },
+        betas: ['server-side-fallback-2026-07-01'],
+        fallbacks: 'default',
+        system: [{ type: 'text', text: AI_SYSTEM }, { type: 'text', text: '<app_data>\n' + JSON.stringify(appSnapshot()) + '\n</app_data>' }],
+        messages: ai.history
+      });
+      for await (const ev of stream) {
+        if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
+          text += ev.delta.text;
+          bubble.innerHTML = mdLite(text);
+          aiEls.body.scrollTop = aiEls.body.scrollHeight;
+        }
+      }
+      const final = await stream.finalMessage();
+      if (final.stop_reason === 'refusal') {
+        ai.history.pop();
+        bubble.innerHTML = mdLite('I can’t help with that one. Try asking about your practice, your instrument or music.');
+      } else {
+        ai.history.push({ role: 'assistant', content: final.content });
+        if (!text.trim()) bubble.innerHTML = mdLite('No answer came back. Please try again.');
+        else if (final.stop_reason === 'max_tokens') bubble.innerHTML = mdLite(text + '\n\n(The answer was cut off. Ask me to continue.)');
+      }
+    } catch (err) {
+      ai.history.pop();
+      bubble.remove();
+      addMsg('err', aiErrorText(err, A));
+    } finally {
+      bubble.classList.remove('typing');
+      ai.busy = false;
+      aiEls.send.disabled = false;
+    }
+  }
+
+  function showAiSetup(on) { aiEls.setup.hidden = !on; }
+  function sizeAiInput() { aiEls.input.style.height = 'auto'; aiEls.input.style.height = Math.min(140, aiEls.input.scrollHeight + 2) + 'px'; }
+  function openAi(open) {
+    aiEls.panel.hidden = !open;
+    aiEls.fab.hidden = open;
+    aiEls.fab.setAttribute('aria-expanded', String(open));
+    if (open) { showAiSetup(!aiKey()); (aiKey() ? aiEls.input : aiEls.key).focus(); }
+    else aiEls.fab.focus();
+  }
+  function initAssistant() {
+    aiEls.fab.addEventListener('click', () => openAi(true));
+    aiEls.close.addEventListener('click', () => openAi(false));
+    aiEls.panel.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); openAi(false); } });
+    aiEls.keySave.addEventListener('click', () => {
+      const k = aiEls.key.value.trim();
+      if (!/^sk-ant-/.test(k)) { toast('That doesn’t look like an Anthropic API key. It should start with sk-ant-.', 'error'); return; }
+      store_.set('ws.aiKey', k);
+      aiEls.key.value = '';
+      showAiSetup(false);
+      aiEls.input.focus();
+      toast('API key saved in this browser.');
+    });
+    aiEls.key.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); aiEls.keySave.click(); } });
+    aiEls.form.addEventListener('submit', e => { e.preventDefault(); aiAsk(aiEls.input.value); });
+    aiEls.input.addEventListener('input', sizeAiInput);
+    aiEls.input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(aiEls.input.value); } });
+    aiEls.suggest.addEventListener('click', e => { const b = e.target.closest('button'); if (b) aiAsk(b.textContent); });
+    aiEls.clear.addEventListener('click', () => { ai.history = []; aiEls.msgs.innerHTML = ''; aiEls.suggest.hidden = false; });
+    aiEls.forget.addEventListener('click', () => {
+      if (aiKey() && !window.confirm('Remove the saved API key from this browser?')) return;
+      store_.set('ws.aiKey', '');
+      showAiSetup(true);
+      aiEls.key.focus();
+    });
+  }
+
+  /* =========================================================
      Menu, routing and the "running" chips
      ========================================================= */
   const VIEWS = ['session', 'tuner', 'metronome', 'rhythm', 'drone', 'recorder', 'log'];
@@ -4151,6 +4465,7 @@
   initRecorder();
   initLog();
   initSession();
+  initAssistant();
   updateRunUI();
   bind();
   showView(location.hash.slice(1) || store_.get('ws.view', 'session'));
