@@ -1,0 +1,3132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Woodshed</title>
+<meta name="description" content="A practice room for saxophone: session planner, intonation tuner, metronome, drone, recorder and practice log." />
+<meta name="theme-color" content="#ffffff" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Woodshed" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --rail: #f7f7f5;
+    --sunken: #f4f4f1;
+    --hover: #efefeb;
+    --line: #e4e4df;
+    --line-2: #cdcdc6;
+    --text: #18191b;
+    --text-2: #56585d;
+    --text-3: #8a8c90;
+    --accent: #9a6410;
+    --accent-hi: #b5781a;
+    --accent-tint: rgba(181, 120, 26, .1);
+    --tune: #0f9a63;
+    --sharp: #d33a47;
+    --flat: #2d6bd6;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --rail-w: 224px;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  button { -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; }
+  h1, h2, h3, h4, p { margin: 0; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Shell: menu rail + content ---------- */
+  .shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); min-height: 100vh; }
+  .rail {
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; gap: 22px;
+    padding: 20px 14px calc(18px + env(safe-area-inset-bottom, 0px));
+    background: var(--rail); border-right: 1px solid var(--line);
+    overflow-y: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
+  .mark { width: 36px; height: 36px; border-radius: 9px; background: var(--text); display: grid; place-items: center; flex: none; }
+  .mark svg { width: 24px; height: 24px; }
+  .brand strong { display: block; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+  .brand span { display: block; font-size: 12.5px; color: var(--text-3); }
+
+  .menu { display: flex; flex-direction: column; gap: 2px; }
+  .menu-label { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); padding: 0 10px 6px; }
+  .menu a {
+    display: flex; align-items: center; gap: 11px;
+    height: 40px; padding: 0 10px; border-radius: 8px;
+    color: var(--text-2); text-decoration: none; font-weight: 500; font-size: 14.5px;
+    white-space: nowrap;
+  }
+  .menu a svg { width: 19px; height: 19px; flex: none; }
+  .menu a:hover { background: var(--hover); color: var(--text); }
+  .menu a[aria-current="page"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(0,0,0,.04); }
+  .menu a[aria-current="page"] svg { color: var(--accent); }
+  .menu .live-dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--accent-hi); }
+
+  .rail-settings { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+  .running { display: flex; flex-direction: column; gap: 6px; }
+  .run-chip {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    height: 34px; padding: 0 10px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--accent-hi); background: var(--accent-tint); color: var(--accent);
+    font-size: 13px; font-weight: 600; text-align: left;
+  }
+  .run-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-hi); animation: pulse 1.4s ease-in-out infinite; }
+  .run-chip span:last-child { margin-left: auto; font-weight: 500; }
+
+  /* ---------- Content ---------- */
+  .content { min-width: 0; padding: 26px 32px 40px; }
+  .view { max-width: 1400px; margin: 0 auto; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  .page-head h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+  .page-head p { margin-top: 4px; color: var(--text-2); font-size: 14px; max-width: 70ch; }
+  .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* ---------- Controls ---------- */
+  .select {
+    position: relative; display: flex; align-items: center; gap: 8px;
+    height: 38px; padding: 0 28px 0 11px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--bg); cursor: pointer;
+  }
+  .select:hover { border-color: var(--line-2); }
+  .select > span { font-size: 12.5px; color: var(--text-3); }
+  .select select { appearance: none; -webkit-appearance: none; background: transparent; border: 0; height: 100%; padding: 0; cursor: pointer; font-weight: 600; font-size: 14px; min-width: 0; flex: 1; }
+  .select select:focus-visible { outline: none; }
+  .select:focus-within { border-color: var(--accent-hi); }
+  .select::after {
+    content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px;
+    border-right: 1.5px solid var(--text-2); border-bottom: 1.5px solid var(--text-2);
+    transform: translateY(-70%) rotate(45deg); pointer-events: none;
+  }
+
+  .btn {
+    height: 40px; padding: 0 15px; border-radius: 8px;
+    border: 1px solid var(--line-2); background: var(--bg);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap;
+    transition: background-color .15s, border-color .15s, color .15s;
+  }
+  .btn:hover { background: var(--sunken); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn svg { width: 17px; height: 17px; flex: none; }
+  .btn-primary { background: var(--text); border-color: var(--text); color: #fff; }
+  .btn-primary:hover { background: #33353a; }
+  .btn-primary.is-on { background: var(--bg); color: var(--text); border-color: var(--text); }
+  .btn-primary.is-on:hover { background: var(--sunken); }
+  .btn-quiet { height: 32px; padding: 0 11px; font-size: 13px; font-weight: 500; border-color: var(--line); color: var(--text-2); }
+  .btn-quiet:hover { color: var(--text); }
+  .btn.is-on { border-color: var(--accent-hi); color: var(--accent); background: var(--accent-tint); }
+  .btn-big { height: 52px; padding: 0 26px; font-size: 16px; border-radius: 10px; }
+
+  .switch { position: relative; width: 30px; height: 18px; border-radius: 9px; flex: none; background: var(--line); transition: background-color .2s; }
+  .switch i { position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .2s; }
+  [aria-pressed="true"] > .switch { background: var(--accent-hi); }
+  [aria-pressed="true"] > .switch i { transform: translateX(12px); }
+  .btn-toggle[aria-pressed="true"] { border-color: var(--accent-hi); color: var(--accent); background: var(--accent-tint); }
+
+  input[type="range"] { accent-color: var(--text); cursor: pointer; }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field > label, .field-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+  .input {
+    height: 38px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); min-width: 0;
+  }
+  .input:focus { outline: none; border-color: var(--accent-hi); }
+  textarea.input { height: auto; min-height: 96px; padding: 9px 10px; resize: vertical; line-height: 1.45; }
+
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; padding: 2px; background: var(--sunken); flex-wrap: wrap; }
+  .seg button { height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
+  .seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(0,0,0,.05); }
+
+  /* ---------- Panels ---------- */
+  .panel { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+  .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; }
+  .panel-head h2 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.005em; }
+  .panel-head p { margin-top: 3px; font-size: 13px; color: var(--text-2); max-width: 62ch; }
+  .panel-body { padding: 0 20px 20px; }
+  .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .muted { color: var(--text-3); }
+
+  /* ================= Tuner ================= */
+  .tuner-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+  .tuner-main, .tuner-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+  .tuner-grid { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); }
+  .note-panel { padding: 20px 22px 18px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .source { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); }
+  .source i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); }
+  .source[data-state="mic"] i, .source[data-state="demo"] i { background: var(--accent-hi); box-shadow: 0 0 0 4px rgba(181,120,26,.15); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(181,120,26,0); } }
+
+  .note-big {
+    font-size: 116px; font-weight: 600; line-height: .86; letter-spacing: -0.04em;
+    display: flex; align-items: flex-start; min-height: 104px; margin-top: 6px;
+    transition: opacity .25s;
+  }
+  .note-big .acc { font-size: .48em; margin: .08em 0 0 .04em; line-height: 1; font-weight: 500; }
+  .note-big .oct { font-size: 22px; font-weight: 500; color: var(--text-3); align-self: flex-end; margin: 0 0 8px 8px; letter-spacing: 0; }
+  .note-big.is-stale { opacity: .25; }
+  .note-meta { display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .note-meta span:first-child { color: var(--text); font-weight: 500; }
+
+  .meter-panel { padding: 18px 22px; min-width: 0; display: flex; flex-direction: column; }
+  .meter-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .readout { display: flex; align-items: baseline; gap: 14px; }
+  .cents { font-family: var(--mono); font-size: 42px; font-weight: 600; line-height: 1; letter-spacing: -0.03em; min-width: 4.6ch; }
+  .cents small { font-size: .5em; font-weight: 500; color: var(--text-3); margin-left: 2px; }
+  .verdict { font-size: 15px; font-weight: 600; color: var(--text-3); }
+  .verdict[data-tone="tune"] { color: var(--tune); }
+  .verdict[data-tone="sharp"] { color: var(--sharp); }
+  .verdict[data-tone="flat"] { color: var(--flat); }
+
+  .level { width: 200px; display: flex; flex-direction: column; gap: 6px; }
+  .level-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .level-track { position: relative; height: 6px; border-radius: 3px; background: var(--sunken); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .level-track i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--text-2); border-radius: 3px; }
+  .level-track b { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--accent-hi); }
+  .level input[type="range"] { width: 100%; margin: 0; height: 16px; background: transparent; }
+
+  .meter { margin-top: 16px; }
+  .meter-track {
+    position: relative; height: 56px; border-radius: 8px; border: 1px solid var(--line);
+    background: linear-gradient(90deg, rgba(45,107,214,.14), rgba(45,107,214,.03) 38%, transparent 45%, transparent 55%, rgba(211,58,71,.03) 62%, rgba(211,58,71,.14));
+    overflow: hidden;
+  }
+  .meter-zone { position: absolute; top: 0; bottom: 0; left: 45%; width: 10%; background: rgba(15,154,99,.1); border-left: 1px solid rgba(15,154,99,.45); border-right: 1px solid rgba(15,154,99,.45); }
+  .meter-ticks i { position: absolute; top: 0; width: 1px; height: 9px; background: rgba(24,25,27,.2); transform: translateX(-50%); }
+  .meter-ticks i.major { height: 16px; background: rgba(24,25,27,.38); }
+  .meter-ticks i.zero { height: 100%; background: rgba(24,25,27,.2); }
+  .needle {
+    position: absolute; top: 7px; bottom: 7px; left: 50%; width: 4px; margin-left: -2px; border-radius: 2px;
+    background: var(--needle, var(--text)); box-shadow: 0 0 12px var(--needle, transparent);
+    will-change: transform; transition: opacity .25s;
+  }
+  .needle.is-idle { opacity: .2; }
+  .meter-nums { position: relative; height: 18px; margin-top: 6px; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .meter-nums span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+  .meter-nums span:first-child { transform: none; }
+  .meter-nums span:last-child { transform: translateX(-100%); }
+
+  .trace-wrap { position: relative; margin-top: 12px; height: 108px; border-radius: 8px; border: 1px solid var(--line); background: #fbfbf9; overflow: hidden; }
+  .trace-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .trace-cap { position: absolute; right: 10px; bottom: 6px; font-size: 11.5px; color: var(--text-3); pointer-events: none; }
+
+  .hud { display: flex; align-items: center; gap: 14px; padding: 13px 22px; border-top: 1px solid var(--line); min-height: 62px; background: #fbfbf9; border-radius: 0 0 12px 12px; }
+  .hud-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--line-2); }
+  .hud[data-state="armed"] .hud-dot { background: var(--accent-hi); animation: pulse 1.4s ease-in-out infinite; }
+  .hud[data-state="settle"] .hud-dot, .hud[data-state="capture"] .hud-dot { background: var(--accent-hi); }
+  .hud[data-state="saved"] .hud-dot { background: var(--tune); }
+  .hud[data-state="short"] .hud-dot, .hud[data-state="out"] .hud-dot { background: var(--text-3); }
+  .hud-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .hud-text strong { font-size: 14.5px; font-weight: 600; }
+  .hud-text span { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .hud-bar { width: 190px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; flex: none; }
+  .hud-bar i { display: block; height: 100%; width: 0; background: var(--accent-hi); border-radius: 3px; }
+  .hud[data-state="saved"] .hud-bar i { background: var(--tune); }
+
+  /* Matrix */
+  .matrix { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; padding: 0 20px; }
+  .cell {
+    position: relative; min-height: 100px; padding: 10px 11px 12px;
+    border-radius: 9px; border: 1px solid var(--line);
+    background: linear-gradient(160deg, var(--c1, #fff), var(--c2, #fff));
+    display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+    text-align: left; cursor: pointer; overflow: hidden;
+    transition: border-color .25s, box-shadow .25s, transform .15s;
+  }
+  .cell:hover { transform: translateY(-1px); border-color: var(--line-2); }
+  .cell.is-empty { background: var(--bg); border-style: dashed; border-color: var(--line-2); }
+  .cell.has-data { border-color: var(--cl); }
+  .cell-top { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--text-3); }
+  .cell-note { font-size: 27px; font-weight: 600; letter-spacing: -0.02em; line-height: .95; color: var(--text); display: flex; align-items: flex-start; }
+  .cell-note .acc { font-size: .6em; margin-top: .06em; font-weight: 500; }
+  .cell-note .oct { font-size: 12px; font-weight: 500; color: var(--text-3); align-self: flex-end; margin-left: 3px; letter-spacing: 0; }
+  .cell.is-empty .cell-note { color: var(--text-3); }
+  .cell-val { font-family: var(--mono); font-weight: 600; font-size: 14px; color: var(--ct, var(--text-3)); }
+  .cell.is-empty .cell-val { font-weight: 500; font-size: 13px; }
+  .cell-dev { position: relative; height: 3px; border-radius: 2px; background: rgba(24,25,27,.08); }
+  .cell-dev::before { content: ""; position: absolute; left: 50%; top: -2px; width: 1px; height: 7px; background: rgba(24,25,27,.25); }
+  .cell-dev i { position: absolute; top: -2px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--ct, transparent); left: 50%; }
+  .cell.is-empty .cell-dev i { display: none; }
+  .cell-prog { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--accent-hi); }
+  .cell.is-live { border-color: var(--accent-hi); box-shadow: 0 0 0 1px var(--accent-hi), 0 4px 16px rgba(181,120,26,.2); }
+  .cell.is-selected { box-shadow: 0 0 0 2px var(--text); }
+  .cell.is-live.is-selected { box-shadow: 0 0 0 2px var(--text), 0 4px 16px rgba(181,120,26,.2); }
+  .cell.flash { animation: saved .95s ease-out; }
+  @keyframes saved {
+    0% { box-shadow: 0 0 0 3px var(--accent-hi), 0 0 30px var(--cg, rgba(181,120,26,.4)); transform: scale(1.04); }
+    100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+  }
+
+  .legend { display: flex; align-items: center; justify-content: space-between; gap: 14px 26px; flex-wrap: wrap; padding: 16px 20px 18px; }
+  .legend-scale { display: flex; align-items: center; gap: 12px; flex: 1 1 340px; max-width: 520px; font-size: 12.5px; color: var(--text-2); }
+  .legend-bar-wrap { flex: 1; }
+  .legend-bar {
+    height: 10px; border-radius: 5px;
+    background: linear-gradient(90deg,
+      hsl(222, 90%, 50%) 0%, hsl(210, 86%, 71%) 41.6%,
+      hsl(152, 78%, 50%) 41.7%, hsl(152, 78%, 50%) 58.3%,
+      hsl(8, 84%, 69%) 58.4%, hsl(358, 92%, 48%) 100%);
+  }
+  .legend-ticks { position: relative; height: 16px; margin-top: 4px; font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .legend-ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .legend-ticks span:first-child { transform: none; }
+  .legend-ticks span:last-child { transform: translateX(-100%); }
+  .legend-keys { display: flex; gap: 16px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; }
+  .legend-keys span { display: inline-flex; align-items: center; gap: 7px; }
+  .sw { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+  .sw-empty { border: 1px dashed var(--line-2); }
+  .sw-live { border: 1.5px solid var(--accent-hi); }
+
+  /* Analytics */
+  .count-pill { flex: none; font-size: 12.5px; font-weight: 600; color: var(--text-2); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  .score { display: flex; gap: 18px; align-items: center; padding: 0 20px 18px; }
+  .ring-wrap { position: relative; width: 100px; height: 100px; flex: none; }
+  .ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 8; }
+  .ring-bg { stroke: var(--sunken); }
+  .ring-fg { stroke: var(--accent-hi); stroke-linecap: round; stroke-dasharray: 263.89; stroke-dashoffset: 263.89; transition: stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1); }
+  .ring-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-num span { font-family: var(--mono); font-size: 30px; font-weight: 600; line-height: 1; }
+  .ring-num small { font-size: 11.5px; color: var(--text-3); margin-top: 3px; }
+  .score-side { flex: 1; min-width: 0; }
+  .grade { font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; margin: 0; }
+  .stats div { min-width: 0; }
+  .stats dt { font-size: 12px; color: var(--text-3); }
+  .stats dd { margin: 1px 0 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .block { padding: 16px 20px 18px; border-top: 1px solid var(--line); }
+  .block h3 { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 12px; }
+  .regs { display: flex; flex-direction: column; gap: 11px; }
+  .reg-head { display: flex; align-items: baseline; gap: 8px; font-size: 13px; margin-bottom: 5px; }
+  .reg-name { font-weight: 600; }
+  .reg-range { color: var(--text-3); font-size: 12px; }
+  .reg-val { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-3); }
+  .reg-bar { position: relative; height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
+  .reg-bar::before { content: ""; position: absolute; top: 0; bottom: 0; left: 41.67%; width: 16.66%; background: rgba(15,154,99,.12); }
+  .reg-bar::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(24,25,27,.3); }
+  .reg-bar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; transition: left .5s, width .5s; }
+
+  .insights { display: flex; flex-direction: column; gap: 10px; }
+  .insight { position: relative; padding: 13px 14px 13px 16px; border-radius: 10px; background: #fbfbf9; border: 1px solid var(--line); overflow: hidden; }
+  .insight::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--tone, var(--accent-hi)); }
+  .insight[data-tone="sharp"] { --tone: var(--sharp); }
+  .insight[data-tone="flat"] { --tone: var(--flat); }
+  .insight[data-tone="good"] { --tone: var(--tune); }
+  .insight[data-tone="info"] { --tone: var(--accent-hi); }
+  .insight-top { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-bottom: 5px; }
+  .insight-level { color: var(--tone); font-weight: 600; }
+  .insight-metric { color: var(--text-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .insight h4 { font-size: 14.5px; font-weight: 600; line-height: 1.3; margin-bottom: 5px; }
+  .insight p { font-size: 13px; color: var(--text-2); }
+  .insight ul { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .insight li { position: relative; padding-left: 14px; font-size: 13px; }
+  .insight li::before { content: ""; position: absolute; left: 1px; top: .58em; width: 5px; height: 5px; border-radius: 50%; background: var(--tone); }
+
+  /* Inspector */
+  .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text-2); cursor: pointer; font-size: 18px; line-height: 1; display: grid; place-items: center; flex: none; }
+  .icon-btn:hover { color: var(--text); border-color: var(--line-2); }
+  .insp-title { display: flex; align-items: flex-start; gap: 12px; }
+  .insp-title .cell-note { font-size: 38px; }
+  .insp-sub { font-size: 13px; color: var(--text-2); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .insp-body { padding: 0 20px 18px; }
+  .insp-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 14px; margin: 0 0 14px; }
+  .insp-chart { display: block; width: 100%; height: 64px; border-radius: 8px; background: #fbfbf9; border: 1px solid var(--line); }
+  .insp-cap { font-size: 12px; color: var(--text-3); margin: 6px 0 14px; }
+  .insp-empty { font-size: 13.5px; color: var(--text-2); margin-bottom: 14px; }
+  .tuner-foot { margin-top: 18px; display: flex; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; color: var(--text-3); font-size: 12.5px; }
+
+  kbd { display: inline-block; min-width: 20px; padding: 1px 6px; margin: 0 4px 0 10px; border-radius: 5px; border: 1px solid var(--line-2); background: var(--bg); color: var(--text-2); font: 600 11.5px var(--sans); text-align: center; }
+  kbd:first-child { margin-left: 0; }
+
+  /* ================= Session ================= */
+  .session-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .now { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .now-label { font-size: 12.5px; font-weight: 600; color: var(--text-3); letter-spacing: .04em; text-transform: uppercase; }
+  .now-name { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; margin-top: 4px; }
+  .clock { font-family: var(--mono); font-size: 84px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; }
+  .clock.is-over { color: var(--accent); }
+  .clock-sub { margin-top: 6px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .progress { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--text); border-radius: 4px; transition: width .3s linear; }
+  .progress.is-over i { background: var(--accent-hi); }
+  .now-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tool-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--accent); text-decoration: none; }
+  .tool-link:hover { text-decoration: underline; }
+  .tool-link svg { width: 16px; height: 16px; }
+
+  .plan { list-style: none; margin: 0; padding: 0 20px; display: flex; flex-direction: column; gap: 6px; }
+  .plan-row {
+    display: grid; grid-template-columns: 26px minmax(0, 1fr) 74px 120px 32px; gap: 8px; align-items: center;
+    padding: 6px 6px 6px 8px; border-radius: 9px; border: 1px solid transparent;
+  }
+  .plan-row:hover { background: #fbfbf9; }
+  .plan-row.is-current { border-color: var(--text); background: var(--bg); }
+  .plan-row.is-done .plan-idx { background: var(--text); color: #fff; border-color: var(--text); }
+  .plan-idx { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line-2); display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--text-2); cursor: pointer; background: var(--bg); padding: 0; }
+  .plan-row .input { height: 34px; }
+  .plan-min { display: flex; align-items: center; gap: 4px; }
+  .plan-min .input { width: 100%; text-align: right; font-variant-numeric: tabular-nums; padding: 0 8px; -moz-appearance: textfield; }
+  .plan-min .input::-webkit-inner-spin-button, .plan-min .input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .plan-min span { font-size: 12.5px; color: var(--text-3); }
+  .plan-row .select { height: 34px; }
+  .plan-row .select select { font-size: 13px; font-weight: 500; }
+  .plan-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 20px 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--text-2); }
+  .plan-actual { font-size: 12px; color: var(--text-3); grid-column: 2 / -1; margin-top: -4px; padding-left: 2px; font-variant-numeric: tabular-nums; }
+
+  /* ================= Metronome ================= */
+  .met-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .met-main { padding: 26px 24px 24px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+  .beats { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 34px; }
+  .beat { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line-2); background: var(--bg); transition: background-color .06s, border-color .06s, transform .06s; }
+  .beat.accent { border-color: var(--text-2); }
+  .beat.on { background: var(--text); border-color: var(--text); transform: scale(1.12); }
+  .beat.accent.on { background: var(--accent-hi); border-color: var(--accent-hi); }
+  .bpm-row { display: flex; align-items: center; gap: 18px; }
+  .bpm { font-family: var(--mono); font-size: 104px; font-weight: 600; line-height: .9; letter-spacing: -0.05em; min-width: 3ch; }
+  .bpm-unit { font-size: 13px; color: var(--text-3); margin-top: 6px; }
+  .marking { font-size: 15px; font-weight: 600; color: var(--accent); min-height: 22px; }
+  .round-btn { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--bg); font-size: 22px; font-weight: 500; cursor: pointer; display: grid; place-items: center; flex: none; }
+  .round-btn:hover { background: var(--sunken); }
+  .met-slider { width: min(440px, 100%); }
+  .met-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .opts { display: flex; flex-direction: column; gap: 16px; padding: 0 20px 20px; }
+  .opts-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .check { display: flex; align-items: center; gap: 9px; font-size: 14px; cursor: pointer; }
+  .check input { width: 17px; height: 17px; accent-color: var(--text); margin: 0; }
+  .trainer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .trainer-grid .input { width: 100%; }
+  .note-small { font-size: 12.5px; color: var(--text-3); }
+
+  /* ================= Drone ================= */
+  .drone-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .drone-main { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+  .drone-now { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .drone-note { font-size: 92px; font-weight: 600; line-height: .86; letter-spacing: -0.04em; display: flex; align-items: flex-start; }
+  .drone-note .acc { font-size: .5em; margin: .06em 0 0 .04em; font-weight: 500; }
+  .drone-note .oct { font-size: 20px; font-weight: 500; color: var(--text-3); align-self: flex-end; margin: 0 0 6px 6px; letter-spacing: 0; }
+  .drone-info { font-size: 13.5px; color: var(--text-2); text-align: right; font-variant-numeric: tabular-nums; }
+  .drone-info strong { display: block; color: var(--text); font-size: 15px; }
+  .pitches { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+  .pitch { height: 52px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 18px; font-weight: 600; }
+  .pitch:hover { border-color: var(--line-2); background: #fbfbf9; }
+  .pitch[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
+  .wave { height: 46px; display: flex; align-items: center; gap: 3px; }
+  .wave i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); transition: height .3s; }
+  .wave.on i { background: var(--accent-hi); animation: wave 1.6s ease-in-out infinite; }
+  @keyframes wave { 0%, 100% { height: 8px; } 50% { height: 38px; } }
+
+  /* ================= Recorder ================= */
+  .rec-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 18px; align-items: start; }
+  .rec-main { padding: 30px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  .rec-btn { width: 112px; height: 112px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; display: grid; place-items: center; transition: transform .15s; }
+  .rec-btn:hover { transform: scale(1.03); }
+  .rec-btn i { width: 46px; height: 46px; border-radius: 50%; background: var(--sharp); transition: border-radius .2s, width .2s, height .2s; }
+  .rec-btn.is-on i { width: 34px; height: 34px; border-radius: 6px; }
+  .rec-time { font-family: var(--mono); font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .rec-status { font-size: 14px; color: var(--text-2); min-height: 20px; }
+  .rec-level { width: min(320px, 100%); height: 6px; border-radius: 3px; background: var(--sunken); overflow: hidden; }
+  .rec-level i { display: block; height: 100%; width: 0; background: var(--sharp); }
+  .takes { list-style: none; margin: 0; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .take { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+  .take-top { display: flex; align-items: center; gap: 10px; }
+  .take-top .input { flex: 1; height: 34px; font-weight: 600; }
+  .take-meta { font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .take audio { width: 100%; height: 38px; }
+  .take-actions { display: flex; gap: 8px; }
+  .take-actions a { text-decoration: none; color: inherit; }
+  .empty { padding: 22px 20px 26px; font-size: 14px; color: var(--text-3); text-align: center; }
+
+  /* ================= Log ================= */
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .tile { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .tile dt { font-size: 12.5px; color: var(--text-2); font-weight: 500; }
+  .tile dd { margin: 6px 0 0; font-family: var(--mono); font-size: 30px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .tile dd small { font-family: var(--sans); font-size: 13px; color: var(--text-3); font-weight: 500; letter-spacing: 0; margin-left: 3px; }
+  .log-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .chart { position: relative; padding: 4px 20px 16px; }
+  .chart-plot { position: relative; height: 170px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--line-2); }
+  .chart-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line); pointer-events: none; }
+  .chart-grid span { position: absolute; right: 0; top: -16px; font-size: 11px; color: var(--text-3); background: var(--bg); padding-left: 4px; font-variant-numeric: tabular-nums; }
+  .bar-hit { flex: 1; height: 100%; display: flex; align-items: flex-end; cursor: default; position: relative; }
+  .bar-hit i { display: block; width: 100%; background: var(--accent-hi); border-radius: 4px 4px 0 0; min-height: 0; }
+  .bar-hit.is-today i { background: var(--text); }
+  .bar-hit:hover i { filter: brightness(.9); }
+  .bar-hit:hover::after { content: ""; position: absolute; inset: 0; background: rgba(24,25,27,.04); border-radius: 4px; pointer-events: none; }
+  .chart-x { display: flex; gap: 2px; margin-top: 6px; font-size: 11px; color: var(--text-3); }
+  .chart-x span { flex: 1; text-align: center; white-space: nowrap; overflow: visible; }
+  .tip {
+    position: absolute; z-index: 5; pointer-events: none; transform: translate(-50%, -100%);
+    background: var(--text); color: #fff; font-size: 12.5px; padding: 6px 9px; border-radius: 7px; white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+  }
+  .tip b { display: block; font-weight: 600; }
+  .sessions { list-style: none; margin: 0; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .sess { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
+  .sess-date { font-weight: 600; font-size: 14.5px; }
+  .sess-dur { font-family: var(--mono); font-weight: 600; font-size: 14px; text-align: right; }
+  .sess-blocks { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+  .sess-blocks span { font-size: 12px; color: var(--text-2); background: var(--sunken); border-radius: 6px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+  .sess-notes { grid-column: 1 / -1; font-size: 13.5px; color: var(--text-2); white-space: pre-wrap; }
+  .sess-del { grid-column: 2; grid-row: 1; justify-self: end; }
+  .sess-head { display: flex; align-items: center; gap: 10px; }
+  .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+  .add-form .full { grid-column: 1 / -1; }
+  .add-form textarea.input { min-height: 70px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: min(560px, calc(100vw - 32px));
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    padding: 11px 16px; border-radius: 10px; background: var(--text); color: #fff;
+    font-size: 14px; box-shadow: 0 14px 34px -10px rgba(0, 0, 0, .35);
+    transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast[data-kind="error"] { background: #8f1d27; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1320px) {
+    .tuner-layout { grid-template-columns: minmax(0, 1fr); }
+    .tuner-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
+  }
+  @media (max-width: 1100px) {
+    .session-layout, .met-layout, .drone-layout, .rec-layout, .log-layout { grid-template-columns: minmax(0, 1fr); }
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .tuner-grid { grid-template-columns: minmax(0, 1fr); }
+    .note-panel { border-right: 0; border-bottom: 1px solid var(--line); flex-direction: row; flex-wrap: wrap; align-items: flex-end; column-gap: 22px; }
+    .note-panel .source { flex-basis: 100%; }
+    .note-big { font-size: 96px; min-height: 84px; }
+    .note-meta { padding-bottom: 8px; }
+  }
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .rail {
+      position: sticky; top: 0; z-index: 20; height: auto;
+      flex-direction: column; gap: 10px;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 8px;
+      border-right: 0; border-bottom: 1px solid var(--line);
+      background: rgba(247,247,245,.96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      overflow: visible;
+    }
+    .rail-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .brand span { display: none; }
+    .mark { width: 30px; height: 30px; border-radius: 8px; }
+    .mark svg { width: 20px; height: 20px; }
+    .menu { flex-direction: row; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; gap: 4px; }
+    .menu::-webkit-scrollbar { display: none; }
+    .menu-label { display: none; }
+    .menu a { height: 36px; padding: 0 12px; font-size: 14px; }
+    .menu a svg { display: none; }
+    .menu .live-dot { margin-left: 6px; }
+    .rail-settings { margin-top: 0; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .rail-settings .select { height: 34px; flex: 1 1 140px; }
+    .running { flex-direction: row; flex-wrap: wrap; flex-basis: 100%; }
+    .running:empty { display: none; }
+    .run-chip { width: auto; }
+    .content { padding: 18px 16px calc(32px + env(safe-area-inset-bottom, 0px)); }
+    .page-head h1 { font-size: 24px; }
+  }
+  @media (min-width: 861px) { .rail-top { display: contents; } }
+  @media (max-width: 720px) {
+    .matrix { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 14px; }
+    .cell-count { display: none; }
+    .panel-head, .legend, .block, .panel-body, .opts, .plan, .plan-foot, .takes, .sessions, .add-form, .chart { padding-left: 14px; padding-right: 14px; }
+    .score, .insp-body { padding-left: 14px; padding-right: 14px; }
+    .meter-panel, .note-panel { padding-left: 16px; padding-right: 16px; }
+    .hud { padding: 12px 16px; flex-wrap: wrap; }
+    .hud-bar { width: 100%; }
+    .level { width: 100%; }
+    .tuner-side { grid-template-columns: minmax(0, 1fr); }
+    .plan-row { grid-template-columns: 26px minmax(0, 1fr) 70px 32px; }
+    .plan-row .select { grid-column: 2 / 4; grid-row: 2; }
+    .pitches { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .clock { font-size: 64px; }
+    .bpm { font-size: 80px; }
+    .drone-note { font-size: 72px; }
+    .trainer-grid, .opts-row { grid-template-columns: minmax(0, 1fr); }
+    .chart-x span:nth-child(odd) { visibility: hidden; }
+  }
+  @media (max-width: 420px) {
+    .cell { min-height: 88px; padding: 8px 9px 10px; }
+    .cell-note { font-size: 23px; }
+    .note-big { font-size: 80px; }
+    .cents { font-size: 34px; }
+    .tiles { gap: 8px; }
+    .tile dd { font-size: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="rail" aria-label="Main menu">
+    <div class="rail-top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40">
+            <path d="M7 28a13 13 0 0 1 26 0" fill="none" stroke="#d4952b" stroke-width="3.4" stroke-linecap="round" />
+            <path d="M20 28 25.6 16.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round" />
+            <circle cx="20" cy="28" r="2.8" fill="#fff" />
+          </svg>
+        </div>
+        <div><strong>Woodshed</strong><span>Practice room</span></div>
+      </div>
+    </div>
+
+    <div class="menu">
+      <div class="menu-label">Training room</div>
+      <a href="#session" data-view="session">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>
+        Session<i class="live-dot" id="dotSession" hidden></i></a>
+      <a href="#tuner" data-view="tuner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><path d="M12 17l4-7"/><circle cx="12" cy="17" r="1.2" fill="currentColor"/></svg>
+        Tuner<i class="live-dot" id="dotTuner" hidden></i></a>
+      <a href="#metronome" data-view="metronome">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l4 18H5z"/><path d="M12 15l5-8M7.5 15h9"/></svg>
+        Metronome<i class="live-dot" id="dotMet" hidden></i></a>
+      <a href="#drone" data-view="drone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l2-6 3 12 3-14 3 16 3-12 2 4h2"/></svg>
+        Drone<i class="live-dot" id="dotDrone" hidden></i></a>
+      <a href="#recorder" data-view="recorder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>
+        Recorder<i class="live-dot" id="dotRec" hidden></i></a>
+      <a href="#log" data-view="log">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        Practice log</a>
+    </div>
+
+    <div class="rail-settings">
+      <div class="running" id="running"></div>
+      <label class="select" title="Saxophone (sets the transposition)">
+        <span>Horn</span>
+        <select id="instrument" aria-label="Saxophone">
+          <option value="soprano">Soprano (B♭)</option>
+          <option value="alto" selected>Alto (E♭)</option>
+          <option value="tenor">Tenor (B♭)</option>
+          <option value="bari">Baritone (E♭)</option>
+          <option value="concert">Concert pitch (C)</option>
+        </select>
+      </label>
+      <label class="select" title="Reference pitch">
+        <span>A4</span>
+        <select id="a4" aria-label="Reference pitch for A4">
+          <option value="438">438 Hz</option>
+          <option value="439">439 Hz</option>
+          <option value="440" selected>440 Hz</option>
+          <option value="441">441 Hz</option>
+          <option value="442">442 Hz</option>
+          <option value="443">443 Hz</option>
+        </select>
+      </label>
+    </div>
+  </nav>
+
+  <div class="content">
+
+    <!-- ===================== SESSION ===================== -->
+    <section class="view" data-view="session" aria-labelledby="hSession" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hSession">Practice session</h1>
+          <p>Plan today's practice in blocks, then run the timer. Each block links to the tool you need, and finished sessions go into your log.</p>
+        </div>
+      </div>
+      <div class="session-layout">
+        <div class="panel now">
+          <div>
+            <div class="now-label" id="nowLabel">Ready</div>
+            <div class="now-name" id="nowName">Start when you're warmed up</div>
+          </div>
+          <div>
+            <div class="clock" id="clock">0:00</div>
+            <div class="clock-sub" id="clockSub">Total planned: 0 min</div>
+          </div>
+          <div class="progress" id="blockProg"><i></i></div>
+          <div class="now-actions">
+            <button class="btn btn-primary btn-big" id="sessToggle" type="button">Start session</button>
+            <button class="btn btn-big" id="sessNext" type="button" disabled>Next block</button>
+            <button class="btn btn-big" id="sessFinish" type="button" disabled>Finish</button>
+          </div>
+          <a class="tool-link" id="toolLink" href="#metronome" hidden></a>
+          <div class="field">
+            <label for="sessNotes">Session notes</label>
+            <textarea class="input" id="sessNotes" placeholder="Goals for today, tempos you reached, things to fix next time…"></textarea>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Today's plan</h2>
+              <p>Edit names and minutes. Click a number to jump to that block.</p>
+            </div>
+            <button class="btn btn-quiet" id="planReset" type="button">Reset plan</button>
+          </div>
+          <ol class="plan" id="plan"></ol>
+          <div class="plan-foot">
+            <button class="btn btn-quiet" id="planAdd" type="button">+ Add block</button>
+            <span id="planTotal" class="num"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TUNER ===================== -->
+    <section class="view" data-view="tuner" aria-labelledby="hTuner" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hTuner">Tuner &amp; intonation map</h1>
+          <p>Map the tuning of every note on your saxophone. Turn on Sample notes to save each sustained note to the matrix.</p>
+        </div>
+        <div class="actions">
+          <button id="demoBtn" class="btn" type="button"></button>
+          <button id="sampleBtn" class="btn btn-toggle" type="button" aria-pressed="false">
+            <span class="switch" aria-hidden="true"><i></i></span><span>Sample notes</span>
+          </button>
+          <button id="micBtn" class="btn btn-primary" type="button"></button>
+        </div>
+      </div>
+
+      <div class="tuner-layout">
+        <div class="tuner-main">
+          <section class="panel" aria-label="Live tuner">
+            <div class="tuner-grid">
+              <div class="note-panel">
+                <div class="source" id="source" data-state="off"><i></i><span>Microphone off</span></div>
+                <div class="note-big is-stale" id="noteBig"><span class="nl">–</span></div>
+                <div class="note-meta">
+                  <span id="concertText">Written pitch for alto sax</span>
+                  <span id="freqText">Start the microphone to begin</span>
+                </div>
+              </div>
+              <div class="meter-panel">
+                <div class="meter-head">
+                  <div class="readout">
+                    <span class="cents" id="centsText">0.0<small>¢</small></span>
+                    <span class="verdict" id="verdict">No signal</span>
+                  </div>
+                  <div class="level">
+                    <div class="level-label"><span>Input level</span><span id="gateText">Noise gate −52 dB</span></div>
+                    <div class="level-track"><i id="levelFill"></i><b id="gateMark"></b></div>
+                    <input type="range" id="gate" min="-72" max="-24" step="1" value="-52" aria-label="Noise gate threshold" />
+                  </div>
+                </div>
+                <div class="meter" aria-hidden="true">
+                  <div class="meter-track">
+                    <div class="meter-zone"></div>
+                    <div class="meter-ticks" id="ticks"></div>
+                    <div class="needle is-idle" id="needle"></div>
+                  </div>
+                  <div class="meter-nums">
+                    <span style="left:0">−50 flat</span><span style="left:25%">−25</span><span style="left:50%">0</span><span style="left:75%">+25</span><span style="left:100%">sharp +50</span>
+                  </div>
+                </div>
+                <div class="trace-wrap">
+                  <canvas id="trace" aria-label="Pitch trace of the last 8 seconds"></canvas>
+                  <span class="trace-cap">Last 8 seconds</span>
+                </div>
+              </div>
+            </div>
+            <div class="hud" id="hud" data-state="idle" role="status" aria-live="polite">
+              <span class="hud-dot" aria-hidden="true"></span>
+              <div class="hud-text"><strong id="hudTitle">Ready when you are</strong><span id="hudSub">Start the microphone, or play the demo to watch a simulated player.</span></div>
+              <div class="hud-bar" aria-hidden="true"><i id="hudFill"></i></div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="matrixTitle">
+            <div class="panel-head">
+              <div>
+                <h2 id="matrixTitle">Intonation matrix</h2>
+                <p id="matrixSub">Written pitch from low B♭ to high F. Each square keeps your running average in cents.</p>
+              </div>
+              <div class="head-actions">
+                <button class="btn btn-quiet" id="exportBtn" type="button">Export CSV</button>
+                <button class="btn btn-quiet" id="resetBtn" type="button">Clear matrix</button>
+              </div>
+            </div>
+            <div class="matrix" id="matrix"></div>
+            <div class="legend">
+              <div class="legend-scale">
+                <span>Flat</span>
+                <div class="legend-bar-wrap">
+                  <div class="legend-bar"></div>
+                  <div class="legend-ticks">
+                    <span style="left:0%">−30</span><span style="left:25%">−15</span><span style="left:41.67%">−5</span><span style="left:58.33%">+5</span><span style="left:75%">+15</span><span style="left:100%">+30</span>
+                  </div>
+                </div>
+                <span>Sharp</span>
+              </div>
+              <div class="legend-keys">
+                <span><i class="sw sw-empty"></i>Not sampled</span>
+                <span><i class="sw sw-live"></i>Now playing</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="tuner-side">
+          <section class="panel" aria-labelledby="anTitle">
+            <div class="panel-head">
+              <h2 id="anTitle">Performance analytics</h2>
+              <span class="count-pill" id="countPill">0 of 32 notes</span>
+            </div>
+            <div class="score">
+              <div class="ring-wrap">
+                <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="ring-bg" cx="50" cy="50" r="42" />
+                  <circle class="ring-fg" id="ringFg" cx="50" cy="50" r="42" />
+                </svg>
+                <div class="ring-num"><span id="scoreNum">–</span><small>score</small></div>
+              </div>
+              <div class="score-side">
+                <div class="grade" id="grade">No samples yet</div>
+                <dl class="stats">
+                  <div><dt>In tune</dt><dd id="statInTune">–</dd></div>
+                  <div><dt>Avg deviation</dt><dd id="statAbs">–</dd></div>
+                  <div><dt>Overall lean</dt><dd id="statLean">–</dd></div>
+                  <div><dt>Steadiness</dt><dd id="statSd">–</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="block">
+              <h3>Register profile</h3>
+              <div class="regs" id="regs"></div>
+            </div>
+            <div class="block">
+              <h3>Coaching insights</h3>
+              <div class="insights" id="insights"></div>
+            </div>
+          </section>
+
+          <section class="panel" id="inspector" hidden aria-labelledby="inspHeading">
+            <div class="panel-head">
+              <div>
+                <div class="insp-title" id="inspHeading"></div>
+                <div class="insp-sub" id="inspSub"></div>
+              </div>
+              <button class="icon-btn" id="inspClose" type="button" aria-label="Close note detail">×</button>
+            </div>
+            <div class="insp-body" id="inspBody"></div>
+          </section>
+        </aside>
+      </div>
+      <footer class="tuner-foot">
+        <span>Pitch detection uses normalized time-domain autocorrelation (McLeod pitch method). A4 = <span id="footA4">440</span> Hz. In tune means within ±5 cents.</span>
+        <span><kbd>M</kbd>microphone<kbd>S</kbd>sample notes<kbd>Esc</kbd>close note detail</span>
+      </footer>
+    </section>
+
+    <!-- ===================== METRONOME ===================== -->
+    <section class="view" data-view="metronome" aria-labelledby="hMet" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hMet">Metronome</h1>
+          <p>It keeps ticking when you switch to another tool. Press Space to start or stop, and the arrow keys to change the tempo.</p>
+        </div>
+      </div>
+      <div class="met-layout">
+        <div class="panel met-main">
+          <div class="beats" id="beats" aria-hidden="true"></div>
+          <div class="bpm-row">
+            <button class="round-btn" id="metMinus" type="button" aria-label="Slower">−</button>
+            <div>
+              <div class="bpm" id="bpm" aria-live="polite">92</div>
+              <div class="bpm-unit">beats per minute</div>
+            </div>
+            <button class="round-btn" id="metPlus" type="button" aria-label="Faster">+</button>
+          </div>
+          <div class="marking" id="marking">Andante</div>
+          <input class="met-slider" type="range" id="metSlider" min="30" max="260" step="1" value="92" aria-label="Tempo" />
+          <div class="met-actions">
+            <button class="btn btn-primary btn-big" id="metToggle" type="button">Start</button>
+            <button class="btn btn-big" id="metTap" type="button">Tap tempo</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Settings</h2></div>
+          <div class="opts">
+            <div class="opts-row">
+              <div class="field">
+                <span class="field-label">Beats per bar</span>
+                <label class="select"><select id="metBeats" aria-label="Beats per bar"></select></label>
+              </div>
+              <div class="field">
+                <span class="field-label">Sound</span>
+                <label class="select"><select id="metSound" aria-label="Click sound">
+                  <option value="wood">Woodblock</option>
+                  <option value="click">Click</option>
+                  <option value="beep">Beep</option>
+                </select></label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label">Subdivision</span>
+              <div class="seg" id="metSub" role="group" aria-label="Subdivision">
+                <button type="button" data-sub="1" aria-pressed="true">Quarters</button>
+                <button type="button" data-sub="2" aria-pressed="false">Eighths</button>
+                <button type="button" data-sub="3" aria-pressed="false">Triplets</button>
+                <button type="button" data-sub="4" aria-pressed="false">Sixteenths</button>
+              </div>
+            </div>
+            <label class="check"><input type="checkbox" id="metAccent" checked /> Accent the first beat</label>
+            <div class="field">
+              <label for="metVol">Volume</label>
+              <input type="range" id="metVol" min="0" max="1" step="0.01" value="0.8" />
+            </div>
+          </div>
+          <div class="block">
+            <h3>Speed trainer</h3>
+            <label class="check" style="margin-bottom:12px"><input type="checkbox" id="trainOn" /> Raise the tempo automatically</label>
+            <div class="trainer-grid">
+              <div class="field"><label for="trainStep">Add BPM</label><input class="input num" id="trainStep" type="number" min="1" max="20" value="2" /></div>
+              <div class="field"><label for="trainEvery">Every … bars</label><input class="input num" id="trainEvery" type="number" min="1" max="64" value="4" /></div>
+              <div class="field"><label for="trainTarget">Stop at BPM</label><input class="input num" id="trainTarget" type="number" min="30" max="260" value="140" /></div>
+            </div>
+            <p class="note-small" style="margin-top:10px">Start a passage below performance tempo and let the trainer push it up while you play it on repeat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DRONE ===================== -->
+    <section class="view" data-view="drone" aria-labelledby="hDrone" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hDrone">Drone</h1>
+          <p>Hold a steady reference pitch for long tones, scales and intonation work. It keeps sounding while you use the tuner or metronome.</p>
+        </div>
+      </div>
+      <div class="drone-layout">
+        <div class="panel drone-main">
+          <div class="drone-now">
+            <div class="drone-note" id="droneNote"></div>
+            <div class="drone-info" id="droneInfo"></div>
+          </div>
+          <div class="wave" id="wave" aria-hidden="true"></div>
+          <div class="pitches" id="pitches" role="group" aria-label="Drone pitch"></div>
+          <div class="met-actions" style="justify-content:flex-start">
+            <button class="btn btn-primary btn-big" id="droneToggle" type="button">Play drone</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Settings</h2></div>
+          <div class="opts">
+            <div class="field">
+              <span class="field-label">Pitch names</span>
+              <div class="seg" id="droneNames" role="group" aria-label="Pitch names">
+                <button type="button" data-names="written" aria-pressed="true">Written for my horn</button>
+                <button type="button" data-names="concert" aria-pressed="false">Concert</button>
+              </div>
+            </div>
+            <div class="opts-row">
+              <div class="field">
+                <span class="field-label">Octave</span>
+                <label class="select"><select id="droneOct" aria-label="Octave">
+                  <option value="2">2 (lowest)</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5 (highest)</option>
+                </select></label>
+              </div>
+              <div class="field">
+                <span class="field-label">Sound</span>
+                <label class="select"><select id="droneSound" aria-label="Drone sound">
+                  <option value="organ">Organ</option>
+                  <option value="reed">Reedy</option>
+                  <option value="pure">Pure sine</option>
+                </select></label>
+              </div>
+            </div>
+            <label class="check"><input type="checkbox" id="droneFifth" /> Add a pure fifth above</label>
+            <label class="check"><input type="checkbox" id="droneOctUp" /> Add the octave above</label>
+            <div class="field">
+              <label for="droneVol">Volume</label>
+              <input type="range" id="droneVol" min="0" max="1" step="0.01" value="0.5" />
+            </div>
+            <p class="note-small">The fifth is tuned pure (3:2), so it sounds without beats. Listen for beats between your note and the drone, and adjust until they disappear.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RECORDER ===================== -->
+    <section class="view" data-view="recorder" aria-labelledby="hRec" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hRec">Recorder</h1>
+          <p>Record a take, then listen back. Recordings stay on this device until you delete them.</p>
+        </div>
+      </div>
+      <div class="rec-layout">
+        <div class="panel rec-main">
+          <button class="rec-btn" id="recBtn" type="button" aria-label="Start recording"><i></i></button>
+          <div class="rec-time" id="recTime">0:00</div>
+          <div class="rec-level"><i id="recLevel"></i></div>
+          <div class="rec-status" id="recStatus">Press the button to record. Press R to start or stop it.</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><h2>Takes</h2><p id="takesSub">Your recordings, newest first.</p></div>
+          </div>
+          <ul class="takes" id="takes"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LOG ===================== -->
+    <section class="view" data-view="log" aria-labelledby="hLog" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hLog">Practice log</h1>
+          <p>Every finished session lands here. You can also add practice you did away from the app.</p>
+        </div>
+      </div>
+      <dl class="tiles">
+        <div class="tile"><dt>Today</dt><dd id="tToday">0<small>min</small></dd></div>
+        <div class="tile"><dt>Last 7 days</dt><dd id="tWeek">0<small>min</small></dd></div>
+        <div class="tile"><dt>Day streak</dt><dd id="tStreak">0<small>days</small></dd></div>
+        <div class="tile"><dt>Sessions</dt><dd id="tCount">0</dd></div>
+      </dl>
+      <div class="log-layout">
+        <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+          <section class="panel">
+            <div class="panel-head"><div><h2>Minutes per day</h2><p>The last 28 days. Today's bar is dark.</p></div></div>
+            <div class="chart" id="chart"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Sessions</h2></div>
+            <ul class="sessions" id="sessions"></ul>
+          </section>
+        </div>
+        <section class="panel">
+          <div class="panel-head"><div><h2>Add practice</h2><p>For time you practiced without the app.</p></div></div>
+          <form class="add-form" id="addForm">
+            <div class="field"><label for="addDate">Date</label><input class="input" id="addDate" type="date" required /></div>
+            <div class="field"><label for="addMin">Minutes</label><input class="input num" id="addMin" type="number" min="1" max="600" value="30" required /></div>
+            <div class="field full"><label for="addWhat">What you worked on</label><textarea class="input" id="addWhat" placeholder="Scales in all keys, Donna Lee at 160…"></textarea></div>
+            <div class="full"><button class="btn btn-primary" type="submit">Add to log</button></div>
+          </form>
+        </section>
+      </div>
+    </section>
+
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:24px">Woodshed needs JavaScript enabled.</p></noscript>
+
+<script>
+(() => {
+  'use strict';
+
+  /* =========================================================
+     Musical model
+     ========================================================= */
+  const LETTERS = ['C', 'C', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'A', 'B', 'B'];
+  const ACCS    = ['',  '♯', '',  '♭', '',  '',  '♯', '',  '♯', '',  '♭', ''];
+  const ACC_ASCII = { '♯': '#', '♭': 'b', '': '' };
+
+  const RANGE_LOW = 58;        // written low B♭ (B♭3)
+  const RANGE_HIGH = 89;       // written high F (F6)
+  const IN_TUNE = 5;           // ± cents counted as in tune
+  const CAPTURE_TARGET = 1.2;  // seconds of steady tone for a full sample
+  const CAPTURE_MIN = 0.6;     // shortest take that still gets saved
+  const SETTLE_TIME = 0.15;    // ignore the attack scoop
+  const RELEASE_TIME = 0.14;   // silence that ends a note
+  const SWITCH_TIME = 0.07;    // a new note must persist this long
+  const CLARITY_MIN = 0.8;     // NSDF peak needed to trust a pitch
+  const TRACE_SECONDS = 8;
+
+  const INSTRUMENTS = {
+    soprano: { label: 'Soprano sax', horn: 'soprano', transpose: 2 },
+    alto:    { label: 'Alto sax',    horn: 'alto',    transpose: 9 },
+    tenor:   { label: 'Tenor sax',   horn: 'tenor',   transpose: 14 },
+    bari:    { label: 'Baritone sax', horn: 'bari',   transpose: 21 },
+    concert: { label: 'Concert pitch', horn: 'saxophone', transpose: 0 }
+  };
+
+  const REGISTERS = [
+    { id: 'low',   name: 'Low stack',       tag: 'Low',   lo: 58, hi: 61 },
+    { id: 'mid',   name: 'Middle register', tag: 'Mid',   lo: 62, hi: 73 },
+    { id: 'upper', name: 'Upper register',  tag: 'Upper', lo: 74, hi: 85 },
+    { id: 'palm',  name: 'Palm keys',       tag: 'Palm',  lo: 86, hi: 89 }
+  ];
+
+  const pc = m => ((m % 12) + 12) % 12;
+  const octaveOf = m => Math.floor(m / 12) - 1;
+  const noteText = m => LETTERS[pc(m)] + ACCS[pc(m)] + octaveOf(m);
+  const noteAscii = m => LETTERS[pc(m)] + ACC_ASCII[ACCS[pc(m)]] + octaveOf(m);
+  const pcText = p => LETTERS[pc(p)] + ACCS[pc(p)];
+  const noteHTML = m => {
+    const acc = ACCS[pc(m)];
+    return '<span class="nl">' + LETTERS[pc(m)] + '</span>' +
+      (acc ? '<span class="acc">' + acc + '</span>' : '') +
+      '<span class="oct">' + octaveOf(m) + '</span>';
+  };
+  const midiToFreq = (m, a4) => a4 * Math.pow(2, (m - 69) / 12);
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const avg = arr => arr.reduce((s, v) => s + v, 0) / (arr.length || 1);
+  const registerOf = m => REGISTERS.find(r => m >= r.lo && m <= r.hi);
+  const fmtCents = (c, d = 1) => {
+    const v = Math.abs(c) < Math.pow(10, -d) / 2 ? 0 : c;
+    return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '¢';
+  };
+  const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const clockText = secs => {
+    secs = Math.max(0, Math.floor(secs));
+    const h = Math.floor(secs / 3600), m = Math.floor(secs / 60) % 60, s = secs % 60;
+    return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0');
+  };
+  const minText = secs => {
+    const m = Math.round(secs / 60);
+    if (m < 60) return m + ' min';
+    return Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') + ' min';
+  };
+  const store_ = {
+    get(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
+    set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } }
+  };
+
+  /* =========================================================
+     Heat-map colour scale (tuned for a white background)
+     green within ±5¢, progressively deeper red (sharp) / blue (flat)
+     ========================================================= */
+  function heat(c) {
+    const a = Math.abs(c);
+    let h, s, l, al, t = 0;
+    if (a <= IN_TUNE) { h = 152; s = 78; l = 42; al = 0.22; }
+    else {
+      t = Math.min(1, (a - IN_TUNE) / 25);
+      if (c > 0) { h = 8 - 10 * t; s = 80 + 10 * t; l = 62 - 16 * t; }
+      else       { h = 214 + 8 * t; s = 82 + 6 * t; l = 62 - 16 * t; }
+      al = 0.12 + 0.3 * t;
+    }
+    if (h < 0) h += 360;
+    const f = (L, A) => 'hsla(' + h.toFixed(1) + ',' + s.toFixed(1) + '%,' + L.toFixed(1) + '%,' + A.toFixed(3) + ')';
+    return {
+      solid: f(l, 1),
+      text: f(Math.min(l, 40), 1),
+      bg1: f(l, al),
+      bg2: f(l, al * 0.35),
+      line: f(l, a <= IN_TUNE ? 0.7 : 0.35 + 0.45 * t),
+      glow: f(l, a <= IN_TUNE ? 0.4 : 0.2 + 0.3 * t)
+    };
+  }
+  const solidCache = [];
+  for (let c = -50; c <= 50; c++) solidCache.push(heat(c).solid);
+  const heatSolid = c => solidCache[Math.round(clamp(c, -50, 50)) + 50];
+
+  // ---- Pitch detection core (start) ----
+  /**
+   * Time-domain pitch detector: normalized square difference / autocorrelation
+   * (McLeod Pitch Method). Returns { freq, clarity, rms }.
+   *   r(τ)  = Σ x[i]·x[i+τ]              (autocorrelation over a fixed window W)
+   *   m(τ)  = Σ x[i]² + x[i+τ]²
+   *   n(τ)  = 2·r(τ) / m(τ)              (normalized to -1..1)
+   * The first "key maximum" above K × the highest key maximum is the period,
+   * refined with parabolic interpolation for sub-sample (sub-cent) precision.
+   */
+  function createDetector(size) {
+    const K = 0.9;
+    const x = new Float32Array(size);
+    const nsdf = new Float32Array(size);
+    const peaks = new Int32Array(size);
+    return function detect(input, sampleRate, minFreq, maxFreq, gateRms) {
+      const N = input.length;
+      let mean = 0;
+      for (let i = 0; i < N; i++) mean += input[i];
+      mean /= N;
+      let energy = 0;
+      for (let i = 0; i < N; i++) { const v = input[i] - mean; x[i] = v; energy += v * v; }
+      const rms = Math.sqrt(energy / N);
+      const out = { freq: 0, clarity: 0, rms: rms };
+      if (rms < gateRms) return out;
+
+      const maxLag = Math.min(Math.ceil(sampleRate / minFreq) + 2, N >> 1);
+      const minLag = Math.max(2, Math.floor(sampleRate / maxFreq));
+      const W = Math.min(N - maxLag, Math.round(sampleRate * 0.045));
+
+      let e0 = 0;
+      for (let i = 0; i < W; i++) e0 += x[i] * x[i];
+      let eT = e0;
+      for (let tau = 0; tau <= maxLag; tau++) {
+        let acf = 0;
+        for (let i = 0; i < W; i++) acf += x[i] * x[i + tau];
+        const m = e0 + eT;
+        nsdf[tau] = m > 1e-12 ? (2 * acf) / m : 0;
+        if (tau < maxLag) { const a = x[tau], b = x[tau + W]; eT += b * b - a * a; }
+      }
+
+      // Key maxima: the highest point of each positive lobe after the zero-lag lobe.
+      let pos = 1;
+      while (pos < maxLag && nsdf[pos] > 0) pos++;
+      while (pos < maxLag && nsdf[pos] <= 0) pos++;
+      let count = 0, cur = -1, highest = 0;
+      const pushPeak = p => {
+        if (p >= minLag) { peaks[count++] = p; if (nsdf[p] > highest) highest = nsdf[p]; }
+      };
+      for (; pos < maxLag; pos++) {
+        const v = nsdf[pos];
+        if (v > 0) {
+          if (v > nsdf[pos - 1] && v >= nsdf[pos + 1] && (cur < 0 || v > nsdf[cur])) cur = pos;
+        } else if (cur >= 0) { pushPeak(cur); cur = -1; }
+      }
+      if (cur >= 0) pushPeak(cur);
+      if (!count || highest <= 0) return out;
+
+      const threshold = K * highest;
+      let tau = -1;
+      for (let k = 0; k < count; k++) { if (nsdf[peaks[k]] >= threshold) { tau = peaks[k]; break; } }
+      if (tau < 1) return out;
+
+      const a = nsdf[tau - 1], b = nsdf[tau], c = nsdf[tau + 1];
+      const den = a - 2 * b + c;
+      let shift = 0, peak = b;
+      if (den < 0) {
+        shift = clamp((a - c) / (2 * den), -0.5, 0.5);
+        peak = b - 0.25 * (a - c) * shift;
+      }
+      out.freq = sampleRate / (tau + shift);
+      out.clarity = Math.min(1, peak);
+      return out;
+    };
+  }
+  // ---- Pitch detection core (end) ----
+
+  /* =========================================================
+     State
+     ========================================================= */
+  const state = {
+    instrument: 'alto',
+    a4: 440,
+    gateDb: -52,
+    sampling: false,
+    selected: null,
+    take: null,
+    view: 'session'
+  };
+  const range = { minF: 100, maxF: 1500 };
+  const track = { note: null, stable: 0, silent: 0, pending: null, pendingTime: 0 };
+  const live = { note: null, cents: 0, freq: 0, voicedAt: 0, levelDb: -100 };
+  const medianBuf = [];
+  let history = [];
+  let store = {};
+  let detector = null;
+
+  const inst = () => INSTRUMENTS[state.instrument];
+  const gateRms = () => Math.pow(10, state.gateDb / 20);
+
+  /* =========================================================
+     DOM references
+     ========================================================= */
+  const $ = id => document.getElementById(id);
+  const els = {
+    instrument: $('instrument'), a4: $('a4'), demoBtn: $('demoBtn'), sampleBtn: $('sampleBtn'), micBtn: $('micBtn'),
+    source: $('source'), noteBig: $('noteBig'), concertText: $('concertText'), freqText: $('freqText'),
+    centsText: $('centsText'), verdict: $('verdict'), levelFill: $('levelFill'), gateMark: $('gateMark'),
+    gate: $('gate'), gateText: $('gateText'), ticks: $('ticks'), needle: $('needle'), trace: $('trace'),
+    hud: $('hud'), hudTitle: $('hudTitle'), hudSub: $('hudSub'), hudFill: $('hudFill'),
+    matrix: $('matrix'), matrixSub: $('matrixSub'), exportBtn: $('exportBtn'), resetBtn: $('resetBtn'),
+    countPill: $('countPill'), ringFg: $('ringFg'), scoreNum: $('scoreNum'), grade: $('grade'),
+    statInTune: $('statInTune'), statAbs: $('statAbs'), statLean: $('statLean'), statSd: $('statSd'),
+    regs: $('regs'), insights: $('insights'),
+    inspector: $('inspector'), inspHeading: $('inspHeading'), inspSub: $('inspSub'), inspBody: $('inspBody'), inspClose: $('inspClose'),
+    toast: $('toast'), footA4: $('footA4'), running: $('running')
+  };
+  const ICONS = {
+    mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+    stop: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></svg>',
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+  };
+
+  /* =========================================================
+     Persistence (per instrument)
+     ========================================================= */
+  const dataKey = () => 'sit.v1.data.' + state.instrument;
+  function loadData() {
+    store = {};
+    try {
+      const raw = localStorage.getItem(dataKey());
+      const parsed = raw ? JSON.parse(raw) : {};
+      for (const k in parsed) {
+        const r = parsed[k];
+        if (r && r.n > 0 && isFinite(r.sum) && isFinite(r.sq)) {
+          store[k] = { n: r.n, sum: r.sum, sq: r.sq, dur: r.dur || 0, takes: r.takes || 1, hist: Array.isArray(r.hist) ? r.hist : [], t: r.t || 0 };
+        }
+      }
+    } catch (e) { store = {}; }
+  }
+  function saveData() { try { localStorage.setItem(dataKey(), JSON.stringify(store)); } catch (e) { /* storage unavailable */ } }
+  function loadSettings() {
+    try {
+      const s = JSON.parse(localStorage.getItem('sit.v1.settings') || '{}');
+      if (s.instrument && INSTRUMENTS[s.instrument]) state.instrument = s.instrument;
+      if (s.a4 >= 430 && s.a4 <= 450) state.a4 = s.a4;
+      if (s.gateDb >= -72 && s.gateDb <= -24) state.gateDb = s.gateDb;
+    } catch (e) { /* defaults */ }
+  }
+  function saveSettings() {
+    try { localStorage.setItem('sit.v1.settings', JSON.stringify({ instrument: state.instrument, a4: state.a4, gateDb: state.gateDb })); } catch (e) { /* ignore */ }
+  }
+
+  /* =========================================================
+     Note statistics
+     ========================================================= */
+  function noteStats(m, includeLive) {
+    const r = store[m];
+    let n = r ? r.n : 0, sum = r ? r.sum : 0, sq = r ? r.sq : 0, dur = r ? r.dur : 0;
+    const tk = state.take;
+    const isLive = !!(includeLive && tk && tk.midi === m && !tk.locked && tk.n > 0);
+    if (isLive) { n += tk.n; sum += tk.sum; sq += tk.sq; dur += tk.dur; }
+    if (!n) return null;
+    const mean = sum / n;
+    return {
+      mean: mean,
+      sd: Math.sqrt(Math.max(0, sq / n - mean * mean)),
+      n: n, dur: dur,
+      takes: r ? r.takes : 0,
+      hist: r ? r.hist : [],
+      live: isLive
+    };
+  }
+
+  function computeStats() {
+    const notes = [];
+    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+      const s = noteStats(m, false);
+      if (s) notes.push(Object.assign({ midi: m }, s));
+    }
+    const count = notes.length;
+    if (!count) return { count: 0, notes: notes };
+    const means = notes.map(n => n.mean);
+    return {
+      count: count,
+      notes: notes,
+      meanAll: avg(means),
+      meanAbs: avg(means.map(Math.abs)),
+      inTune: notes.filter(n => Math.abs(n.mean) <= IN_TUNE).length,
+      avgSd: avg(notes.map(n => n.sd)),
+      score: avg(means.map(c => 100 * Math.exp(-Math.pow(Math.abs(c) / 18, 2)))),
+      regs: REGISTERS.map(r => {
+        const ns = notes.filter(n => n.midi >= r.lo && n.midi <= r.hi);
+        return Object.assign({}, r, { count: ns.length, mean: ns.length ? avg(ns.map(n => n.mean)) : null });
+      })
+    };
+  }
+
+  /* =========================================================
+     Audio engine (one AudioContext shared by every tool)
+     ========================================================= */
+  const audio = { ctx: null, input: null, analyser: null, buf: null, bytes: null, sr: 48000, mic: null, stream: null, mode: 'off' };
+
+  function ensureAudio() {
+    if (!audio.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return Promise.reject(Object.assign(new Error('Web Audio unavailable'), { name: 'NoWebAudio' }));
+      let ctx;
+      try { ctx = new AC({ latencyHint: 'interactive' }); } catch (e) { ctx = new AC(); }
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 45; hp.Q.value = 0.707;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5000; lp.Q.value = 0.707;
+      const an = ctx.createAnalyser();
+      an.fftSize = ctx.sampleRate > 50000 ? 8192 : 4096;
+      an.smoothingTimeConstant = 0;
+      const sink = ctx.createGain(); sink.gain.value = 0; // keeps the graph pulled in every browser, silently
+      hp.connect(lp); lp.connect(an); an.connect(sink); sink.connect(ctx.destination);
+      audio.ctx = ctx; audio.input = hp; audio.analyser = an; audio.sr = ctx.sampleRate;
+      audio.buf = new Float32Array(an.fftSize);
+      if (!an.getFloatTimeDomainData) audio.bytes = new Uint8Array(an.fftSize);
+      detector = createDetector(an.fftSize);
+    }
+    return audio.ctx.state === 'suspended' ? audio.ctx.resume() : Promise.resolve();
+  }
+
+  function updateRange() {
+    const tr = inst().transpose;
+    range.minF = Math.max(40, midiToFreq(RANGE_LOW - tr - 4, state.a4));
+    range.maxF = Math.min(2200, midiToFreq(RANGE_HIGH - tr + 10, state.a4));
+  }
+
+  function micError(err) {
+    const name = err && err.name;
+    if (name === 'NotAllowedError' || name === 'SecurityError') return 'Microphone access is blocked. Allow it in your browser’s site settings, then try again.';
+    if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No microphone was found. Connect one, then try again.';
+    if (name === 'NotReadableError') return 'Another app is using the microphone. Close it, then try again.';
+    if (name === 'NoWebAudio') return 'This browser does not support Web Audio. Use a current version of Chrome, Edge, Firefox or Safari.';
+    return 'The microphone could not start. Check that no other app is using it, then try again.';
+  }
+  function micUnsupported() {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) return false;
+    toast(window.isSecureContext === false
+      ? 'The microphone only works on a secure page. Open the app with start.command (localhost) or over https.'
+      : 'This browser does not support microphone input. Use a current version of Chrome, Edge, Firefox or Safari.', 'error');
+    return true;
+  }
+
+  async function startMic() {
+    if (demo.running) stopDemo();
+    if (micUnsupported()) return;
+    els.micBtn.disabled = true;
+    try {
+      await ensureAudio();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
+        video: false
+      });
+      audio.stream = stream;
+      audio.mic = audio.ctx.createMediaStreamSource(stream);
+      audio.mic.connect(audio.input);
+      audio.mode = 'mic';
+      const trackEl = stream.getAudioTracks()[0];
+      if (trackEl) trackEl.addEventListener('ended', () => { stopMic(); toast('The microphone disconnected. Plug it back in and start it again.', 'error'); });
+      resetTracking();
+      updateRunUI();
+      if (!state.sampling) toast('Microphone on. Turn on Sample notes to save each note to the matrix.');
+    } catch (err) {
+      toast(micError(err), 'error');
+      stopMic();
+    } finally {
+      els.micBtn.disabled = false;
+    }
+  }
+
+  function stopMic() {
+    if (audio.mic) { try { audio.mic.disconnect(); } catch (e) { /* already gone */ } audio.mic = null; }
+    if (audio.stream) { audio.stream.getTracks().forEach(t => t.stop()); audio.stream = null; }
+    if (audio.mode === 'mic') audio.mode = 'off';
+    resetTracking();
+    updateRunUI();
+  }
+
+  /* =========================================================
+     Demo: a simulated saxophonist played through the same
+     analysis chain (realistic tendencies: flat low stack,
+     sharp upper register and palm keys, a sharp middle C♯)
+     ========================================================= */
+  const DEMO_PROFILE = [
+    -12, -10, -11, -7,                            // B♭3 B3 C4 C♯4
+    -3, -1, 2, 0, 1, 3, -2, 1, 2, 4, 1, 16,       // D4 … C♯5
+    6, 8, 7, 9, 11, 10, 12, 13, 12, 15, 14, 13,   // D5 … C♯6
+    17, 19, 22, 26                                // D6 E♭6 E6 F6
+  ];
+  const DEMO_NOTE = 1.6, DEMO_GAP = 0.24;
+  const demo = { running: false, nodes: [], timer: 0 };
+
+  async function startDemo() {
+    const I = inst();
+    if (hasData() && !window.confirm('Play the demo? It replaces the current ' + I.label.toLowerCase() + ' matrix with a simulated player’s results.')) return;
+    stopMic();
+    try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio, so the demo cannot play.', 'error'); return; }
+    clearData();
+    const ctx = audio.ctx;
+    const t0 = ctx.currentTime + 0.3;
+
+    const osc = ctx.createOscillator(); osc.type = 'sawtooth';
+    const body = ctx.createBiquadFilter(); body.type = 'lowpass'; body.frequency.value = 2300; body.Q.value = 1.1;
+    const env = ctx.createGain(); env.gain.value = 0;
+    const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 5.3;
+    const lfoDepth = ctx.createGain(); lfoDepth.gain.value = 0;
+    const noise = ctx.createBufferSource();
+    const nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const nd = nb.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    noise.buffer = nb; noise.loop = true;
+    const breath = ctx.createBiquadFilter(); breath.type = 'bandpass'; breath.frequency.value = 2600; breath.Q.value = 0.7;
+    const breathGain = ctx.createGain(); breathGain.gain.value = 0.05;
+    const speaker = ctx.createGain(); speaker.gain.value = 0.11;
+
+    lfo.connect(lfoDepth); lfoDepth.connect(osc.frequency);
+    osc.connect(body); body.connect(env);
+    noise.connect(breath); breath.connect(breathGain); breathGain.connect(env);
+    env.connect(audio.input);
+    env.connect(speaker); speaker.connect(ctx.destination);
+
+    for (let i = 0; i <= RANGE_HIGH - RANGE_LOW; i++) {
+      const written = RANGE_LOW + i;
+      const dev = DEMO_PROFILE[i] + (Math.random() - 0.5) * 2.4;
+      const f = midiToFreq(written - I.transpose, state.a4) * Math.pow(2, dev / 1200);
+      const s = t0 + i * (DEMO_NOTE + DEMO_GAP), e = s + DEMO_NOTE;
+      osc.frequency.setValueAtTime(f * Math.pow(2, -28 / 1200), s);   // attack scoop
+      osc.frequency.exponentialRampToValueAtTime(f, s + 0.1);
+      env.gain.setValueAtTime(0, s);
+      env.gain.linearRampToValueAtTime(0.32, s + 0.05);
+      env.gain.setValueAtTime(0.32, e - 0.08);
+      env.gain.linearRampToValueAtTime(0, e);
+      lfoDepth.gain.setValueAtTime(0, s);
+      lfoDepth.gain.linearRampToValueAtTime(f * 0.0016, s + DEMO_NOTE * 0.75); // late, gentle vibrato
+      lfoDepth.gain.setValueAtTime(0, e);
+    }
+    const tEnd = t0 + (RANGE_HIGH - RANGE_LOW + 1) * (DEMO_NOTE + DEMO_GAP);
+    osc.start(t0 - 0.05); lfo.start(t0 - 0.05); noise.start(t0 - 0.05);
+    osc.stop(tEnd + 0.2); lfo.stop(tEnd + 0.2); noise.stop(tEnd + 0.2);
+
+    demo.nodes = [osc, lfo, noise, body, env, lfoDepth, breath, breathGain, speaker];
+    demo.running = true;
+    audio.mode = 'demo';
+    if (!state.sampling) setSampling(true);
+    resetTracking();
+    updateRunUI();
+    demo.timer = window.setTimeout(() => {
+      stopDemo();
+      toast('Demo finished. The analytics panel now coaches the simulated player.');
+    }, (tEnd - ctx.currentTime + 0.5) * 1000);
+  }
+
+  function stopDemo() {
+    window.clearTimeout(demo.timer);
+    demo.nodes.forEach(n => {
+      try { if (n.stop) n.stop(); } catch (e) { /* not started or already stopped */ }
+      try { n.disconnect(); } catch (e) { /* ignore */ }
+    });
+    demo.nodes = [];
+    demo.running = false;
+    if (audio.mode === 'demo') audio.mode = 'off';
+    resetTracking();
+    updateRunUI();
+  }
+
+  /* =========================================================
+     Tracking + Sample Note state machine
+     idle → armed → settle → capture → saved (or too short) → armed
+     ========================================================= */
+  function resetTracking() {
+    endNote();
+    track.note = null; track.stable = 0; track.silent = 0; track.pending = null; track.pendingTime = 0;
+    medianBuf.length = 0;
+    live.note = null; live.voicedAt = 0;
+    refreshHud();
+  }
+
+  function medianOf(buf) {
+    const s = buf.slice().sort((a, b) => a - b);
+    return s[s.length >> 1];
+  }
+
+  function processDetection(det, dt) {
+    if (!det) {
+      track.silent += dt;
+      if (track.silent >= RELEASE_TIME) {
+        if (track.note !== null) { endNote(); track.note = null; track.stable = 0; track.pending = null; }
+        medianBuf.length = 0;
+        if (state.sampling) setHud('armed');
+      }
+      return null;
+    }
+    track.silent = 0;
+    const w = det.written;
+    let cand = Math.round(w);
+    if (track.note !== null && Math.abs(w - track.note) < 0.62) cand = track.note; // hysteresis
+    if (track.note === null) {
+      track.note = cand; track.stable = 0; track.pending = null;
+    } else if (cand !== track.note) {
+      if (track.pending === cand) track.pendingTime += dt; else { track.pending = cand; track.pendingTime = dt; }
+      if (track.pendingTime < SWITCH_TIME) return { hold: true };
+      endNote();
+      track.note = cand; track.stable = 0; track.pending = null;
+    } else {
+      track.pending = null;
+      track.stable += dt;
+    }
+    det.note = track.note;
+    det.cents = (w - track.note) * 100;
+    if (state.sampling) capture(det, dt);
+    return det;
+  }
+
+  function capture(det, dt) {
+    const m = det.note;
+    if (m < RANGE_LOW || m > RANGE_HIGH) { setHud('out', { note: m }); return; }
+    if (track.stable < SETTLE_TIME) {
+      if (!state.take || state.take.midi !== m) setHud('settle', { note: m });
+      return;
+    }
+    let tk = state.take;
+    if (!tk || tk.midi !== m) tk = state.take = { midi: m, n: 0, sum: 0, sq: 0, dur: 0, locked: false };
+    if (tk.locked) return;
+    if (tk.n >= 6 && Math.abs(det.cents - tk.sum / tk.n) > 25) return; // reject glitches
+    tk.n++; tk.sum += det.cents; tk.sq += det.cents * det.cents; tk.dur += dt;
+    const progress = Math.min(1, tk.dur / CAPTURE_TARGET);
+    renderCell(m);
+    cells[m].prog.style.width = (progress * 100).toFixed(1) + '%';
+    const all = noteStats(m, true);
+    setHud('capture', { note: m, take: tk.sum / tk.n, avg: all.mean, progress: progress });
+    if (tk.dur >= CAPTURE_TARGET) { commitTake(tk); tk.locked = true; }
+  }
+
+  function endNote() {
+    const tk = state.take;
+    if (tk) {
+      if (!tk.locked) {
+        if (tk.dur >= CAPTURE_MIN) commitTake(tk);
+        else { renderCell(tk.midi); if (tk.n > 0) setHud('short', { note: tk.midi }); }
+      }
+      if (cells[tk.midi]) cells[tk.midi].prog.style.width = '0';
+    }
+    state.take = null;
+  }
+
+  function commitTake(tk) {
+    const m = tk.midi;
+    const r = store[m] || (store[m] = { n: 0, sum: 0, sq: 0, dur: 0, takes: 0, hist: [], t: 0 });
+    r.n += tk.n; r.sum += tk.sum; r.sq += tk.sq; r.dur += tk.dur; r.takes += 1; r.t = Date.now();
+    const takeMean = tk.sum / tk.n;
+    r.hist.push(Math.round(takeMean * 100) / 100);
+    if (r.hist.length > 12) r.hist.shift();
+    tk.locked = true;
+    saveData();
+    renderCell(m, true);
+    cells[m].prog.style.width = '0';
+    renderAnalytics();
+    if (state.selected === m) renderInspector();
+    setHud('saved', { note: m, take: takeMean, avg: r.sum / r.n, count: r.takes });
+  }
+
+  /* =========================================================
+     HUD (sample-state banner)
+     ========================================================= */
+  let hudKey = '', hudHoldUntil = 0;
+  function setHud(kind, d) {
+    d = d || {};
+    const now = performance.now() / 1000;
+    if ((kind === 'armed' || kind === 'settle' || kind === 'out' || kind === 'off') && now < hudHoldUntil) return;
+    let title = '', sub = '', progress = 0;
+    switch (kind) {
+      case 'idle':
+        title = 'Ready when you are';
+        sub = state.sampling ? 'Sample notes is on. Start the microphone, then sustain any note.' : 'Start the microphone, or play the demo to watch a simulated player.';
+        break;
+      case 'off':
+        title = 'Tuner only';
+        sub = 'Turn on Sample notes (or press S) to save each sustained note to the matrix.';
+        break;
+      case 'armed':
+        title = 'Listening for a sustained note';
+        sub = 'Hold any note from low B♭ to high F for ' + CAPTURE_TARGET + ' seconds at a steady volume.';
+        break;
+      case 'settle':
+        title = 'Hold ' + noteText(d.note) + ' steady';
+        sub = 'Letting the attack settle before measuring.';
+        break;
+      case 'capture':
+        title = 'Sampling ' + noteText(d.note);
+        sub = 'This take ' + fmtCents(d.take) + ', running average ' + fmtCents(d.avg);
+        progress = d.progress;
+        break;
+      case 'saved':
+        title = 'Saved ' + noteText(d.note) + ' at ' + fmtCents(d.take);
+        sub = 'Running average ' + fmtCents(d.avg) + ' across ' + d.count + (d.count === 1 ? ' take.' : ' takes.');
+        progress = 1;
+        hudHoldUntil = now + 1.8;
+        break;
+      case 'short':
+        title = noteText(d.note) + ' was too short to save';
+        sub = 'Sustain at least ' + CAPTURE_MIN + ' seconds; ' + CAPTURE_TARGET + ' seconds gives a full sample.';
+        hudHoldUntil = now + 1.5;
+        break;
+      case 'out':
+        title = noteText(d.note) + ' is outside the matrix';
+        sub = 'The matrix covers written low B♭ to high F.';
+        break;
+    }
+    const key = kind + '|' + title + '|' + sub + '|' + Math.round(progress * 100);
+    if (key === hudKey) return;
+    hudKey = key;
+    els.hud.dataset.state = kind;
+    els.hudTitle.textContent = title;
+    els.hudSub.textContent = sub;
+    els.hudFill.style.width = (progress * 100).toFixed(1) + '%';
+  }
+  function refreshHud() {
+    hudHoldUntil = 0;
+    if (audio.mode === 'off') setHud('idle');
+    else setHud(state.sampling ? 'armed' : 'off');
+  }
+
+  /* =========================================================
+     Matrix
+     ========================================================= */
+  const cells = {};
+  function buildMatrix() {
+    const frag = document.createDocumentFragment();
+    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'cell is-empty';
+      el.dataset.midi = m;
+      el.innerHTML =
+        '<span class="cell-top"><span>' + registerOf(m).tag + '</span><span class="cell-count"></span></span>' +
+        '<span class="cell-note">' + noteHTML(m) + '</span>' +
+        '<span class="cell-val">–</span>' +
+        '<span class="cell-dev"><i></i></span>' +
+        '<span class="cell-prog"></span>';
+      el.addEventListener('click', () => selectNote(state.selected === m ? null : m));
+      cells[m] = {
+        el: el,
+        count: el.querySelector('.cell-count'),
+        val: el.querySelector('.cell-val'),
+        dot: el.querySelector('.cell-dev i'),
+        prog: el.querySelector('.cell-prog')
+      };
+      frag.appendChild(el);
+    }
+    els.matrix.appendChild(frag);
+  }
+
+  function renderCell(m, flash) {
+    const c = cells[m];
+    if (!c) return;
+    const s = noteStats(m, true);
+    const el = c.el;
+    if (!s) {
+      el.classList.add('is-empty'); el.classList.remove('has-data');
+      ['--c1', '--c2', '--cl', '--ct', '--cg'].forEach(p => el.style.removeProperty(p));
+      c.val.textContent = '–';
+      c.count.textContent = '';
+      el.setAttribute('aria-label', noteText(m) + ', not sampled');
+      return;
+    }
+    const col = heat(s.mean);
+    el.classList.remove('is-empty'); el.classList.add('has-data');
+    el.style.setProperty('--c1', col.bg1);
+    el.style.setProperty('--c2', col.bg2);
+    el.style.setProperty('--cl', col.line);
+    el.style.setProperty('--ct', col.text);
+    el.style.setProperty('--cg', col.glow);
+    c.val.textContent = fmtCents(s.mean);
+    c.count.textContent = s.takes ? s.takes + (s.takes === 1 ? ' take' : ' takes') : 'live';
+    c.dot.style.left = (50 + clamp(s.mean, -30, 30) / 30 * 50).toFixed(2) + '%';
+    el.setAttribute('aria-label', noteText(m) + ', average ' + fmtCents(s.mean).replace('−', 'minus ') + ' over ' + s.takes + ' takes');
+    if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  }
+  function renderAllCells() { for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) renderCell(m); }
+
+  function hasData() { return Object.keys(store).length > 0; }
+  function clearData() {
+    endNote();
+    store = {};
+    saveData();
+    renderAllCells();
+    renderAnalytics();
+    if (state.selected !== null) renderInspector();
+  }
+
+  /* =========================================================
+     Coaching engine
+     ========================================================= */
+  function mouthpieceMM(cents) {
+    // Approximate the sounding air-column length at written A4 (half wavelength of a conical bore)
+    const f = midiToFreq(69 - inst().transpose, state.a4);
+    const L = 343000 / (2 * f);
+    const mm = L * (Math.pow(2, Math.abs(cents) / 1200) - 1);
+    return clamp(Math.round(mm * 2) / 2, 0.5, 10);
+  }
+
+  function levelFor(sev) { return sev >= 14 ? 'High priority' : sev >= 7 ? 'Medium priority' : 'Tip'; }
+  const nameList = notes => notes.map(n => noteText(n.midi) + ' ' + fmtCents(n.mean, 0)).join(', ');
+
+  function buildInsights(st) {
+    const I = inst();
+    const horn = I.horn;
+    if (st.count < 3) {
+      return [
+        { tone: 'info', level: 'Getting started', title: 'Map your horn one note at a time',
+          body: 'Turn on Sample notes, then sustain each note for about ' + CAPTURE_TARGET + ' seconds at a comfortable mezzo-forte. Its square fills with your running average.',
+          actions: ['Play each note two or three times for a reliable average.', 'No saxophone nearby? Play demo runs a simulated player through all 32 notes.'] },
+        { tone: 'info', level: 'Getting started', title: 'Coaching starts after three notes',
+          body: 'You have sampled ' + st.count + ' of 3. Covering the low stack, middle register and palm keys gives the most specific advice.' }
+      ];
+    }
+
+    const out = [];
+    const byMidi = {};
+    st.notes.forEach(n => { byMidi[n.midi] = n; });
+    const group = (lo, hi) => {
+      const ns = st.notes.filter(n => n.midi >= lo && n.midi <= hi);
+      return ns.length ? { mean: avg(ns.map(n => n.mean)), count: ns.length, notes: ns } : null;
+    };
+    const low = group(58, 61), mid = group(62, 73), upper = group(74, 85), palm = group(86, 89), high = group(74, 89);
+    const covered = []; // { lo, hi, sign } regions already explained by an insight
+
+    // Octave consistency (same fingering, octave key on vs off)
+    const octDiffs = [];
+    for (let m = 62; m <= 73; m++) if (byMidi[m] && byMidi[m + 12]) octDiffs.push(byMidi[m + 12].mean - byMidi[m].mean);
+    const octDiff = octDiffs.length >= 2 ? avg(octDiffs) : null;
+
+    // 1. Uniform offset → mouthpiece position
+    const regMeans = [low, mid, upper, palm].filter(Boolean).map(g => g.mean);
+    const spread = regMeans.length ? Math.max.apply(null, regMeans) - Math.min.apply(null, regMeans) : 0;
+    const lean = st.meanAll;
+    const sameSide = st.notes.filter(n => Math.sign(n.mean) === Math.sign(lean) && Math.abs(n.mean) > 2).length / st.count;
+    let globalSign = 0;
+    if (st.count >= 4 && Math.abs(lean) > 6 && sameSide >= 0.75 && spread < 14) {
+      const sharp = lean > 0;
+      globalSign = sharp ? 1 : -1;
+      out.push({
+        sev: Math.abs(lean) * 1.4, tone: sharp ? 'sharp' : 'flat', metric: fmtCents(lean),
+        title: sharp ? 'Your whole ' + horn + ' is sharp: pull the mouthpiece out' : 'Your whole ' + horn + ' is flat: push the mouthpiece in',
+        body: Math.round(sameSide * 100) + '% of sampled notes lean ' + (sharp ? 'sharp' : 'flat') + ' by a similar amount. An even offset across every register is a setup issue, so fix it before changing your embouchure.',
+        actions: [
+          (sharp ? 'Pull the mouthpiece out' : 'Push the mouthpiece in') + ' about ' + mouthpieceMM(lean) + ' mm on the neck cork, then re-sample three or four notes.',
+          'Judge the change on relaxed mezzo-forte middle-register notes, not loud or forced ones.'
+        ]
+      });
+      covered.push({ lo: 58, hi: 89, sign: globalSign });
+    }
+
+    // 2. Upper register + palm keys
+    if (high && high.count >= 3 && Math.abs(high.mean) > 9 && Math.sign(high.mean) !== globalSign) {
+      const sharp = high.mean > 0;
+      const palmTxt = palm ? ', with the palm keys at ' + fmtCents(palm.mean) : '';
+      const octTxt = octDiff !== null && Math.sign(octDiff) === Math.sign(high.mean) && Math.abs(octDiff) > 6
+        ? ' Octave-key notes sit ' + fmtCents(octDiff) + ' from the same fingering an octave down, so the shift happens as you cross the break.' : '';
+      const sopTxt = state.instrument === 'soprano' ? ' The soprano reacts to tiny changes, so adjust in small steps.' : '';
+      const actions = sharp ? [
+        'Drop the jaw slightly and keep the lower lip cushioned; shape an open "oh" inside the mouth as you ascend.',
+        'Lead with faster air from your core instead of extra lip pressure on the reed.'
+      ] : [
+        'Keep the air fast through the break and voice higher by arching the tongue toward an "ee" shape.',
+        'Firm the corners of the embouchure without biting down.'
+      ];
+      if (sharp && palm && palm.mean > 10) actions.push('On sharp palm-key notes (D to F), try adding right-hand fingers 2 and 3 to lower the pitch.');
+      if (!sharp) actions.push('If the top still sags with good air, your reed may be too soft; try half a strength harder.');
+      out.push({
+        sev: Math.abs(high.mean) * 1.15 + (palm ? Math.abs(palm.mean) * 0.15 : 0),
+        tone: sharp ? 'sharp' : 'flat', metric: fmtCents(high.mean),
+        title: sharp ? 'High register is running sharp' : 'High register is sagging flat',
+        body: 'Notes from written D5 upward average ' + fmtCents(high.mean) + palmTxt + '. ' +
+          (sharp ? 'Pitch that climbs with the register usually means the jaw closes and the lower lip pinches the reed as you go up.'
+                 : 'The top of the horn drops when air speed falls or the tongue sits too low in the mouth.') + octTxt + sopTxt,
+        actions: actions.slice(0, 3)
+      });
+      covered.push({ lo: 74, hi: 89, sign: sharp ? 1 : -1 });
+    } else if (octDiff !== null && Math.abs(octDiff) > 8) {
+      // 3. Octave jump (only when the high-register insight did not already explain it)
+      const sharp = octDiff > 0;
+      out.push({
+        sev: Math.abs(octDiff), tone: sharp ? 'sharp' : 'flat', metric: fmtCents(octDiff),
+        title: sharp ? 'Octave-key notes jump sharp' : 'Upper octave falls flat',
+        body: 'Across ' + octDiffs.length + ' octave pairs (for example D4 to D5), the upper note sits ' + fmtCents(octDiff) + ' from its lower octave. ' +
+          (sharp ? 'The embouchure is likely tightening when the octave key engages.' : 'Air support is likely dropping as you cross the break.'),
+        actions: sharp ? [
+          'Keep jaw, lips and tongue exactly where they are across the break; let the octave vent do the work.',
+          'Slur D4 to D5, E4 to E5 and F4 to F5 slowly with the tuner. The needle should not move.'
+        ] : [
+          'Increase air speed (not volume) as the octave key opens.',
+          'Slur D4 to D5 slowly, keeping a slightly higher tongue position on the top note.'
+        ]
+      });
+    }
+
+    // 4. Low stack
+    if (low && low.count >= 2 && Math.abs(low.mean) > 8 && Math.sign(low.mean) !== globalSign) {
+      const sharp = low.mean > 0;
+      const bigHorn = state.instrument === 'tenor' || state.instrument === 'bari';
+      out.push({
+        sev: Math.abs(low.mean), tone: sharp ? 'sharp' : 'flat', metric: fmtCents(low.mean),
+        title: sharp ? 'Low notes are pinched sharp' : 'Low notes are flat',
+        body: 'Your low-stack notes (B♭3 to C♯4) average ' + fmtCents(low.mean) + '. ' +
+          (sharp ? 'Squeezing to make low notes speak raises the pitch and thins the tone.'
+                 : 'Low notes drop when the jaw opens too far and the air slows down for soft entries.') +
+          (bigHorn ? ' On the ' + horn + ', the low register needs a very open throat and generous air volume.' : ''),
+        actions: sharp ? [
+          'Ease lower-lip pressure and let the reed vibrate freely; low notes need air, not grip.',
+          'Open the throat with an "oh" shape and use more air volume to make the note speak.'
+        ] : [
+          'Keep the same embouchure you use for middle D; avoid dropping the jaw for low notes.',
+          'Play low B♭ to low D long tones at mezzo-forte against a drone with fast, warm air.'
+        ]
+      });
+      covered.push({ lo: 58, hi: 61, sign: sharp ? 1 : -1 });
+    }
+
+    // 5. Individual problem notes
+    const isCovered = n => covered.some(c => n.midi >= c.lo && n.midi <= c.hi && Math.sign(n.mean) === c.sign);
+    const problems = st.notes.filter(n => Math.abs(n.mean) > 15 && !isCovered(n))
+      .sort((a, b) => Math.abs(b.mean) - Math.abs(a.mean)).slice(0, 4);
+    if (problems.length) {
+      const sharps = problems.filter(n => n.mean > 0), flats = problems.filter(n => n.mean < 0);
+      const actions = [];
+      if (byMidi[73] && problems.indexOf(byMidi[73]) >= 0 && byMidi[73].mean > 0) actions.push('C♯5: add the low C♯ pinky key and right-hand fingers 1 to 3 to add resonance and pull the pitch down.');
+      const palmSharp = sharps.filter(n => n.midi >= 86);
+      if (palmSharp.length) actions.push(palmSharp.map(n => noteText(n.midi)).join(', ') + ': add right-hand fingers 2 and 3 to bring the pitch down.');
+      const otherSharp = sharps.filter(n => n.midi !== 73 && n.midi < 86);
+      if (otherSharp.length) actions.push(otherSharp.map(n => noteText(n.midi)).join(', ') + ': relax lip pressure and voice lower with an "oh" shape.');
+      if (flats.length) actions.push(flats.map(n => noteText(n.midi)).join(', ') + ': use faster air and a slightly higher tongue position ("ee").');
+      out.push({
+        sev: Math.abs(problems[0].mean) - 6, tone: problems[0].mean > 0 ? 'sharp' : 'flat',
+        metric: problems.length + (problems.length === 1 ? ' note' : ' notes'),
+        title: 'Problem notes: ' + nameList(problems),
+        body: (problems.length === 1 ? 'This note is' : 'These notes are') + ' more than 15 cents off and stand out from the rest of the register. Isolate them with long tones against a drone.',
+        actions: actions.slice(0, 3)
+      });
+    }
+
+    // 6. Steadiness
+    if (st.avgSd > 6) {
+      out.push({
+        sev: st.avgSd, tone: 'info', metric: '±' + st.avgSd.toFixed(1) + '¢',
+        title: 'Pitch wavers inside sustained notes',
+        body: 'Your notes drift by about ±' + st.avgSd.toFixed(1) + ' cents while you hold them. Steadier air support will tighten every square on the matrix.',
+        actions: [
+          'Daily long tones: four counts crescendo, four counts decrescendo, needle steady the whole time.',
+          'Check the reed. A chipped or warped reed makes pitch unstable.'
+        ]
+      });
+    }
+
+    // 7. Strength
+    if (st.meanAbs < 5 && st.count >= 5) {
+      out.push({
+        sev: 1, tone: 'good', metric: st.inTune + ' of ' + st.count + ' in tune',
+        title: 'Excellent centering across the horn',
+        body: 'Your sampled notes average only ' + st.meanAbs.toFixed(1) + ' cents from center.',
+        actions: ['Re-sample the same notes at pianissimo and fortissimo; dynamics are the next intonation challenge.']
+      });
+    }
+
+    // 8. Coverage
+    if (st.count < 32) {
+      const missing = REGISTERS.filter(r => !st.regs.find(g => g.id === r.id).count).map(r => r.name.toLowerCase());
+      out.push({
+        sev: 0.3, tone: 'info', metric: st.count + ' of 32',
+        title: 'Complete the map',
+        body: 'Sample the remaining ' + (32 - st.count) + ' notes' + (missing.length ? ', starting with the ' + missing.join(' and ') : '') + ', so the coaching can compare every register.'
+      });
+    }
+
+    // Always give at least two pieces of guidance
+    if (out.length < 2) {
+      out.push({
+        sev: 0.2, tone: 'info', metric: st.count + ' of 32',
+        title: 'Keep your map current',
+        body: 'Intonation shifts with reeds, temperature and fatigue. Re-sample after warming up and whenever you change reeds or mouthpieces.',
+        actions: ['Warm up for five minutes before sampling so the horn reaches playing temperature.', 'Play each note two or three times; the running average smooths out single takes.']
+      });
+    }
+
+    out.sort((a, b) => b.sev - a.sev);
+    const top = out.slice(0, 3);
+    top.forEach(it => { if (!it.level) it.level = it.tone === 'good' ? 'Strength' : levelFor(it.sev); });
+    return top;
+  }
+
+  function renderInsight(it) {
+    return '<article class="insight" data-tone="' + it.tone + '">' +
+      '<div class="insight-top"><span class="insight-level">' + it.level + '</span>' +
+      (it.metric ? '<span class="insight-metric">' + it.metric + '</span>' : '') + '</div>' +
+      '<h4>' + it.title + '</h4><p>' + it.body + '</p>' +
+      (it.actions && it.actions.length ? '<ul>' + it.actions.map(a => '<li>' + a + '</li>').join('') + '</ul>' : '') +
+      '</article>';
+  }
+
+  /* =========================================================
+     Analytics panel
+     ========================================================= */
+  const RING_LEN = 2 * Math.PI * 42;
+  function renderAnalytics() {
+    const st = computeStats();
+    els.countPill.textContent = st.count + ' of 32 notes';
+    if (!st.count) {
+      els.scoreNum.textContent = '–';
+      els.ringFg.style.strokeDashoffset = RING_LEN;
+      els.grade.textContent = 'No samples yet';
+      els.statInTune.textContent = els.statAbs.textContent = els.statLean.textContent = els.statSd.textContent = '–';
+      els.statLean.style.color = '';
+    } else {
+      const score = Math.round(st.score);
+      els.scoreNum.textContent = score;
+      els.ringFg.style.strokeDashoffset = (RING_LEN * (1 - score / 100)).toFixed(2);
+      els.grade.textContent = score >= 90 ? 'Excellent intonation' : score >= 75 ? 'Solid, with a few spots' : score >= 55 ? 'Developing' : 'Needs focused work';
+      els.statInTune.textContent = Math.round(st.inTune / st.count * 100) + '%';
+      els.statAbs.textContent = st.meanAbs.toFixed(1) + '¢';
+      els.statLean.textContent = fmtCents(st.meanAll) + (Math.abs(st.meanAll) <= 2 ? ' centered' : st.meanAll > 0 ? ' sharp' : ' flat');
+      els.statLean.style.color = heat(st.meanAll).text;
+      els.statSd.textContent = '±' + st.avgSd.toFixed(1) + '¢';
+    }
+
+    const regsSrc = st.count ? st.regs : REGISTERS.map(r => Object.assign({}, r, { count: 0, mean: null }));
+    els.regs.innerHTML = regsSrc.map(r => {
+      const rangeTxt = noteText(r.lo) + '–' + noteText(r.hi);
+      let bar = '', val = '–', color = '';
+      if (r.mean !== null) {
+        const v = clamp(r.mean, -30, 30);
+        const w = Math.abs(v) / 30 * 50;
+        const left = v >= 0 ? 50 : 50 - w;
+        const col = heat(r.mean);
+        bar = '<i style="left:' + left.toFixed(2) + '%;width:' + Math.max(w, 0.8).toFixed(2) + '%;background:' + col.solid + '"></i>';
+        val = fmtCents(r.mean);
+        color = ' style="color:' + col.text + '"';
+      }
+      return '<div class="reg"><div class="reg-head"><span class="reg-name">' + r.name + '</span><span class="reg-range">' + rangeTxt +
+        (r.count ? ', ' + r.count + ' sampled' : '') + '</span><span class="reg-val"' + color + '>' + val + '</span></div>' +
+        '<div class="reg-bar">' + bar + '</div></div>';
+    }).join('');
+
+    els.insights.innerHTML = buildInsights(st).map(renderInsight).join('');
+  }
+
+  /* =========================================================
+     Note inspector
+     ========================================================= */
+  function selectNote(m) {
+    if (state.selected !== null && cells[state.selected]) cells[state.selected].el.classList.remove('is-selected');
+    state.selected = m;
+    if (m !== null) cells[m].el.classList.add('is-selected');
+    renderInspector();
+    if (m !== null) {
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      requestAnimationFrame(() => els.inspector.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }));
+    }
+  }
+
+  function renderInspector() {
+    const m = state.selected;
+    if (m === null) { els.inspector.hidden = true; return; }
+    els.inspector.hidden = false;
+    const I = inst();
+    const reg = registerOf(m);
+    els.inspHeading.innerHTML = '<span class="cell-note">' + noteHTML(m) + '</span>';
+    const concert = m - I.transpose;
+    els.inspSub.textContent = (I.transpose ? 'Sounds ' + noteText(concert) + ' concert, ' : 'Concert pitch, ') +
+      midiToFreq(concert, state.a4).toFixed(1) + ' Hz target. ' + reg.name + '.';
+    const s = noteStats(m, false);
+    if (!s) {
+      els.inspBody.innerHTML = '<p class="insp-empty">Not sampled yet. Turn on Sample notes and sustain ' + noteText(m) + ' for ' + CAPTURE_TARGET + ' seconds.</p>';
+      return;
+    }
+    const col = heat(s.mean);
+    const hist = s.hist.slice(-12);
+    const W = 300, H = 64, mid = H / 2, bw = W / 12;
+    let bars = '<line x1="0" y1="' + mid + '" x2="' + W + '" y2="' + mid + '" stroke="rgba(24,25,27,.25)" stroke-width="1"/>' +
+      '<rect x="0" y="' + (mid - 5 / 30 * (mid - 4)).toFixed(1) + '" width="' + W + '" height="' + (10 / 30 * (mid - 4)).toFixed(1) + '" fill="rgba(15,154,99,.1)"/>';
+    hist.forEach((v, i) => {
+      const hgt = Math.max(1.5, Math.abs(clamp(v, -30, 30)) / 30 * (mid - 4));
+      const y = v >= 0 ? mid - hgt : mid;
+      bars += '<rect x="' + (i * bw + bw * 0.22).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw * 0.56).toFixed(1) + '" height="' + hgt.toFixed(1) + '" rx="2" fill="' + heat(v).solid + '"/>';
+    });
+    els.inspBody.innerHTML =
+      '<dl class="stats insp-stats">' +
+        '<div><dt>Running average</dt><dd style="color:' + col.text + '">' + fmtCents(s.mean) + '</dd></div>' +
+        '<div><dt>Steadiness</dt><dd>±' + s.sd.toFixed(1) + '¢</dd></div>' +
+        '<div><dt>Takes</dt><dd>' + s.takes + '</dd></div>' +
+        '<div><dt>Last take</dt><dd>' + (hist.length ? fmtCents(hist[hist.length - 1]) : '–') + '</dd></div>' +
+      '</dl>' +
+      '<svg class="insp-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-label="Recent takes">' + bars + '</svg>' +
+      '<p class="insp-cap">Recent takes, oldest to newest. Bars above the line are sharp.</p>' +
+      '<button class="btn btn-quiet" id="clearNoteBtn" type="button">Clear ' + noteText(m) + '</button>';
+    $('clearNoteBtn').addEventListener('click', () => {
+      delete store[m];
+      saveData();
+      renderCell(m);
+      renderAnalytics();
+      renderInspector();
+      toast('Cleared ' + noteText(m) + '.');
+    });
+  }
+
+  /* =========================================================
+     Live display
+     ========================================================= */
+  const view = { note: undefined, stale: null, disp: 0, textAt: 0, liveCell: null, idle: null };
+
+  function updateLiveUI(now, dt) {
+    const voiced = live.voicedAt > 0 && (now - live.voicedAt) < 0.22;
+    const I = inst();
+
+    if (live.note !== view.note) {
+      view.note = live.note;
+      els.noteBig.innerHTML = live.note === null ? '<span class="nl">–</span>' : noteHTML(live.note);
+    }
+    if (view.stale !== !voiced) { view.stale = !voiced; els.noteBig.classList.toggle('is-stale', !voiced); }
+
+    const target = voiced ? clamp(live.cents, -50, 50) : 0;
+    view.disp += (target - view.disp) * Math.min(1, dt * (voiced ? 14 : 4));
+    const pct = (view.disp + 50) / 100;
+    els.needle.style.transform = 'translateX(' + ((pct - 0.5) * els.needle.parentNode.clientWidth).toFixed(1) + 'px)';
+    els.needle.style.setProperty('--needle', voiced ? heatSolid(view.disp) : 'var(--text)');
+    if (view.idle !== !voiced) { view.idle = !voiced; els.needle.classList.toggle('is-idle', !voiced); }
+
+    if (now - view.textAt > 0.066) {
+      view.textAt = now;
+      if (voiced) {
+        const c = view.disp;
+        els.centsText.innerHTML = fmtCents(c).replace('¢', '') + '<small>¢</small>';
+        const tone = Math.abs(c) <= IN_TUNE ? 'tune' : c > 0 ? 'sharp' : 'flat';
+        els.verdict.dataset.tone = tone;
+        els.verdict.textContent = tone === 'tune' ? 'In tune' : tone === 'sharp' ? 'Sharp' : 'Flat';
+        els.freqText.textContent = live.freq.toFixed(1) + ' Hz, target ' + midiToFreq(live.note - I.transpose, state.a4).toFixed(1) + ' Hz';
+        els.concertText.textContent = I.transpose ? 'Sounds ' + noteText(live.note - I.transpose) + ' concert' : 'Concert pitch';
+      } else {
+        els.centsText.innerHTML = '0.0<small>¢</small>';
+        els.verdict.dataset.tone = '';
+        els.verdict.textContent = audio.mode === 'off' ? 'No signal' : 'Listening';
+        if (live.note === null) els.concertText.textContent = 'Written pitch for ' + I.label.toLowerCase();
+        els.freqText.textContent = audio.mode === 'off' ? 'Start the microphone to begin' : 'Play a note';
+      }
+      const lvl = audio.mode === 'off' ? 0 : clamp((live.levelDb + 72) / 72, 0, 1);
+      els.levelFill.style.width = (lvl * 100).toFixed(1) + '%';
+    }
+
+    const lc = voiced && live.note !== null && live.note >= RANGE_LOW && live.note <= RANGE_HIGH ? live.note : null;
+    if (lc !== view.liveCell) {
+      if (view.liveCell !== null) cells[view.liveCell].el.classList.remove('is-live');
+      if (lc !== null) cells[lc].el.classList.add('is-live');
+      view.liveCell = lc;
+    }
+  }
+
+  /* =========================================================
+     Pitch trace canvas
+     ========================================================= */
+  const trace = { ctx: els.trace.getContext('2d'), dpr: 1 };
+  function sizeTrace() {
+    const r = els.trace.getBoundingClientRect();
+    trace.dpr = Math.min(2, window.devicePixelRatio || 1);
+    els.trace.width = Math.max(1, Math.round(r.width * trace.dpr));
+    els.trace.height = Math.max(1, Math.round(r.height * trace.dpr));
+  }
+  function drawTrace(now) {
+    const ctx = trace.ctx, W = els.trace.width, H = els.trace.height, d = trace.dpr;
+    if (W < 4 || H < 4) return;
+    ctx.clearRect(0, 0, W, H);
+    const pad = 8 * d;
+    const yOf = c => H / 2 - clamp(c, -50, 50) / 50 * (H / 2 - pad);
+    const xOf = t => W - (now - t) / TRACE_SECONDS * W;
+
+    ctx.fillStyle = 'rgba(15,154,99,0.08)';
+    ctx.fillRect(0, yOf(IN_TUNE), W, yOf(-IN_TUNE) - yOf(IN_TUNE));
+    ctx.lineWidth = d;
+    ctx.strokeStyle = 'rgba(24,25,27,0.05)';
+    ctx.beginPath();
+    [-40, -30, -20, -10, 10, 20, 30, 40].forEach(c => { const y = Math.round(yOf(c)) + 0.5; ctx.moveTo(0, y); ctx.lineTo(W, y); });
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(24,25,27,0.2)';
+    ctx.beginPath(); ctx.moveTo(0, Math.round(H / 2) + 0.5); ctx.lineTo(W, Math.round(H / 2) + 0.5); ctx.stroke();
+
+    ctx.font = (11 * d) + 'px "IBM Plex Sans", Helvetica, sans-serif';
+    ctx.fillStyle = 'rgba(24,25,27,0.4)';
+    ctx.fillText('+25', 6 * d, yOf(25) + 4 * d);
+    ctx.fillText('−25', 6 * d, yOf(-25) + 4 * d);
+
+    ctx.lineWidth = 2.2 * d;
+    ctx.lineCap = 'round';
+    let prev = null, lastNote = null, lastLabelX = -1e9;
+    for (let i = 0; i < history.length; i++) {
+      const p = history[i];
+      if (p.c === null) { prev = null; lastNote = null; continue; }
+      const x = xOf(p.t), y = yOf(p.c);
+      if (prev && prev.n === p.n && p.t - prev.t < 0.12) {
+        ctx.strokeStyle = heatSolid((p.c + prev.c) / 2);
+        ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(x, y); ctx.stroke();
+      }
+      if (p.n !== lastNote) {
+        lastNote = p.n;
+        if (x - lastLabelX > 44 * d && x > -20 * d) {
+          ctx.fillStyle = 'rgba(24,25,27,0.65)';
+          ctx.fillText(noteText(p.n), x + 4 * d, 14 * d);
+          lastLabelX = x;
+        }
+      }
+      prev = { x: x, y: y, n: p.n, t: p.t, c: p.c };
+    }
+  }
+
+  /* =========================================================
+     Metronome (look-ahead scheduler on the shared AudioContext)
+     ========================================================= */
+  const TEMPO_MARKS = [[40, 'Grave'], [60, 'Largo'], [66, 'Larghetto'], [76, 'Adagio'], [108, 'Andante'], [120, 'Moderato'], [156, 'Allegro'], [176, 'Vivace'], [200, 'Presto'], [999, 'Prestissimo']];
+  const CLICKS = {
+    wood:  { type: 'triangle', f: [520, 800, 1250], dur: 0.045 },
+    click: { type: 'square',   f: [900, 1200, 1800], dur: 0.022 },
+    beep:  { type: 'sine',     f: [660, 880, 1320], dur: 0.07 }
+  };
+  const met = Object.assign({ bpm: 92, beats: 4, sub: 1, sound: 'wood', accent: true, vol: 0.8, trainOn: false, trainStep: 2, trainEvery: 4, trainTarget: 140 }, store_.get('ws.met', {}));
+  const metRun = { on: false, timer: 0, next: 0, beat: 0, subIdx: 0, bars: 0, queue: [], shown: -1, taps: [] };
+  const metEls = {
+    bpm: $('bpm'), slider: $('metSlider'), minus: $('metMinus'), plus: $('metPlus'), toggle: $('metToggle'), tap: $('metTap'),
+    beats: $('metBeats'), sound: $('metSound'), sub: $('metSub'), accent: $('metAccent'), vol: $('metVol'), dots: $('beats'), marking: $('marking'),
+    trainOn: $('trainOn'), trainStep: $('trainStep'), trainEvery: $('trainEvery'), trainTarget: $('trainTarget')
+  };
+  const saveMet = () => store_.set('ws.met', { bpm: met.bpm, beats: met.beats, sub: met.sub, sound: met.sound, accent: met.accent, vol: met.vol, trainOn: met.trainOn, trainStep: met.trainStep, trainEvery: met.trainEvery, trainTarget: met.trainTarget });
+
+  function setBpm(v) {
+    met.bpm = Math.round(clamp(Number(v) || 92, 30, 260));
+    metEls.bpm.textContent = met.bpm;
+    metEls.slider.value = met.bpm;
+    metEls.marking.textContent = TEMPO_MARKS.find(t => met.bpm < t[0])[1];
+    saveMet();
+    renderRunning();
+  }
+  function buildDots() {
+    let html = '';
+    for (let i = 0; i < met.beats; i++) html += '<span class="beat' + (i === 0 && met.accent ? ' accent' : '') + '"></span>';
+    metEls.dots.innerHTML = html;
+    metRun.shown = -1;
+  }
+  function playClick(t, level) {
+    const ctx = audio.ctx, c = CLICKS[met.sound] || CLICKS.wood;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = c.type;
+    o.frequency.value = c.f[level];
+    const peak = Math.max(0.0002, met.vol * [0.22, 0.5, 0.8][level] * (c.type === 'square' ? 0.35 : 0.9));
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + c.dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + c.dur + 0.02);
+  }
+  function metSchedule() {
+    const ctx = audio.ctx;
+    while (metRun.next < ctx.currentTime + 0.12) {
+      const level = metRun.subIdx > 0 ? 0 : (metRun.beat === 0 && met.accent && met.beats > 1) ? 2 : 1;
+      playClick(metRun.next, level);
+      if (metRun.subIdx === 0) metRun.queue.push({ t: metRun.next, beat: metRun.beat });
+      metRun.next += 60 / met.bpm / met.sub;
+      if (++metRun.subIdx >= met.sub) {
+        metRun.subIdx = 0;
+        if (++metRun.beat >= met.beats) { metRun.beat = 0; metBarDone(); }
+      }
+    }
+  }
+  function metBarDone() {
+    metRun.bars++;
+    if (met.trainOn && metRun.bars % Math.max(1, met.trainEvery) === 0 && met.bpm < met.trainTarget) {
+      setBpm(Math.min(met.trainTarget, met.bpm + met.trainStep));
+      if (met.bpm >= met.trainTarget) toast('Speed trainer reached ' + met.trainTarget + ' BPM.');
+    }
+  }
+  async function startMet() {
+    try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio.', 'error'); return; }
+    metRun.on = true; metRun.beat = 0; metRun.subIdx = 0; metRun.bars = 0; metRun.queue = [];
+    metRun.next = audio.ctx.currentTime + 0.08;
+    metSchedule();
+    metRun.timer = window.setInterval(metSchedule, 25);
+    renderMetRun();
+  }
+  function stopMet() {
+    window.clearInterval(metRun.timer);
+    metRun.on = false; metRun.queue = [];
+    showBeat(-1);
+    renderMetRun();
+  }
+  const toggleMet = () => (metRun.on ? stopMet() : startMet());
+  function renderMetRun() {
+    metEls.toggle.textContent = metRun.on ? 'Stop' : 'Start';
+    metEls.toggle.classList.toggle('is-on', metRun.on);
+    renderRunning();
+  }
+  function showBeat(b) {
+    if (b === metRun.shown) return;
+    const dots = metEls.dots.children;
+    if (metRun.shown >= 0 && dots[metRun.shown]) dots[metRun.shown].classList.remove('on');
+    if (b >= 0 && dots[b]) dots[b].classList.add('on');
+    metRun.shown = b;
+  }
+  function metFrame() {
+    if (!metRun.on || !audio.ctx) return;
+    const now = audio.ctx.currentTime;
+    let cur = null;
+    while (metRun.queue.length && metRun.queue[0].t <= now) cur = metRun.queue.shift();
+    if (cur) showBeat(cur.beat);
+  }
+  function tapTempo() {
+    const t = performance.now();
+    if (metRun.taps.length && t - metRun.taps[metRun.taps.length - 1] > 2000) metRun.taps = [];
+    metRun.taps.push(t);
+    if (metRun.taps.length > 5) metRun.taps.shift();
+    if (metRun.taps.length >= 2) {
+      const gaps = metRun.taps.slice(1).map((v, i) => v - metRun.taps[i]);
+      setBpm(60000 / avg(gaps));
+    }
+  }
+  function initMet() {
+    let opts = '';
+    for (let i = 1; i <= 12; i++) opts += '<option value="' + i + '">' + i + (i === 1 ? ' (no accent)' : '') + '</option>';
+    metEls.beats.innerHTML = opts;
+    metEls.beats.value = met.beats;
+    metEls.sound.value = met.sound;
+    metEls.accent.checked = met.accent;
+    metEls.vol.value = met.vol;
+    metEls.trainOn.checked = met.trainOn;
+    metEls.trainStep.value = met.trainStep; metEls.trainEvery.value = met.trainEvery; metEls.trainTarget.value = met.trainTarget;
+    [...metEls.sub.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.sub) === met.sub)));
+    setBpm(met.bpm);
+    buildDots();
+
+    metEls.slider.addEventListener('input', () => setBpm(metEls.slider.value));
+    metEls.minus.addEventListener('click', () => setBpm(met.bpm - 1));
+    metEls.plus.addEventListener('click', () => setBpm(met.bpm + 1));
+    metEls.toggle.addEventListener('click', toggleMet);
+    metEls.tap.addEventListener('click', tapTempo);
+    metEls.beats.addEventListener('change', () => { met.beats = Number(metEls.beats.value); metRun.beat = 0; buildDots(); saveMet(); });
+    metEls.sound.addEventListener('change', () => { met.sound = metEls.sound.value; saveMet(); });
+    metEls.accent.addEventListener('change', () => { met.accent = metEls.accent.checked; buildDots(); saveMet(); });
+    metEls.vol.addEventListener('input', () => { met.vol = Number(metEls.vol.value); saveMet(); });
+    metEls.sub.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      met.sub = Number(b.dataset.sub); metRun.subIdx = 0;
+      [...metEls.sub.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      saveMet();
+    });
+    const trainSync = () => {
+      met.trainOn = metEls.trainOn.checked;
+      met.trainStep = clamp(Math.round(Number(metEls.trainStep.value) || 2), 1, 20);
+      met.trainEvery = clamp(Math.round(Number(metEls.trainEvery.value) || 4), 1, 64);
+      met.trainTarget = clamp(Math.round(Number(metEls.trainTarget.value) || 140), 30, 260);
+      metRun.bars = 0;
+      saveMet();
+    };
+    [metEls.trainOn, metEls.trainStep, metEls.trainEvery, metEls.trainTarget].forEach(x => x.addEventListener('change', trainSync));
+  }
+
+  /* =========================================================
+     Drone
+     ========================================================= */
+  const drone = Object.assign({ pc: 0, oct: 4, names: 'written', sound: 'organ', fifth: false, octUp: false, vol: 0.5 }, store_.get('ws.drone', {}));
+  const droneRun = { on: false, master: null, voices: [], filter: null };
+  const droneEls = {
+    note: $('droneNote'), info: $('droneInfo'), pitches: $('pitches'), toggle: $('droneToggle'), names: $('droneNames'),
+    oct: $('droneOct'), sound: $('droneSound'), fifth: $('droneFifth'), octUp: $('droneOctUp'), vol: $('droneVol'), wave: $('wave')
+  };
+  const saveDrone = () => store_.set('ws.drone', { pc: drone.pc, oct: drone.oct, names: drone.names, sound: drone.sound, fifth: drone.fifth, octUp: drone.octUp, vol: drone.vol });
+  // The pitch the player picked, as a MIDI number in the naming they chose (written or concert)
+  const droneShownMidi = () => (drone.oct + 1) * 12 + drone.pc;
+  const droneConcertMidi = () => droneShownMidi() - (drone.names === 'written' ? inst().transpose : 0);
+  const droneFreq = () => midiToFreq(droneConcertMidi(), state.a4);
+  const droneLevel = () => drone.vol * 0.22;
+  let organWave = null;
+
+  function buildDroneVoices() {
+    const ctx = audio.ctx, f = droneFreq();
+    const master = ctx.createGain(); master.gain.value = 0.0001;
+    const filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
+    filter.frequency.value = drone.sound === 'reed' ? 1500 : drone.sound === 'organ' ? 4200 : 12000;
+    filter.Q.value = drone.sound === 'reed' ? 2 : 0.7;
+    filter.connect(master); master.connect(ctx.destination);
+    const parts = [{ r: 1, g: 1 }];
+    if (drone.fifth) parts.push({ r: 1.5, g: 0.6 });
+    if (drone.octUp) parts.push({ r: 2, g: 0.45 });
+    const voices = parts.map(p => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      if (drone.sound === 'organ') {
+        if (!organWave) organWave = ctx.createPeriodicWave(new Float32Array([0, 1, 0.55, 0.32, 0.2, 0.12, 0.06, 0.03]), new Float32Array(8));
+        o.setPeriodicWave(organWave);
+      } else o.type = drone.sound === 'reed' ? 'sawtooth' : 'sine';
+      o.frequency.value = f * p.r;
+      g.gain.value = p.g / parts.length * 1.4;
+      o.connect(g); g.connect(filter);
+      o.start();
+      return { o: o, g: g, r: p.r };
+    });
+    master.gain.setTargetAtTime(droneLevel(), ctx.currentTime, 0.08);
+    return { master: master, filter: filter, voices: voices };
+  }
+  function fadeOutDrone(set) {
+    const master = set.master, voices = set.voices;
+    if (!master) return;
+    const t = audio.ctx.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setTargetAtTime(0.0001, t, 0.06);
+    voices.forEach(v => v.o.stop(t + 0.5));
+    window.setTimeout(() => { try { master.disconnect(); } catch (e) { /* gone */ } }, 700);
+  }
+  async function startDrone() {
+    try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio.', 'error'); return; }
+    Object.assign(droneRun, buildDroneVoices(), { on: true });
+    renderDrone();
+  }
+  function stopDrone() {
+    if (droneRun.on) fadeOutDrone(droneRun);
+    droneRun.on = false; droneRun.master = null; droneRun.voices = [];
+    renderDrone();
+  }
+  const toggleDrone = () => (droneRun.on ? stopDrone() : startDrone());
+  function rebuildDrone() {
+    if (!droneRun.on) return;
+    fadeOutDrone(droneRun);
+    Object.assign(droneRun, buildDroneVoices());
+  }
+  function retuneDrone() {
+    if (!droneRun.on) return;
+    const f = droneFreq(), t = audio.ctx.currentTime;
+    droneRun.voices.forEach(v => v.o.frequency.setTargetAtTime(f * v.r, t, 0.03));
+  }
+  function renderDrone() {
+    const I = inst(), shown = droneShownMidi(), concert = droneConcertMidi();
+    droneEls.note.innerHTML = noteHTML(shown);
+    let info = '<strong>' + droneFreq().toFixed(1) + ' Hz</strong>';
+    if (I.transpose) {
+      info += drone.names === 'written'
+        ? 'Written for ' + I.label.toLowerCase() + ', sounds ' + noteText(concert) + ' concert'
+        : 'Concert pitch, written ' + noteText(concert + I.transpose) + ' for ' + I.label.toLowerCase();
+    } else info += 'Concert pitch';
+    droneEls.info.innerHTML = info;
+    [...droneEls.pitches.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pc) === drone.pc)));
+    [...droneEls.names.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.names === drone.names)));
+    droneEls.names.children[0].textContent = I.transpose ? 'Written for ' + I.label.toLowerCase() : 'Written';
+    droneEls.toggle.innerHTML = (droneRun.on ? ICONS.stop + '<span>Stop drone</span>' : ICONS.play + '<span>Play drone</span>');
+    droneEls.toggle.classList.toggle('is-on', droneRun.on);
+    droneEls.wave.classList.toggle('on', droneRun.on);
+    renderRunning();
+  }
+  function initDrone() {
+    let html = '';
+    for (let p = 0; p < 12; p++) html += '<button class="pitch" type="button" data-pc="' + p + '">' + pcText(p) + '</button>';
+    droneEls.pitches.innerHTML = html;
+    let wave = '';
+    for (let i = 0; i < 40; i++) wave += '<i style="animation-delay:' + (-(i * 0.09) % 1.6).toFixed(2) + 's"></i>';
+    droneEls.wave.innerHTML = wave;
+    droneEls.oct.value = drone.oct; droneEls.sound.value = drone.sound;
+    droneEls.fifth.checked = drone.fifth; droneEls.octUp.checked = drone.octUp; droneEls.vol.value = drone.vol;
+
+    droneEls.pitches.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      drone.pc = Number(b.dataset.pc); saveDrone(); renderDrone();
+      if (droneRun.on) retuneDrone(); else startDrone();
+    });
+    droneEls.names.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      drone.names = b.dataset.names; saveDrone(); renderDrone(); retuneDrone();
+    });
+    droneEls.oct.addEventListener('change', () => { drone.oct = Number(droneEls.oct.value); saveDrone(); renderDrone(); retuneDrone(); });
+    droneEls.sound.addEventListener('change', () => { drone.sound = droneEls.sound.value; saveDrone(); rebuildDrone(); });
+    droneEls.fifth.addEventListener('change', () => { drone.fifth = droneEls.fifth.checked; saveDrone(); rebuildDrone(); });
+    droneEls.octUp.addEventListener('change', () => { drone.octUp = droneEls.octUp.checked; saveDrone(); rebuildDrone(); });
+    droneEls.vol.addEventListener('input', () => {
+      drone.vol = Number(droneEls.vol.value); saveDrone();
+      if (droneRun.on) droneRun.master.gain.setTargetAtTime(droneLevel(), audio.ctx.currentTime, 0.05);
+    });
+    droneEls.toggle.addEventListener('click', toggleDrone);
+    renderDrone();
+  }
+
+  /* =========================================================
+     Recorder (MediaRecorder, takes kept in IndexedDB)
+     ========================================================= */
+  const recEls = { btn: $('recBtn'), time: $('recTime'), status: $('recStatus'), level: $('recLevel'), takes: $('takes'), sub: $('takesSub') };
+  const rec = { mr: null, stream: null, chunks: [], startAt: 0, timer: 0, analyser: null, src: null, lvlBuf: null, takes: [], urls: {} };
+  const idb = {
+    db: null,
+    open() {
+      if (this.db) return Promise.resolve(this.db);
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) { reject(new Error('no idb')); return; }
+        const req = indexedDB.open('woodshed', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('takes', { keyPath: 'id' });
+        req.onsuccess = () => { this.db = req.result; resolve(this.db); };
+        req.onerror = () => reject(req.error);
+      });
+    },
+    tx(mode, fn) {
+      return this.open().then(db => new Promise((resolve, reject) => {
+        const t = db.transaction('takes', mode), os = t.objectStore('takes');
+        const req = fn(os);
+        t.oncomplete = () => resolve(req && req.result);
+        t.onerror = () => reject(t.error);
+      }));
+    },
+    all() { return this.tx('readonly', os => os.getAll()); },
+    put(v) { return this.tx('readwrite', os => os.put(v)); },
+    del(id) { return this.tx('readwrite', os => os.delete(id)); }
+  };
+
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+    return ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+  }
+  async function startRec() {
+    if (!window.MediaRecorder) { toast('This browser cannot record audio. Use a current version of Chrome, Safari or Firefox.', 'error'); return; }
+    if (micUnsupported()) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false });
+      const mime = pickMime();
+      const mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      rec.stream = stream; rec.mr = mr; rec.chunks = [];
+      mr.ondataavailable = e => { if (e.data && e.data.size) rec.chunks.push(e.data); };
+      mr.onstop = finishRec;
+      mr.start(1000);
+      rec.startAt = performance.now();
+      try {
+        await ensureAudio();
+        rec.src = audio.ctx.createMediaStreamSource(stream);
+        rec.analyser = audio.ctx.createAnalyser(); rec.analyser.fftSize = 1024;
+        rec.lvlBuf = new Float32Array(rec.analyser.fftSize);
+        rec.src.connect(rec.analyser);
+      } catch (e) { rec.analyser = null; }
+      rec.timer = window.setInterval(() => { recEls.time.textContent = clockText((performance.now() - rec.startAt) / 1000); }, 250);
+      recEls.status.textContent = 'Recording… press the button again to stop.';
+      renderRecBtn();
+    } catch (err) {
+      toast(micError(err), 'error');
+    }
+  }
+  function stopRec() {
+    if (rec.mr && rec.mr.state !== 'inactive') rec.mr.stop();
+  }
+  function finishRec() {
+    const dur = (performance.now() - rec.startAt) / 1000;
+    window.clearInterval(rec.timer);
+    if (rec.src) { try { rec.src.disconnect(); } catch (e) { /* gone */ } }
+    rec.src = null; rec.analyser = null;
+    if (rec.stream) rec.stream.getTracks().forEach(t => t.stop());
+    const type = (rec.mr && rec.mr.mimeType) || 'audio/webm';
+    const blob = new Blob(rec.chunks, { type: type });
+    rec.mr = null; rec.stream = null; rec.chunks = [];
+    recEls.level.style.width = '0';
+    renderRecBtn();
+    if (!blob.size) { recEls.status.textContent = 'Nothing was recorded. Try again.'; return; }
+    const now = new Date();
+    const take = {
+      id: String(now.getTime()),
+      name: 'Take ' + (rec.takes.length + 1) + ' – ' + now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      created: now.getTime(), duration: dur, type: type, blob: blob
+    };
+    rec.takes.unshift(take);
+    idb.put(take).catch(() => toast('This take could not be saved on the device. Download it if you want to keep it.', 'error'));
+    recEls.time.textContent = '0:00';
+    recEls.status.textContent = 'Saved ' + clockText(dur) + '. Listen back on the right.';
+    renderTakes();
+  }
+  const toggleRec = () => (rec.mr ? stopRec() : startRec());
+  function renderRecBtn() {
+    const on = !!rec.mr;
+    recEls.btn.classList.toggle('is-on', on);
+    recEls.btn.setAttribute('aria-label', on ? 'Stop recording' : 'Start recording');
+    $('dotRec').hidden = !on;
+    renderRunning();
+  }
+  function recFrame() {
+    if (!rec.analyser) return;
+    rec.analyser.getFloatTimeDomainData(rec.lvlBuf);
+    let e = 0;
+    for (let i = 0; i < rec.lvlBuf.length; i++) e += rec.lvlBuf[i] * rec.lvlBuf[i];
+    const db = 20 * Math.log10(Math.max(Math.sqrt(e / rec.lvlBuf.length), 1e-5));
+    recEls.level.style.width = (clamp((db + 60) / 60, 0, 1) * 100).toFixed(1) + '%';
+  }
+  function takeUrl(t) { return rec.urls[t.id] || (rec.urls[t.id] = URL.createObjectURL(t.blob)); }
+  function renderTakes() {
+    recEls.sub.textContent = rec.takes.length ? rec.takes.length + (rec.takes.length === 1 ? ' recording' : ' recordings') + ', newest first.' : 'Your recordings, newest first.';
+    if (!rec.takes.length) { recEls.takes.innerHTML = '<li class="empty">No takes yet. Record a passage, then listen back for tone, time and tuning.</li>'; return; }
+    recEls.takes.innerHTML = rec.takes.map(t => {
+      const ext = /mp4/.test(t.type) ? 'm4a' : /ogg/.test(t.type) ? 'ogg' : 'webm';
+      const file = t.name.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') + '.' + ext;
+      return '<li class="take" data-id="' + t.id + '">' +
+        '<div class="take-top"><input class="input" value="' + esc(t.name) + '" aria-label="Take name" />' +
+        '<span class="take-meta">' + clockText(t.duration) + ' · ' + new Date(t.created).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + '</span></div>' +
+        '<audio controls preload="metadata" src="' + takeUrl(t) + '"></audio>' +
+        '<div class="take-actions"><a class="btn btn-quiet" href="' + takeUrl(t) + '" download="' + esc(file) + '">Download</a>' +
+        '<button class="btn btn-quiet" type="button" data-del>Delete</button></div></li>';
+    }).join('');
+  }
+  function initRecorder() {
+    recEls.btn.addEventListener('click', toggleRec);
+    recEls.takes.addEventListener('click', e => {
+      if (!e.target.closest('[data-del]')) return;
+      const id = e.target.closest('.take').dataset.id;
+      const t = rec.takes.find(x => x.id === id);
+      if (!t || !window.confirm('Delete "' + t.name + '"?')) return;
+      rec.takes = rec.takes.filter(x => x.id !== id);
+      if (rec.urls[id]) { URL.revokeObjectURL(rec.urls[id]); delete rec.urls[id]; }
+      idb.del(id).catch(() => {});
+      renderTakes();
+    });
+    recEls.takes.addEventListener('change', e => {
+      if (!e.target.matches('.take-top .input')) return;
+      const t = rec.takes.find(x => x.id === e.target.closest('.take').dataset.id);
+      if (!t) return;
+      t.name = e.target.value.trim() || t.name;
+      idb.put(t).catch(() => {});
+      renderTakes();
+    });
+    renderTakes();
+    idb.all().then(list => {
+      rec.takes = (list || []).filter(t => t && t.blob).sort((a, b) => b.created - a.created).concat(rec.takes.filter(t => !(list || []).some(x => x.id === t.id)));
+      renderTakes();
+    }).catch(() => { recEls.sub.textContent = 'This browser cannot store recordings, so download any take you want to keep.'; });
+  }
+
+  /* =========================================================
+     Practice session planner + timer
+     ========================================================= */
+  const TOOLS = { none: 'No tool', tuner: 'Tuner', metronome: 'Metronome', drone: 'Drone', recorder: 'Recorder' };
+  const DEFAULT_PLAN = [
+    { name: 'Long tones with the drone', min: 10, tool: 'drone' },
+    { name: 'Scales & technique', min: 15, tool: 'metronome' },
+    { name: 'Etude', min: 15, tool: 'metronome' },
+    { name: 'Repertoire', min: 20, tool: 'recorder' },
+    { name: 'Intonation check', min: 5, tool: 'tuner' }
+  ];
+  const sessEls = {
+    label: $('nowLabel'), name: $('nowName'), clock: $('clock'), sub: $('clockSub'), prog: $('blockProg'),
+    toggle: $('sessToggle'), next: $('sessNext'), finish: $('sessFinish'), tool: $('toolLink'), notes: $('sessNotes'),
+    plan: $('plan'), add: $('planAdd'), reset: $('planReset'), total: $('planTotal')
+  };
+  let plan = store_.get('ws.plan', null) || DEFAULT_PLAN.map(b => Object.assign({}, b));
+  // Live session survives a reload: { idx, spent: [secs], running, chimed: [bool], started }
+  let sess = store_.get('ws.session', null);
+  let sessLast = 0, sessTimer = 0, sessSavedAt = 0;
+  const savePlan = () => store_.set('ws.plan', plan);
+  const saveSess = () => store_.set('ws.session', sess);
+  const planSecs = () => plan.reduce((s, b) => s + b.min * 60, 0);
+  const sessTotal = () => sess ? sess.spent.reduce((s, v) => s + v, 0) : 0;
+
+  function renderPlan() {
+    sessEls.plan.innerHTML = plan.map((b, i) => {
+      const cur = sess && sess.idx === i, done = sess && (sess.spent[i] || 0) >= b.min * 60;
+      const opts = Object.keys(TOOLS).map(k => '<option value="' + k + '"' + (b.tool === k ? ' selected' : '') + '>' + TOOLS[k] + '</option>').join('');
+      return '<li class="plan-row' + (cur ? ' is-current' : '') + (done ? ' is-done' : '') + '" data-i="' + i + '">' +
+        '<button class="plan-idx" type="button" data-jump title="Go to this block">' + (done ? '✓' : i + 1) + '</button>' +
+        '<input class="input" data-f="name" value="' + esc(b.name) + '" aria-label="Block name" />' +
+        '<span class="plan-min"><input class="input num" data-f="min" type="number" min="1" max="180" value="' + b.min + '" aria-label="Minutes" /><span>min</span></span>' +
+        '<label class="select"><select data-f="tool" aria-label="Tool for this block">' + opts + '</select></label>' +
+        '<button class="icon-btn" type="button" data-del aria-label="Remove block">×</button>' +
+        (sess && sess.spent[i] ? '<span class="plan-actual">' + clockText(sess.spent[i]) + ' practiced</span>' : '') +
+        '</li>';
+    }).join('');
+    sessEls.total.textContent = 'Planned: ' + minText(planSecs());
+  }
+
+  function renderSessNow() {
+    const total = planSecs();
+    if (!sess) {
+      sessEls.label.textContent = 'Ready';
+      sessEls.name.textContent = plan.length ? 'First up: ' + plan[0].name : 'Add a block to your plan';
+      sessEls.clock.textContent = plan.length ? clockText(plan[0].min * 60) : '0:00';
+      sessEls.clock.classList.remove('is-over');
+      sessEls.sub.textContent = 'Total planned: ' + minText(total) + ' in ' + plan.length + (plan.length === 1 ? ' block' : ' blocks');
+      sessEls.prog.firstElementChild.style.width = '0';
+      sessEls.prog.classList.remove('is-over');
+      sessEls.toggle.textContent = 'Start session';
+      sessEls.toggle.classList.remove('is-on');
+      sessEls.next.disabled = sessEls.finish.disabled = true;
+      setToolLink(plan[0]);
+      $('dotSession').hidden = true;
+      return;
+    }
+    const b = plan[sess.idx];
+    const spent = sess.spent[sess.idx] || 0, goal = b ? b.min * 60 : 0, left = goal - spent;
+    sessEls.label.textContent = 'Block ' + (sess.idx + 1) + ' of ' + plan.length + (sess.running ? '' : ' · paused');
+    sessEls.name.textContent = b ? b.name : 'Session';
+    sessEls.clock.textContent = left >= 0 ? clockText(left) : '+' + clockText(-left);
+    sessEls.clock.classList.toggle('is-over', left < 0);
+    sessEls.prog.firstElementChild.style.width = (goal ? clamp(spent / goal, 0, 1) * 100 : 0).toFixed(1) + '%';
+    sessEls.prog.classList.toggle('is-over', left < 0);
+    sessEls.sub.textContent = 'Session time ' + clockText(sessTotal()) + ' of ' + minText(total) + ' planned';
+    sessEls.toggle.textContent = sess.running ? 'Pause' : 'Resume';
+    sessEls.toggle.classList.toggle('is-on', sess.running);
+    sessEls.next.disabled = sess.idx >= plan.length - 1;
+    sessEls.finish.disabled = false;
+    setToolLink(b);
+    $('dotSession').hidden = !sess.running;
+  }
+  function setToolLink(b) {
+    if (!b || !b.tool || b.tool === 'none') { sessEls.tool.hidden = true; return; }
+    sessEls.tool.hidden = false;
+    sessEls.tool.href = '#' + b.tool;
+    sessEls.tool.innerHTML = 'Open the ' + TOOLS[b.tool].toLowerCase() + ' for this block ' + ICONS.arrow;
+  }
+
+  function sessTick() {
+    if (!sess || !sess.running) return;
+    const now = performance.now();
+    const dt = Math.min(5, (now - sessLast) / 1000);
+    sessLast = now;
+    const i = sess.idx, b = plan[i];
+    if (!b) return;
+    sess.spent[i] = (sess.spent[i] || 0) + dt;
+    if (!sess.chimed[i] && sess.spent[i] >= b.min * 60) {
+      sess.chimed[i] = true;
+      chime();
+      const nb = plan[i + 1];
+      toast(nb ? 'Time for "' + nb.name + '". Press Next block when you’re ready.' : 'Last block done. Press Finish to save the session.');
+      renderPlan();
+    }
+    if (now - sessSavedAt > 2000) { sessSavedAt = now; saveSess(); }
+    renderSessNow();
+    renderRunning();
+  }
+  function chime() {
+    ensureAudio().then(() => {
+      const ctx = audio.ctx, t = ctx.currentTime + 0.02;
+      [[784, 0], [1047, 0.18]].forEach(([f, d]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t + d);
+        g.gain.exponentialRampToValueAtTime(0.25, t + d + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.9);
+        o.connect(g); g.connect(ctx.destination); o.start(t + d); o.stop(t + d + 1);
+      });
+    }).catch(() => {});
+  }
+  function runSess(on) {
+    sess.running = on;
+    window.clearInterval(sessTimer);
+    if (on) { sessLast = performance.now(); sessTimer = window.setInterval(sessTick, 250); }
+    saveSess();
+    renderSessNow();
+    renderRunning();
+  }
+  function toggleSess() {
+    if (!plan.length) { toast('Add a block to your plan first.'); return; }
+    if (!sess) {
+      sess = { idx: 0, spent: plan.map(() => 0), chimed: plan.map(() => false), running: false, started: Date.now() };
+      ensureAudio().catch(() => {});
+      runSess(true);
+      renderPlan();
+      return;
+    }
+    runSess(!sess.running);
+  }
+  function gotoBlock(i) {
+    if (!sess || i < 0 || i >= plan.length) return;
+    sess.idx = i;
+    saveSess();
+    renderPlan();
+    renderSessNow();
+  }
+  function finishSess() {
+    if (!sess) return;
+    const total = sessTotal();
+    if (total < 60 && !window.confirm('This session is under a minute. Finish without saving it?')) return;
+    if (total >= 60) {
+      const entry = {
+        id: String(Date.now()), date: new Date(sess.started || Date.now()).toISOString(), secs: Math.round(total),
+        blocks: plan.map((b, i) => ({ name: b.name, secs: Math.round(sess.spent[i] || 0) })).filter(b => b.secs >= 5),
+        notes: sessEls.notes.value.trim()
+      };
+      log.unshift(entry);
+      saveLog();
+      toast('Saved ' + minText(total) + ' to your practice log.');
+      sessEls.notes.value = '';
+      store_.set('ws.notes', '');
+    }
+    window.clearInterval(sessTimer);
+    sess = null;
+    saveSess();
+    renderPlan();
+    renderSessNow();
+    renderRunning();
+    renderLog();
+  }
+  function initSession() {
+    // Keep the per-block arrays the same length as the plan
+    if (sess) {
+      while (sess.spent.length < plan.length) { sess.spent.push(0); sess.chimed.push(false); }
+      if (sess.idx >= plan.length) sess.idx = Math.max(0, plan.length - 1);
+      if (sess.running) { sess.running = false; toast('Your session was paused while the app was closed. Press Resume to carry on.'); }
+    }
+    sessEls.notes.value = store_.get('ws.notes', '');
+    sessEls.notes.addEventListener('input', () => store_.set('ws.notes', sessEls.notes.value));
+    sessEls.toggle.addEventListener('click', toggleSess);
+    sessEls.next.addEventListener('click', () => gotoBlock(sess.idx + 1));
+    sessEls.finish.addEventListener('click', finishSess);
+    sessEls.add.addEventListener('click', () => {
+      plan.push({ name: 'New block', min: 10, tool: 'none' });
+      if (sess) { sess.spent.push(0); sess.chimed.push(false); saveSess(); }
+      savePlan(); renderPlan(); renderSessNow();
+      const rows = sessEls.plan.querySelectorAll('[data-f="name"]');
+      if (rows.length) { rows[rows.length - 1].focus(); rows[rows.length - 1].select(); }
+    });
+    sessEls.reset.addEventListener('click', () => {
+      if (sess) { toast('Finish the current session before resetting the plan.'); return; }
+      if (!window.confirm('Reset the plan to the default five blocks?')) return;
+      plan = DEFAULT_PLAN.map(b => Object.assign({}, b));
+      savePlan(); renderPlan(); renderSessNow();
+    });
+    sessEls.plan.addEventListener('change', e => {
+      const row = e.target.closest('.plan-row'), f = e.target.dataset.f;
+      if (!row || !f) return;
+      const b = plan[Number(row.dataset.i)];
+      if (f === 'name') b.name = e.target.value.trim() || 'Untitled block';
+      else if (f === 'min') b.min = clamp(Math.round(Number(e.target.value) || 1), 1, 180);
+      else if (f === 'tool') b.tool = e.target.value;
+      savePlan(); renderPlan(); renderSessNow();
+    });
+    sessEls.plan.addEventListener('click', e => {
+      const row = e.target.closest('.plan-row');
+      if (!row) return;
+      const i = Number(row.dataset.i);
+      if (e.target.closest('[data-jump]')) {
+        if (sess) gotoBlock(i); else toast('Start the session to jump between blocks.');
+      } else if (e.target.closest('[data-del]')) {
+        if (sess && sess.idx === i) { toast('You can’t remove the block you’re practicing.'); return; }
+        plan.splice(i, 1);
+        if (sess) { sess.spent.splice(i, 1); sess.chimed.splice(i, 1); if (sess.idx > i) sess.idx--; saveSess(); }
+        savePlan(); renderPlan(); renderSessNow();
+      }
+    });
+    renderPlan();
+    renderSessNow();
+  }
+
+  /* =========================================================
+     Practice log
+     ========================================================= */
+  let log = store_.get('ws.log', []);
+  const saveLog = () => store_.set('ws.log', log);
+  const dayKey = d => { const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
+  const logEls = { today: $('tToday'), week: $('tWeek'), streak: $('tStreak'), count: $('tCount'), chart: $('chart'), list: $('sessions'), form: $('addForm'), date: $('addDate'), min: $('addMin'), what: $('addWhat') };
+
+  function renderLog() {
+    const byDay = {};
+    log.forEach(e => { const k = dayKey(e.date); byDay[k] = (byDay[k] || 0) + e.secs; });
+    const today = new Date(); today.setHours(12, 0, 0, 0);
+    const dayAt = back => { const d = new Date(today); d.setDate(d.getDate() - back); return d; };
+    let week = 0;
+    for (let i = 0; i < 7; i++) week += byDay[dayKey(dayAt(i))] || 0;
+    let streak = 0, start = byDay[dayKey(today)] ? 0 : 1;
+    while (byDay[dayKey(dayAt(start + streak))]) streak++;
+    logEls.today.innerHTML = Math.round((byDay[dayKey(today)] || 0) / 60) + '<small>min</small>';
+    logEls.week.innerHTML = Math.round(week / 60) + '<small>min</small>';
+    logEls.streak.innerHTML = streak + '<small>' + (streak === 1 ? 'day' : 'days') + '</small>';
+    logEls.count.textContent = log.length;
+
+    // 28-day bar chart, one series in the accent colour; today in ink
+    const days = [];
+    for (let i = 27; i >= 0; i--) { const d = dayAt(i); days.push({ d: d, min: (byDay[dayKey(d)] || 0) / 60 }); }
+    const peak = Math.max(30, ...days.map(x => x.min));
+    const step = peak > 120 ? 60 : peak > 60 ? 30 : 15;
+    const top = Math.ceil(peak / step) * step;
+    let grid = '';
+    for (let v = step; v <= top; v += step) grid += '<div class="chart-grid" style="bottom:' + (v / top * 100).toFixed(2) + '%"><span>' + v + '</span></div>';
+    const bars = days.map((x, i) => '<div class="bar-hit' + (i === 27 ? ' is-today' : '') + '" data-i="' + i + '"><i style="height:' + (x.min / top * 100).toFixed(2) + '%"></i></div>').join('');
+    const xs = days.map((x, i) => '<span>' + (i % 7 === 6 || i === 27 ? (i === 27 ? 'Today' : x.d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) : '') + '</span>').join('');
+    logEls.chart.innerHTML = '<div class="chart-plot" role="img" aria-label="Minutes practiced per day over the last 28 days">' + grid + bars + '</div><div class="chart-x">' + xs + '</div>';
+    const plot = logEls.chart.firstElementChild;
+    let tip = null;
+    plot.addEventListener('mousemove', e => {
+      const hit = e.target.closest('.bar-hit');
+      if (!hit) { if (tip) tip.hidden = true; return; }
+      const x = days[Number(hit.dataset.i)];
+      if (!tip) { tip = document.createElement('div'); tip.className = 'tip'; logEls.chart.appendChild(tip); }
+      tip.hidden = false;
+      tip.innerHTML = '<b>' + Math.round(x.min) + ' min</b>' + x.d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+      const cr = logEls.chart.getBoundingClientRect(), hr = hit.getBoundingClientRect();
+      tip.style.left = (hr.left - cr.left + hr.width / 2) + 'px';
+      tip.style.top = (hr.top - cr.top + hr.height * (1 - x.min / top) - 6) + 'px';
+    });
+    plot.addEventListener('mouseleave', () => { if (tip) tip.hidden = true; });
+
+    if (!log.length) { logEls.list.innerHTML = '<li class="empty">No sessions yet. Run a session from the Session tab, or add practice on the right.</li>'; return; }
+    logEls.list.innerHTML = log.slice(0, 60).map(e => {
+      const d = new Date(e.date);
+      return '<li class="sess" data-id="' + e.id + '">' +
+        '<div class="sess-head"><span class="sess-date">' + d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) + '</span>' +
+        '<span class="muted" style="font-size:13px">' + (e.manual ? 'added by hand' : d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })) + '</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px"><span class="sess-dur">' + minText(e.secs) + '</span><button class="icon-btn" type="button" data-del aria-label="Delete this entry">×</button></div>' +
+        (e.blocks && e.blocks.length ? '<div class="sess-blocks">' + e.blocks.map(b => '<span>' + esc(b.name) + ' · ' + Math.max(1, Math.round(b.secs / 60)) + 'm</span>').join('') + '</div>' : '') +
+        (e.notes ? '<div class="sess-notes">' + esc(e.notes) + '</div>' : '') +
+        '</li>';
+    }).join('');
+  }
+  function initLog() {
+    logEls.date.value = dayKey(new Date());
+    logEls.form.addEventListener('submit', e => {
+      e.preventDefault();
+      const min = clamp(Math.round(Number(logEls.min.value) || 0), 1, 600);
+      const parts = logEls.date.value.split('-').map(Number);
+      const d = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2], 12) : new Date();
+      log.push({ id: String(Date.now()), date: d.toISOString(), secs: min * 60, blocks: [], notes: logEls.what.value.trim(), manual: true });
+      log.sort((a, b) => new Date(b.date) - new Date(a.date));
+      saveLog();
+      logEls.what.value = '';
+      renderLog();
+      toast('Added ' + min + ' min on ' + d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + '.');
+    });
+    logEls.list.addEventListener('click', e => {
+      if (!e.target.closest('[data-del]')) return;
+      const id = e.target.closest('.sess').dataset.id;
+      if (!window.confirm('Delete this practice entry?')) return;
+      log = log.filter(x => x.id !== id);
+      saveLog();
+      renderLog();
+    });
+    renderLog();
+  }
+
+  /* =========================================================
+     Menu, routing and the "running" chips
+     ========================================================= */
+  const VIEWS = ['session', 'tuner', 'metronome', 'drone', 'recorder', 'log'];
+  const TITLES = { session: 'Session', tuner: 'Tuner', metronome: 'Metronome', drone: 'Drone', recorder: 'Recorder', log: 'Practice log' };
+  function showView(v) {
+    if (VIEWS.indexOf(v) < 0) v = 'session';
+    state.view = v;
+    document.querySelectorAll('section.view').forEach(s => { s.hidden = s.dataset.view !== v; });
+    document.querySelectorAll('.menu a').forEach(a => {
+      if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    document.title = TITLES[v] + ' · Woodshed';
+    store_.set('ws.view', v);
+    if (v === 'tuner') requestAnimationFrame(sizeTrace);
+    if (v === 'log') renderLog();
+    const cur = document.querySelector('.menu a[aria-current]');
+    if (cur && cur.scrollIntoView && window.matchMedia('(max-width: 860px)').matches) cur.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  function renderRunning() {
+    const chips = [];
+    if (sess && sess.running) chips.push(['session', 'Session', clockText(sessTotal())]);
+    if (audio.mode === 'mic') chips.push(['tuner', 'Mic on', 'Stop']);
+    if (metRun.on) chips.push(['metronome', 'Metronome', met.bpm + ' BPM']);
+    if (droneRun.on) chips.push(['drone', 'Drone', pcText(drone.pc)]);
+    if (rec.mr) chips.push(['recorder', 'Recording', 'Stop']);
+    const html = chips.map(c => '<button class="run-chip" type="button" data-run="' + c[0] + '" title="' + (c[0] === 'session' ? 'Open the session' : 'Stop') + '"><i></i><span>' + c[1] + '</span><span>' + c[2] + '</span></button>').join('');
+    if (html !== els.running.innerHTML) els.running.innerHTML = html;
+    $('dotTuner').hidden = audio.mode !== 'mic';
+    $('dotMet').hidden = !metRun.on;
+    $('dotDrone').hidden = !droneRun.on;
+  }
+
+  /* =========================================================
+     Main loop
+     ========================================================= */
+  let lastFrame = 0;
+  function frame(ts) {
+    requestAnimationFrame(frame);
+    const now = ts / 1000;
+    const dt = lastFrame ? Math.min(0.1, Math.max(0.001, now - lastFrame)) : 1 / 60;
+    lastFrame = now;
+
+    if (audio.mode !== 'off' && audio.analyser && detector) {
+      const an = audio.analyser, buf = audio.buf;
+      if (audio.bytes) {
+        an.getByteTimeDomainData(audio.bytes);
+        for (let i = 0; i < buf.length; i++) buf[i] = (audio.bytes[i] - 128) / 128;
+      } else {
+        an.getFloatTimeDomainData(buf);
+      }
+      const r = detector(buf, audio.sr, range.minF, range.maxF, gateRms());
+      live.levelDb = 20 * Math.log10(Math.max(r.rms, 1e-5));
+      let det = null;
+      if (r.freq > 0 && r.clarity >= CLARITY_MIN && r.freq >= range.minF * 0.97 && r.freq <= range.maxF) {
+        medianBuf.push(69 + 12 * Math.log2(r.freq / state.a4));
+        if (medianBuf.length > 5) medianBuf.shift();
+        const concert = medianOf(medianBuf);
+        det = { concert: concert, written: concert + inst().transpose, freq: midiToFreq(concert, state.a4) };
+      }
+      const res = processDetection(det, dt);
+      if (res && !res.hold) {
+        live.note = res.note; live.cents = res.cents; live.freq = res.freq; live.voicedAt = now;
+        history.push({ t: now, c: res.cents, n: res.note });
+      } else if (!res) {
+        history.push({ t: now, c: null, n: null });
+      } else {
+        live.voicedAt = now;
+      }
+    } else {
+      live.levelDb = -100;
+    }
+    const cutoff = now - TRACE_SECONDS - 0.5;
+    let drop = 0;
+    while (drop < history.length && history[drop].t < cutoff) drop++;
+    if (drop) history = history.slice(drop);
+
+    metFrame();
+    recFrame();
+    if (state.view === 'tuner') {
+      updateLiveUI(now, dt);
+      drawTrace(now);
+    }
+  }
+
+  /* =========================================================
+     Controls
+     ========================================================= */
+  function setSampling(on) {
+    state.sampling = on;
+    if (!on) endNote();
+    els.sampleBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    refreshHud();
+  }
+
+  function updateRunUI() {
+    const mic = audio.mode === 'mic', dem = audio.mode === 'demo';
+    els.micBtn.innerHTML = (mic ? ICONS.stop : ICONS.mic) + '<span>' + (mic ? 'Stop microphone' : 'Start microphone') + '</span>';
+    els.micBtn.classList.toggle('is-on', mic);
+    els.demoBtn.innerHTML = (dem ? ICONS.stop : ICONS.play) + '<span>' + (dem ? 'Stop demo' : 'Play demo') + '</span>';
+    els.demoBtn.classList.toggle('is-on', dem);
+    els.source.dataset.state = audio.mode;
+    els.source.lastElementChild.textContent = mic ? 'Microphone live' : dem ? 'Demo player (simulated audio)' : 'Microphone off';
+    refreshHud();
+    renderRunning();
+  }
+
+  function toggleMic() { if (audio.mode === 'mic') stopMic(); else startMic(); }
+
+  function applyInstrument() {
+    const I = inst();
+    els.instrument.value = state.instrument;
+    els.matrixSub.textContent = 'Written pitch for ' + I.label.toLowerCase() + ', low B♭ to high F. Each square keeps your running average in cents.';
+    updateRange();
+  }
+
+  let toastTimer = 0;
+  function toast(msg, kind) {
+    els.toast.textContent = msg;
+    els.toast.dataset.kind = kind || '';
+    els.toast.classList.add('show');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => els.toast.classList.remove('show'), kind === 'error' ? 6500 : 4200);
+  }
+
+  function exportCSV() {
+    const I = inst();
+    const rows = [['written_note', 'concert_note', 'register', 'mean_cents', 'std_cents', 'takes', 'seconds', 'status']];
+    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+      const s = noteStats(m, false);
+      const status = !s ? 'not sampled' : Math.abs(s.mean) <= IN_TUNE ? 'in tune' : s.mean > 0 ? 'sharp' : 'flat';
+      rows.push([noteAscii(m), noteAscii(m - I.transpose), registerOf(m).name,
+        s ? s.mean.toFixed(2) : '', s ? s.sd.toFixed(2) : '', s ? s.takes : 0, s ? s.dur.toFixed(1) : '', status]);
+    }
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'intonation-' + I.horn + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('Exported the ' + I.label.toLowerCase() + ' matrix as CSV.');
+  }
+
+  function buildTicks() {
+    let html = '';
+    for (let c = -50; c <= 50; c += 5) {
+      const cls = c === 0 ? 'zero' : c % 25 === 0 ? 'major' : '';
+      html += '<i class="' + cls + '" style="left:' + (c + 50) + '%"></i>';
+    }
+    els.ticks.innerHTML = html;
+  }
+
+  function updateGateUI() {
+    els.gate.value = state.gateDb;
+    els.gateText.textContent = 'Noise gate ' + (state.gateDb < 0 ? '−' : '') + Math.abs(state.gateDb) + ' dB';
+    els.gateMark.style.left = ((state.gateDb + 72) / 72 * 100).toFixed(1) + '%';
+  }
+
+  function bind() {
+    els.micBtn.addEventListener('click', toggleMic);
+    els.demoBtn.addEventListener('click', () => { if (demo.running) stopDemo(); else startDemo(); });
+    els.sampleBtn.addEventListener('click', () => setSampling(!state.sampling));
+    els.instrument.addEventListener('change', () => {
+      if (demo.running) stopDemo();
+      endNote();
+      state.instrument = els.instrument.value;
+      saveSettings();
+      loadData();
+      applyInstrument();
+      resetTracking();
+      renderAllCells();
+      renderAnalytics();
+      renderInspector();
+      renderDrone();
+      retuneDrone();
+      toast('Switched to ' + inst().label.toLowerCase() + '. Notes now show written pitch for this horn.');
+    });
+    els.a4.addEventListener('change', () => {
+      state.a4 = Number(els.a4.value);
+      els.footA4.textContent = state.a4;
+      saveSettings();
+      updateRange();
+      renderInspector();
+      renderDrone();
+      retuneDrone();
+      toast('Reference set to A4 = ' + state.a4 + ' Hz.');
+    });
+    els.gate.addEventListener('input', () => { state.gateDb = Number(els.gate.value); updateGateUI(); saveSettings(); });
+    els.exportBtn.addEventListener('click', exportCSV);
+    els.resetBtn.addEventListener('click', () => {
+      if (!hasData()) { toast('The matrix is already empty.'); return; }
+      if (window.confirm('Clear every saved note for the ' + inst().label.toLowerCase() + '?')) { clearData(); toast('Matrix cleared.'); }
+    });
+    els.inspClose.addEventListener('click', () => selectNote(null));
+    els.running.addEventListener('click', e => {
+      const b = e.target.closest('[data-run]'); if (!b) return;
+      const k = b.dataset.run;
+      if (k === 'session') location.hash = '#session';
+      else if (k === 'tuner') stopMic();
+      else if (k === 'metronome') stopMet();
+      else if (k === 'drone') stopDrone();
+      else if (k === 'recorder') stopRec();
+    });
+    window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      const tag = (e.target && e.target.tagName || '').toLowerCase();
+      if (tag === 'select' || tag === 'input' || tag === 'textarea') return;
+      const k = e.key.toLowerCase(), v = state.view;
+      if (v === 'tuner' && k === 'm') { e.preventDefault(); toggleMic(); }
+      else if (v === 'tuner' && k === 's') { e.preventDefault(); setSampling(!state.sampling); }
+      else if (v === 'tuner' && e.key === 'Escape') selectNote(null);
+      else if (v === 'metronome' && e.key === ' ' && tag !== 'button') { e.preventDefault(); toggleMet(); }
+      else if (v === 'metronome' && (e.key === 'ArrowUp' || e.key === 'ArrowRight')) { e.preventDefault(); setBpm(met.bpm + (e.shiftKey ? 5 : 1)); }
+      else if (v === 'metronome' && (e.key === 'ArrowDown' || e.key === 'ArrowLeft')) { e.preventDefault(); setBpm(met.bpm - (e.shiftKey ? 5 : 1)); }
+      else if (v === 'metronome' && k === 't') { e.preventDefault(); tapTempo(); }
+      else if (v === 'drone' && e.key === ' ' && tag !== 'button') { e.preventDefault(); toggleDrone(); }
+      else if (v === 'recorder' && k === 'r') { e.preventDefault(); toggleRec(); }
+    });
+    if ('ResizeObserver' in window) new ResizeObserver(sizeTrace).observe(els.trace);
+    else window.addEventListener('resize', sizeTrace);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) endNote(); });
+  }
+
+  /* =========================================================
+     Boot
+     ========================================================= */
+  loadSettings();
+  els.a4.value = String(state.a4);
+  els.footA4.textContent = state.a4;
+  buildTicks();
+  buildMatrix();
+  loadData();
+  applyInstrument();
+  updateGateUI();
+  renderAllCells();
+  renderAnalytics();
+  initMet();
+  initDrone();
+  initRecorder();
+  initLog();
+  initSession();
+  updateRunUI();
+  bind();
+  showView(location.hash.slice(1) || store_.get('ws.view', 'session'));
+  sizeTrace();
+  requestAnimationFrame(frame);
+
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ });
+  }
+})();
+</script>
+</body>
+</html>
