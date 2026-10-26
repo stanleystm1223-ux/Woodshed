@@ -942,12 +942,12 @@
           <section class="panel" aria-labelledby="matrixTitle">
             <div class="panel-head">
               <div>
-                <h2 id="matrixTitle">Intonation matrix</h2>
-                <p id="matrixSub">Each square keeps your running average in cents.</p>
+                <h2 id="matrixTitle">Intonation chart</h2>
+                <p id="matrixSub">Each square has your average in cents.</p>
               </div>
               <div class="head-actions">
                 <button class="btn btn-quiet" id="exportBtn" type="button">Export CSV</button>
-                <button class="btn btn-quiet" id="resetBtn" type="button">Clear matrix</button>
+                <button class="btn btn-quiet" id="resetBtn" type="button">Reset the chart</button>
               </div>
             </div>
             <div class="matrix" id="matrix"></div>
@@ -963,7 +963,7 @@
                 <span>Sharp</span>
               </div>
               <div class="legend-keys">
-                <span><i class="sw sw-empty"></i>Not sampled</span>
+                <span><i class="sw sw-empty"></i>Not recorded</span>
                 <span><i class="sw sw-live"></i>Now playing</span>
               </div>
             </div>
@@ -973,7 +973,7 @@
         <aside class="tuner-side">
           <section class="panel" aria-labelledby="anTitle">
             <div class="panel-head">
-              <h2 id="anTitle">Performance analytics</h2>
+              <h2 id="anTitle">Performance</h2>
               <span class="count-pill" id="countPill">0 notes</span>
             </div>
             <div class="score">
@@ -999,7 +999,7 @@
               <div class="regs" id="regs"></div>
             </div>
             <div class="block">
-              <h3>Coaching insights</h3>
+              <h3>Some AI insights</h3>
               <div class="insights" id="insights"></div>
             </div>
           </section>
@@ -1017,7 +1017,7 @@
         </aside>
       </div>
       <footer class="tuner-foot">
-        <span>Pitch detection uses normalized time-domain autocorrelation (McLeod pitch method). A4 = <span id="footA4">440</span> Hz. In tune means within ±5 cents.</span>
+        <span> In tune means within ±5 cents.</span>
         <span><kbd>M</kbd>microphone<kbd>S</kbd>sample notes<kbd>Esc</kbd>close note detail</span>
       </footer>
     </section>
@@ -1752,7 +1752,7 @@
     if (demo.running) stopDemo();
     if (micUnsupported()) return;
     els.micBtn.disabled = true;
-    try {
+    try { 
       await ensureAudio();
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
@@ -1766,7 +1766,7 @@
       if (trackEl) trackEl.addEventListener('ended', () => { stopMic(); toast('The microphone disconnected. Plug it back in and start it again.', 'error'); });
       resetTracking();
       updateRunUI();
-      if (!state.sampling) toast('Microphone on. Turn on Sample notes to save each note to the matrix.');
+      if (!state.sampling) toast('Microphone on. Turn on record notes to save each note to the chart.');
     } catch (err) {
       toast(micError(err), 'error');
       stopMic();
@@ -3474,7 +3474,7 @@
   const rhyBars = () => Math.max(1, Math.round(rhy.cells.length / rhy.beats));
   const MODE_HINTS = {
     listen: 'Hear how the rhythm should sound.',
-    tap: 'Tap every note of the rhythm on the pad (or the Space bar) while the click keeps the beat.',
+    tap: 'Tap every note of the rhythm on the pad or the Space bar.',
     mic: 'Play every note of the rhythm on your instrument.'
   };
 
@@ -3791,7 +3791,6 @@
     const h = rhyRun.history;
     rhyEls.hist.innerHTML = h.length
       ? h.map(v => '<div title="' + v + '%"><i style="height:' + Math.max(2, v * 0.56).toFixed(1) + 'px"></i><span>' + v + '</span></div>').join('')
-      : '<p class="rhist-empty">Scores appear here after each loop in Tap along or Play along.</p>';
   }
 
   async function rhyMicOn() {
@@ -3852,7 +3851,7 @@
     rhyEls.pad.hidden = rhy.mode !== 'tap';
     rhyEls.micMeter.hidden = rhy.mode !== 'mic';
     rhyEls.hearWrap.hidden = rhy.mode === 'listen';
-    if (!rhyRun.on) rhyEls.status.textContent = rhy.mode === 'listen' ? 'Press Play (or Space) to hear the rhythm.' : 'Press Play (or Space) to start. You get a one-bar count-in if it’s turned on.';
+    if (!rhyRun.on) rhyEls.status.textContent = rhy.mode === 'listen' ? 'Press Play (or Space) to hear the rhythm.' : 'Press Play (or Space) to start. You get a one bar count in if it’s turned on.';
     if (rhy.mode === 'listen' && !rhyRun.history.length) rhyEls.tip.textContent = 'Choose Tap along or Play along to get scored.';
     renderRunning();
   }
