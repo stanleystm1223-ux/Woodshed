@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Woodshed</title>
-<meta name="description" content="A practice room for saxophone: session planner, intonation tuner, metronome, drone, recorder and practice log." />
+<meta name="description" content="A practice room for any instrument: practice timer, session planner, tuner and intonation map, metronome, rhythm trainer, drone, recorder and practice log." />
 <meta name="theme-color" content="#ffffff" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -35,7 +35,9 @@
     --flat: #2d6bd6;
     --sans: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-    --rail-w: 224px;
+    --rail-w: 232px;
+    --blue: #2563eb;
+    --pbar-h: 0px;
   }
 
   * { box-sizing: border-box; }
@@ -59,7 +61,7 @@
   /* ---------- Shell: menu rail + content ---------- */
   .shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); min-height: 100vh; }
   .rail {
-    position: sticky; top: 0; height: 100vh;
+    position: sticky; top: var(--pbar-h); height: calc(100vh - var(--pbar-h));
     display: flex; flex-direction: column; gap: 22px;
     padding: 20px 14px calc(18px + env(safe-area-inset-bottom, 0px));
     background: var(--rail); border-right: 1px solid var(--line);
@@ -497,6 +499,127 @@
   .add-form .full { grid-column: 1 / -1; }
   .add-form textarea.input { min-height: 70px; }
 
+  /* ---------- Practice bar + setup ---------- */
+  .pbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 8px 18px;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 20px 8px; min-height: 54px;
+    background: var(--blue); color: #fff;
+  }
+  .pbar.is-paused { background: #5d7cc2; }
+  .pb-left { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; flex: none; }
+  .pb-dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: pbpulse 1.4s ease-in-out infinite; }
+  .pbar.is-paused .pb-dot { animation: none; opacity: .55; }
+  @keyframes pbpulse { 50% { box-shadow: 0 0 0 6px rgba(255,255,255,0); } 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.6); } }
+  .pb-time { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .pb-block { flex: 1; min-width: 0; color: rgba(255,255,255,.9); text-decoration: none; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pb-block:hover { text-decoration: underline; }
+  .pb-actions { display: flex; gap: 8px; margin-left: auto; flex: none; }
+  .pb-actions button { height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,.65); background: transparent; color: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .pb-actions button:hover { background: rgba(255,255,255,.12); }
+  .pb-actions #pbFinish { background: #fff; color: var(--blue); border-color: #fff; }
+  .pbar.is-paused #pbFinish { color: #4161a8; }
+
+  .rail-start { width: 100%; height: 42px; background: var(--blue); border-color: var(--blue); color: #fff; }
+  .rail-start:hover { background: #1d4fd0; }
+  .setup { display: flex; flex-direction: column; gap: 8px; }
+  .setup .select select { max-width: 100%; }
+  .a4-ctl { cursor: default; padding: 0 5px 0 11px; gap: 6px; }
+  .a4-ctl::after { display: none; }
+  .a4-ctl input { width: 0; flex: 1; min-width: 44px; border: 0; background: transparent; font-weight: 600; font-size: 14px; text-align: right; padding: 0; -moz-appearance: textfield; font-variant-numeric: tabular-nums; }
+  .a4-ctl input::-webkit-inner-spin-button, .a4-ctl input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .a4-ctl input:focus { outline: none; }
+  .a4-ctl .hz { color: var(--text-3); font-size: 12.5px; margin-left: -3px; }
+  .a4-ctl button { width: 28px; height: 28px; flex: none; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; padding: 0; }
+  .a4-ctl button:hover { background: var(--sunken); }
+
+  /* ================= Rhythm ================= */
+  .rhy-head { flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 8px; }
+  .rhy-pick, .rhy-meter, .rhy-random { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .rhy-meter { margin-left: auto; }
+  .rhy-random { flex-wrap: nowrap; }
+  .rhy-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 0 20px 16px; font-size: 13px; }
+  .rhy-pick .select:first-child { min-width: min(320px, 100%); }
+  .rhy-groups { padding-right: 11px; }
+  .rhy-groups::after { display: none; }
+  .rhy-groups input { border: 0; background: transparent; width: 70px; font-weight: 600; font-size: 14px; padding: 0; }
+  .rhy-groups input:focus { outline: none; }
+  .rhy-strip { overflow-x: auto; padding: 8px 20px 16px; }
+  .rbars { display: flex; min-width: min-content; padding-top: 14px; }
+  .rbar { position: relative; display: flex; border-left: 2px solid var(--text); padding: 0 4px; }
+  .rbar-end { border-left: 2px solid var(--text); box-shadow: -5px 0 0 -3px var(--text); padding: 0; width: 6px; }
+  .rbar-num { position: absolute; top: -16px; left: 6px; font-size: 11px; color: var(--text-3); font-weight: 600; }
+  .rbeat { width: 86px; flex: none; border: 0; background: transparent; border-radius: 8px; padding: 0; cursor: pointer; transition: background-color .08s; }
+  .rbeat.grp { box-shadow: inset 1px 0 0 var(--line-2); }
+  .rbeat svg { display: block; width: 100%; height: auto; }
+  .rbeat:hover { background: var(--sunken); }
+  .rbeat.is-sel { background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent-hi); }
+  .rbeat.is-now { background: rgba(37, 99, 235, .13); }
+  svg .sl { stroke: var(--line-2); stroke-width: 1; }
+  svg .nh { fill: var(--text); }
+  svg .st { stroke: var(--text); stroke-width: 1.6; }
+  svg .bm { fill: var(--text); }
+  svg .fl { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
+  svg .rs { fill: none; stroke: var(--text-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  svg .rd { fill: var(--text-2); }
+  svg .cl { font: 500 11px var(--sans); fill: var(--text-3); text-anchor: middle; }
+  svg .cl-1 { fill: var(--text); font-weight: 700; }
+  svg .tup { font: italic 600 11px var(--sans); fill: var(--text-2); text-anchor: middle; }
+  svg .nh.r-perfect { fill: var(--tune); }
+  svg .nh.r-good { fill: #c98a00; }
+  svg .nh.r-early, svg .nh.r-late { fill: var(--sharp); }
+  svg .nh.r-miss { fill: #fff; stroke: #a3a49f; stroke-width: 1.6; }
+
+  .beat-edit { border-top: 1px solid var(--line); padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; background: #fbfbf9; border-radius: 0 0 12px 12px; }
+  .be-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .be-top strong { font-size: 15px; }
+  .be-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px 24px; align-items: start; }
+  .pads { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pad { min-width: 46px; flex: 1 1 46px; max-width: 80px; height: 42px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; font-weight: 600; color: var(--text-2); }
+  .pad[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
+  .palette { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pal { width: 62px; padding: 2px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
+  .pal:hover { border-color: var(--line-2); }
+  .pal[aria-pressed="true"] { border-color: var(--accent-hi); box-shadow: 0 0 0 1px var(--accent-hi); }
+  .pal svg { display: block; width: 100%; height: auto; }
+  .be-save { display: flex; gap: 8px; flex-wrap: wrap; }
+  .be-save .input { flex: 1 1 200px; }
+
+  .rhy-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 18px; }
+  .rhy-transport { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .rhy-bpm { display: flex; align-items: baseline; gap: 6px; min-width: 4.5ch; justify-content: center; }
+  .rhy-bpm .num { font-size: 44px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+  .rhy-bpm small { font-size: 12px; color: var(--text-3); }
+  .rhy-status { font-size: 14px; font-weight: 600; color: var(--blue); min-height: 20px; }
+  .tap-pad { width: 100%; height: 120px; border-radius: 14px; border: 2px dashed var(--line-2); background: var(--bg); cursor: pointer; font-size: 17px; font-weight: 600; color: var(--text-2); touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+  .tap-pad:active, .tap-pad.hit { background: var(--accent-tint); border-color: var(--accent-hi); color: var(--accent); }
+  .mic-meter { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-2); }
+  .mic-meter .rec-level { flex: 1; width: auto; }
+  .rhy-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 20px; margin-bottom: 16px; }
+  .rhy-tiles .tile { padding: 12px 14px; }
+  .rhy-tiles .tile dd { font-size: 26px; }
+  .rhy-tiles .rt-text { font-family: var(--sans); font-size: 17px !important; letter-spacing: 0; line-height: 1.3; }
+  .rhist { display: flex; align-items: flex-end; gap: 4px; height: 72px; border-bottom: 1px solid var(--line-2); }
+  .rhist div { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; }
+  .rhist i { display: block; width: 100%; border-radius: 4px 4px 0 0; background: var(--accent-hi); }
+  .rhist span { font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .rhist-empty { font-size: 13px; color: var(--text-3); align-self: center; margin: auto; }
+  .rlegend { display: flex; gap: 8px 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-2); margin-bottom: 10px; }
+  .rlegend span { display: inline-flex; align-items: center; gap: 6px; }
+  .lg { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .lg.r-perfect { background: var(--tune); }
+  .lg.r-good { background: #c98a00; }
+  .lg.r-late { background: var(--sharp); }
+  .lg.r-miss { border: 1.6px solid #a3a49f; }
+  .rtip { font-size: 14px; }
+  @media (max-width: 720px) {
+    .be-grid { grid-template-columns: minmax(0, 1fr); }
+    .rhy-strip, .beat-edit, .rhy-tiles { padding-left: 14px; padding-right: 14px; }
+    .rbeat { width: 74px; }
+    .pb-actions button { padding: 0 10px; }
+    .pb-time { font-size: 19px; }
+  }
+
   /* ---------- Toast ---------- */
   .toast {
     position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: min(560px, calc(100vw - 32px));
@@ -527,7 +650,7 @@
   @media (max-width: 860px) {
     .shell { grid-template-columns: minmax(0, 1fr); }
     .rail {
-      position: sticky; top: 0; z-index: 20; height: auto;
+      position: relative; top: 0; z-index: 20; height: auto;
       flex-direction: column; gap: 10px;
       padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 8px;
       border-right: 0; border-bottom: 1px solid var(--line);
@@ -545,7 +668,11 @@
     .menu a svg { display: none; }
     .menu .live-dot { margin-left: 6px; }
     .rail-settings { margin-top: 0; flex-direction: row; flex-wrap: wrap; gap: 6px; }
-    .rail-settings .select { height: 34px; flex: 1 1 140px; }
+    .setup { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .setup .select { height: 36px; flex: 1 1 160px; }
+    .rail-start { width: auto; height: 34px; padding: 0 12px; font-size: 13px; }
+    .pb-block { display: none; }
+    .rhy-layout { grid-template-columns: minmax(0, 1fr); }
     .running { flex-direction: row; flex-wrap: wrap; flex-basis: 100%; }
     .running:empty { display: none; }
     .run-chip { width: auto; }
@@ -586,6 +713,14 @@
 </style>
 </head>
 <body>
+<div class="pbar" id="pbar" hidden role="status" aria-live="off">
+  <div class="pb-left"><i class="pb-dot" aria-hidden="true"></i><span id="pbState">Practicing</span><span class="pb-time" id="pbTime">0:00</span></div>
+  <a class="pb-block" id="pbBlock" href="#session"></a>
+  <div class="pb-actions">
+    <button type="button" id="pbPause">Pause</button>
+    <button type="button" id="pbFinish">Finish &amp; save</button>
+  </div>
+</div>
 <div class="shell">
   <nav class="rail" aria-label="Main menu">
     <div class="rail-top">
@@ -598,6 +733,24 @@
           </svg>
         </div>
         <div><strong>Woodshed</strong><span>Practice room</span></div>
+      </div>
+      <button class="btn rail-start" id="railStart" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><span>Start practice session</span>
+      </button>
+    </div>
+
+    <div class="setup">
+      <div class="menu-label">Your setup</div>
+      <label class="select" title="Your instrument sets the note names, transposition and range">
+        <span>Instrument</span>
+        <select id="instrument" aria-label="Instrument"></select>
+      </label>
+      <div class="select a4-ctl" title="Reference pitch: the frequency of A4">
+        <span>Tuning</span>
+        <button type="button" id="a4Down" aria-label="Lower the reference pitch">−</button>
+        <input id="a4" type="number" min="415" max="466" step="1" value="440" inputmode="decimal" aria-label="Reference pitch for A4 in hertz" />
+        <span class="hz">Hz</span>
+        <button type="button" id="a4Up" aria-label="Raise the reference pitch">+</button>
       </div>
     </div>
 
@@ -612,6 +765,9 @@
       <a href="#metronome" data-view="metronome">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l4 18H5z"/><path d="M12 15l5-8M7.5 15h9"/></svg>
         Metronome<i class="live-dot" id="dotMet" hidden></i></a>
+      <a href="#rhythm" data-view="rhythm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 17.5V6l11-2v11.5"/><path d="M8.5 9.5l11-2"/><circle cx="6.3" cy="17.6" r="2.3" fill="currentColor"/><circle cx="17.3" cy="15.6" r="2.3" fill="currentColor"/></svg>
+        Rhythm<i class="live-dot" id="dotRhy" hidden></i></a>
       <a href="#drone" data-view="drone">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l2-6 3 12 3-14 3 16 3-12 2 4h2"/></svg>
         Drone<i class="live-dot" id="dotDrone" hidden></i></a>
@@ -625,27 +781,6 @@
 
     <div class="rail-settings">
       <div class="running" id="running"></div>
-      <label class="select" title="Saxophone (sets the transposition)">
-        <span>Horn</span>
-        <select id="instrument" aria-label="Saxophone">
-          <option value="soprano">Soprano (B♭)</option>
-          <option value="alto" selected>Alto (E♭)</option>
-          <option value="tenor">Tenor (B♭)</option>
-          <option value="bari">Baritone (E♭)</option>
-          <option value="concert">Concert pitch (C)</option>
-        </select>
-      </label>
-      <label class="select" title="Reference pitch">
-        <span>A4</span>
-        <select id="a4" aria-label="Reference pitch for A4">
-          <option value="438">438 Hz</option>
-          <option value="439">439 Hz</option>
-          <option value="440" selected>440 Hz</option>
-          <option value="441">441 Hz</option>
-          <option value="442">442 Hz</option>
-          <option value="443">443 Hz</option>
-        </select>
-      </label>
     </div>
   </nav>
 
@@ -704,7 +839,7 @@
       <div class="page-head">
         <div>
           <h1 id="hTuner">Tuner &amp; intonation map</h1>
-          <p>Map the tuning of every note on your saxophone. Turn on Sample notes to save each sustained note to the matrix.</p>
+          <p>Map the tuning of every note on your instrument. Choose your instrument in the menu, then turn on Sample notes to save each sustained note to the matrix.</p>
         </div>
         <div class="actions">
           <button id="demoBtn" class="btn" type="button"></button>
@@ -723,7 +858,7 @@
                 <div class="source" id="source" data-state="off"><i></i><span>Microphone off</span></div>
                 <div class="note-big is-stale" id="noteBig"><span class="nl">–</span></div>
                 <div class="note-meta">
-                  <span id="concertText">Written pitch for alto sax</span>
+                  <span id="concertText">Choose your instrument in the menu</span>
                   <span id="freqText">Start the microphone to begin</span>
                 </div>
               </div>
@@ -766,7 +901,7 @@
             <div class="panel-head">
               <div>
                 <h2 id="matrixTitle">Intonation matrix</h2>
-                <p id="matrixSub">Written pitch from low B♭ to high F. Each square keeps your running average in cents.</p>
+                <p id="matrixSub">Each square keeps your running average in cents.</p>
               </div>
               <div class="head-actions">
                 <button class="btn btn-quiet" id="exportBtn" type="button">Export CSV</button>
@@ -797,7 +932,7 @@
           <section class="panel" aria-labelledby="anTitle">
             <div class="panel-head">
               <h2 id="anTitle">Performance analytics</h2>
-              <span class="count-pill" id="countPill">0 of 32 notes</span>
+              <span class="count-pill" id="countPill">0 notes</span>
             </div>
             <div class="score">
               <div class="ring-wrap">
@@ -918,6 +1053,106 @@
       </div>
     </section>
 
+    <!-- ===================== RHYTHM ===================== -->
+    <section class="view" data-view="rhythm" aria-labelledby="hRhy" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="hRhy">Rhythm trainer</h1>
+          <p>Pick a rhythm or build your own, then listen to it, tap along, or play it on your instrument and get scored on your timing.</p>
+        </div>
+      </div>
+      <section class="panel">
+        <div class="panel-head rhy-head">
+          <div class="rhy-pick">
+            <label class="select"><span>Rhythm</span><select id="rhyPreset" aria-label="Choose a rhythm"></select></label>
+            <div class="rhy-random">
+              <label class="select"><span>Level</span><select id="rhyLevel" aria-label="Random rhythm difficulty"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>
+              <button class="btn" id="rhyRandom" type="button">Random rhythm</button>
+            </div>
+          </div>
+          <div class="rhy-meter">
+            <label class="select"><span>Beats</span><select id="rhyBeats" aria-label="Beats per bar"></select></label>
+            <label class="select"><span>Beat</span><select id="rhyUnit" aria-label="Beat unit"><option value="4">Quarter note (/4)</option><option value="8">Eighth note (/8)</option></select></label>
+            <label class="select"><span>Bars</span><select id="rhyBars" aria-label="Number of bars"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+            <label class="select rhy-groups" id="rhyGroupsWrap" hidden><span>Groups</span><input id="rhyGroups" placeholder="2+2+3" aria-label="Beat grouping, for example 2+2+3" /></label>
+          </div>
+        </div>
+        <div class="rhy-strip" id="rhyStrip"></div>
+        <div class="rhy-tools">
+          <button class="btn btn-quiet" id="rhyEditToggle" type="button" aria-expanded="false" aria-controls="beatEdit">Edit this rhythm</button>
+          <span class="muted">or click any beat to change it</span>
+        </div>
+        <div class="beat-edit" id="beatEdit" hidden>
+          <div class="be-top">
+            <div><strong id="beTitle">Editing beat 1</strong><span class="muted"> · click any beat above to edit it</span></div>
+            <div class="head-actions">
+              <button class="btn btn-quiet" id="beCopy" type="button">Copy this beat to every beat</button>
+              <button class="btn btn-quiet" id="beReset" type="button">Reset all beats</button>
+            </div>
+          </div>
+          <div class="be-grid">
+            <div class="field"><span class="field-label">Split this beat into</span><div class="seg" id="beDiv" role="group" aria-label="Notes per beat"></div></div>
+            <div class="field"><span class="field-label">Notes and rests (click to switch)</span><div class="pads" id="bePads"></div></div>
+          </div>
+          <div class="field"><span class="field-label">Quick patterns for this beat</span><div class="palette" id="bePalette"></div></div>
+          <div class="be-save">
+            <input class="input" id="rhyName" maxlength="40" aria-label="Rhythm name" placeholder="Name this rhythm" />
+            <button class="btn" id="rhySave" type="button">Save to my rhythms</button>
+            <button class="btn btn-quiet" id="rhyDelete" type="button" hidden>Delete</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="rhy-layout">
+        <section class="panel">
+          <div class="panel-head"><div><h2>Practice</h2><p id="rhyModeHint"></p></div></div>
+          <div class="opts">
+            <div class="seg" id="rhyMode" role="group" aria-label="Practice mode">
+              <button type="button" data-mode="listen" aria-pressed="true">Listen</button>
+              <button type="button" data-mode="tap" aria-pressed="false">Tap along</button>
+              <button type="button" data-mode="mic" aria-pressed="false">Play along (mic)</button>
+            </div>
+            <div class="rhy-transport">
+              <button class="btn btn-primary btn-big" id="rhyPlay" type="button">Play</button>
+              <button class="round-btn" id="rhyMinus" type="button" aria-label="Slower">−</button>
+              <div class="rhy-bpm"><span class="num" id="rhyBpm">80</span><small>BPM</small></div>
+              <button class="round-btn" id="rhyPlus" type="button" aria-label="Faster">+</button>
+            </div>
+            <input type="range" id="rhySlider" min="30" max="240" step="1" value="80" aria-label="Rhythm tempo" />
+            <div class="rhy-status" id="rhyStatus" aria-live="polite"></div>
+            <button class="tap-pad" id="tapPad" type="button" hidden>Tap each note here, or press Space</button>
+            <div class="mic-meter" id="micMeter" hidden><span>Mic level</span><div class="rec-level"><i id="rhyMicLevel"></i></div></div>
+            <label class="check"><input type="checkbox" id="rhyCount" /> Count in one bar first</label>
+            <label class="check"><input type="checkbox" id="rhyClick" /> Click on every beat</label>
+            <label class="check" id="rhyHearWrap"><input type="checkbox" id="rhyHear" /> Also play the rhythm while I practice</label>
+            <label class="check"><input type="checkbox" id="rhySpeed" /> Speed up 4 BPM after a loop scoring 90% or more</label>
+            <div class="opts-row">
+              <div class="field"><label for="rhyVol">Volume</label><input type="range" id="rhyVol" min="0" max="1" step="0.01" /></div>
+              <div class="field"><label for="rhyOffset">Timing correction <span class="num" id="rhyOffsetTxt">0 ms</span></label><input type="range" id="rhyOffset" min="-150" max="150" step="5" /></div>
+            </div>
+            <p class="note-small">If your notes keep showing as late even when you feel in time, your speakers or Bluetooth headphones are adding delay. Move Timing correction to the right until it evens out.</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><h2>Your timing</h2><p>Every loop is scored, and the notes above change color as you play them.</p></div></div>
+          <dl class="tiles rhy-tiles">
+            <div class="tile"><dt>Last loop</dt><dd id="rLast">–</dd></div>
+            <div class="tile"><dt>Best</dt><dd id="rBest">–</dd></div>
+            <div class="tile"><dt>Timing</dt><dd id="rTiming" class="rt-text">–</dd></div>
+            <div class="tile"><dt>Streak (90%+)</dt><dd id="rStreak">0<small>loops</small></dd></div>
+          </dl>
+          <div class="block" style="border-top:0;padding-top:0">
+            <h3>Recent loops</h3>
+            <div class="rhist" id="rHist"></div>
+          </div>
+          <div class="block">
+            <div class="rlegend"><span><i class="lg r-perfect"></i>Right on (±30 ms)</span><span><i class="lg r-good"></i>Close (±70 ms)</span><span><i class="lg r-late"></i>Early or late</span><span><i class="lg r-miss"></i>Missed</span></div>
+            <p class="rtip" id="rTip">Choose Tap along or Play along to get scored.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <!-- ===================== DRONE ===================== -->
     <section class="view" data-view="drone" aria-labelledby="hDrone" hidden>
       <div class="page-head">
@@ -944,7 +1179,7 @@
             <div class="field">
               <span class="field-label">Pitch names</span>
               <div class="seg" id="droneNames" role="group" aria-label="Pitch names">
-                <button type="button" data-names="written" aria-pressed="true">Written for my horn</button>
+                <button type="button" data-names="written" aria-pressed="true">Written for my instrument</button>
                 <button type="button" data-names="concert" aria-pressed="false">Concert</button>
               </div>
             </div>
@@ -1053,8 +1288,6 @@
   const ACCS    = ['',  '♯', '',  '♭', '',  '',  '♯', '',  '♯', '',  '♭', ''];
   const ACC_ASCII = { '♯': '#', '♭': 'b', '': '' };
 
-  const RANGE_LOW = 58;        // written low B♭ (B♭3)
-  const RANGE_HIGH = 89;       // written high F (F6)
   const IN_TUNE = 5;           // ± cents counted as in tune
   const CAPTURE_TARGET = 1.2;  // seconds of steady tone for a full sample
   const CAPTURE_MIN = 0.6;     // shortest take that still gets saved
@@ -1064,20 +1297,60 @@
   const CLARITY_MIN = 0.8;     // NSDF peak needed to trust a pitch
   const TRACE_SECONDS = 8;
 
+  /* Each instrument: its written range split into registers, the transposition
+     (written minus sounding, in semitones) and the coaching family it uses.
+     pipe: 2 for an open air column, 4 for a closed one (clarinet), used to
+     turn a cents offset into millimetres of tuning-slide or barrel movement. */
+  const R = (name, tag, lo, hi) => ({ id: tag.toLowerCase(), name: name, tag: tag, lo: lo, hi: hi });
+  const SAX_REGS = [R('Low stack', 'Low', 58, 61), R('Middle register', 'Mid', 62, 73), R('Upper register', 'Upper', 74, 85), R('Palm keys', 'Palm', 86, 89)];
   const INSTRUMENTS = {
-    soprano: { label: 'Soprano sax', horn: 'soprano', transpose: 2 },
-    alto:    { label: 'Alto sax',    horn: 'alto',    transpose: 9 },
-    tenor:   { label: 'Tenor sax',   horn: 'tenor',   transpose: 14 },
-    bari:    { label: 'Baritone sax', horn: 'bari',   transpose: 21 },
-    concert: { label: 'Concert pitch', horn: 'saxophone', transpose: 0 }
+    flute:        { group: 'Woodwinds', label: 'Flute', name: 'flute', family: 'flute', transpose: 0, pipe: 2,
+                    regs: [R('Low register', 'Low', 60, 71), R('Middle register', 'Mid', 72, 83), R('Third octave', 'High', 84, 93)] },
+    piccolo:      { group: 'Woodwinds', label: 'Piccolo', name: 'piccolo', family: 'flute', transpose: -12, pipe: 2,
+                    regs: [R('Low register', 'Low', 62, 71), R('Middle register', 'Mid', 72, 83), R('Third octave', 'High', 84, 93)] },
+    oboe:         { group: 'Woodwinds', label: 'Oboe', name: 'oboe', family: 'doublereed', transpose: 0,
+                    regs: [R('Low register', 'Low', 58, 64), R('Middle register', 'Mid', 65, 76), R('Upper register', 'High', 77, 89)] },
+    clarinet:     { group: 'Woodwinds', label: 'Clarinet (B♭)', name: 'clarinet', family: 'clarinet', transpose: 2, pipe: 4, overblow: 19,
+                    regs: [R('Chalumeau', 'Chal', 52, 66), R('Throat tones', 'Throat', 67, 70), R('Clarion', 'Clar', 71, 84), R('Altissimo', 'Alt', 85, 91)] },
+    bassclarinet: { group: 'Woodwinds', label: 'Bass clarinet (B♭)', name: 'bass clarinet', family: 'clarinet', transpose: 14, pipe: 4, overblow: 19,
+                    regs: [R('Chalumeau', 'Chal', 51, 66), R('Throat tones', 'Throat', 67, 70), R('Clarion', 'Clar', 71, 84)] },
+    bassoon:      { group: 'Woodwinds', label: 'Bassoon', name: 'bassoon', family: 'doublereed', transpose: 0,
+                    regs: [R('Low register', 'Low', 34, 45), R('Middle register', 'Mid', 46, 57), R('Tenor register', 'High', 58, 72)] },
+    soprano:      { group: 'Saxophones', label: 'Soprano sax (B♭)', name: 'soprano sax', family: 'sax', transpose: 2, pipe: 2, regs: SAX_REGS },
+    alto:         { group: 'Saxophones', label: 'Alto sax (E♭)', name: 'alto sax', family: 'sax', transpose: 9, pipe: 2, regs: SAX_REGS },
+    tenor:        { group: 'Saxophones', label: 'Tenor sax (B♭)', name: 'tenor sax', family: 'sax', transpose: 14, pipe: 2, regs: SAX_REGS },
+    bari:         { group: 'Saxophones', label: 'Baritone sax (E♭)', name: 'baritone sax', family: 'sax', transpose: 21, pipe: 2, regs: SAX_REGS },
+    trumpet:      { group: 'Brass', label: 'Trumpet (B♭)', name: 'trumpet', family: 'brass', transpose: 2, pipe: 2, valveSlide: [54, 55, 61, 62],
+                    regs: [R('Low register', 'Low', 54, 61), R('Middle register', 'Mid', 62, 72), R('Upper register', 'Upper', 73, 79), R('High register', 'High', 80, 84)] },
+    horn:         { group: 'Brass', label: 'French horn (F)', name: 'horn', family: 'brass', transpose: 7, pipe: 2,
+                    regs: [R('Low register', 'Low', 55, 62), R('Middle register', 'Mid', 63, 72), R('Upper register', 'High', 73, 84)] },
+    trombone:     { group: 'Brass', label: 'Trombone', name: 'trombone', family: 'brass', transpose: 0, pipe: 2,
+                    regs: [R('Low register', 'Low', 40, 47), R('Middle register', 'Mid', 48, 58), R('Upper register', 'High', 59, 70)] },
+    euphonium:    { group: 'Brass', label: 'Euphonium / baritone', name: 'euphonium', family: 'brass', transpose: 0, pipe: 2,
+                    regs: [R('Low register', 'Low', 40, 47), R('Middle register', 'Mid', 48, 58), R('Upper register', 'High', 59, 70)] },
+    tuba:         { group: 'Brass', label: 'Tuba', name: 'tuba', family: 'brass', transpose: 0, pipe: 2,
+                    regs: [R('Low register', 'Low', 28, 39), R('Middle register', 'Mid', 40, 51), R('Upper register', 'High', 52, 60)] },
+    violin:       { group: 'Strings', label: 'Violin', name: 'violin', family: 'strings', transpose: 0,
+                    regs: [R('G string', 'G', 55, 61), R('D string', 'D', 62, 68), R('A string', 'A', 69, 75), R('E string', 'E', 76, 88)] },
+    viola:        { group: 'Strings', label: 'Viola', name: 'viola', family: 'strings', transpose: 0,
+                    regs: [R('C string', 'C', 48, 54), R('G string', 'G', 55, 61), R('D string', 'D', 62, 68), R('A string', 'A', 69, 81)] },
+    cello:        { group: 'Strings', label: 'Cello', name: 'cello', family: 'strings', transpose: 0,
+                    regs: [R('C string', 'C', 36, 42), R('G string', 'G', 43, 49), R('D string', 'D', 50, 56), R('A string', 'A', 57, 72)] },
+    bass:         { group: 'Strings', label: 'Double bass', name: 'double bass', family: 'strings', transpose: 12,
+                    regs: [R('E string', 'E', 40, 44), R('A string', 'A', 45, 49), R('D string', 'D', 50, 54), R('G string', 'G', 55, 67)] },
+    guitar:       { group: 'Strings', label: 'Guitar', name: 'guitar', family: 'guitar', transpose: 12,
+                    regs: [R('Low strings', 'Low', 52, 61), R('Middle strings', 'Mid', 62, 71), R('High strings', 'High', 72, 84)] },
+    vsoprano:     { group: 'Voice', label: 'Soprano voice', name: 'voice', family: 'voice', transpose: 0,
+                    regs: [R('Chest voice', 'Chest', 60, 64), R('Middle voice', 'Mid', 65, 76), R('Head voice', 'Head', 77, 84)] },
+    valto:        { group: 'Voice', label: 'Alto / mezzo voice', name: 'voice', family: 'voice', transpose: 0,
+                    regs: [R('Chest voice', 'Chest', 53, 60), R('Middle voice', 'Mid', 61, 70), R('Head voice', 'Head', 71, 77)] },
+    vtenor:       { group: 'Voice', label: 'Tenor voice', name: 'voice', family: 'voice', transpose: 12,
+                    regs: [R('Chest voice', 'Chest', 60, 67), R('Middle voice', 'Mid', 68, 76), R('Head voice', 'Head', 77, 84)] },
+    vbass:        { group: 'Voice', label: 'Baritone / bass voice', name: 'voice', family: 'voice', transpose: 0,
+                    regs: [R('Chest voice', 'Chest', 40, 50), R('Middle voice', 'Mid', 51, 58), R('Head voice', 'Head', 59, 64)] },
+    concert:      { group: 'Other', label: 'Other instrument (concert pitch)', name: 'instrument', family: 'other', transpose: 0,
+                    regs: [R('Low register', 'Low', 48, 59), R('Middle register', 'Mid', 60, 71), R('Upper register', 'High', 72, 84)] }
   };
-
-  const REGISTERS = [
-    { id: 'low',   name: 'Low stack',       tag: 'Low',   lo: 58, hi: 61 },
-    { id: 'mid',   name: 'Middle register', tag: 'Mid',   lo: 62, hi: 73 },
-    { id: 'upper', name: 'Upper register',  tag: 'Upper', lo: 74, hi: 85 },
-    { id: 'palm',  name: 'Palm keys',       tag: 'Palm',  lo: 86, hi: 89 }
-  ];
 
   const pc = m => ((m % 12) + 12) % 12;
   const octaveOf = m => Math.floor(m / 12) - 1;
@@ -1093,7 +1366,11 @@
   const midiToFreq = (m, a4) => a4 * Math.pow(2, (m - 69) / 12);
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   const avg = arr => arr.reduce((s, v) => s + v, 0) / (arr.length || 1);
-  const registerOf = m => REGISTERS.find(r => m >= r.lo && m <= r.hi);
+  const rangeLo = () => inst().regs[0].lo;
+  const rangeHi = () => inst().regs[inst().regs.length - 1].hi;
+  const noteCount = () => rangeHi() - rangeLo() + 1;
+  const registerOf = m => inst().regs.find(r => m >= r.lo && m <= r.hi) || inst().regs[0];
+  const listJoin = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
   const fmtCents = (c, d = 1) => {
     const v = Math.abs(c) < Math.pow(10, -d) / 2 ? 0 : c;
     return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '¢';
@@ -1289,7 +1566,7 @@
     try {
       const s = JSON.parse(localStorage.getItem('sit.v1.settings') || '{}');
       if (s.instrument && INSTRUMENTS[s.instrument]) state.instrument = s.instrument;
-      if (s.a4 >= 430 && s.a4 <= 450) state.a4 = s.a4;
+      if (s.a4 >= 415 && s.a4 <= 466) state.a4 = s.a4;
       if (s.gateDb >= -72 && s.gateDb <= -24) state.gateDb = s.gateDb;
     } catch (e) { /* defaults */ }
   }
@@ -1320,7 +1597,7 @@
 
   function computeStats() {
     const notes = [];
-    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+    for (let m = rangeLo(); m <= rangeHi(); m++) {
       const s = noteStats(m, false);
       if (s) notes.push(Object.assign({ midi: m }, s));
     }
@@ -1335,7 +1612,7 @@
       inTune: notes.filter(n => Math.abs(n.mean) <= IN_TUNE).length,
       avgSd: avg(notes.map(n => n.sd)),
       score: avg(means.map(c => 100 * Math.exp(-Math.pow(Math.abs(c) / 18, 2)))),
-      regs: REGISTERS.map(r => {
+      regs: inst().regs.map(r => {
         const ns = notes.filter(n => n.midi >= r.lo && n.midi <= r.hi);
         return Object.assign({}, r, { count: ns.length, mean: ns.length ? avg(ns.map(n => n.mean)) : null });
       })
@@ -1370,8 +1647,8 @@
 
   function updateRange() {
     const tr = inst().transpose;
-    range.minF = Math.max(40, midiToFreq(RANGE_LOW - tr - 4, state.a4));
-    range.maxF = Math.min(2200, midiToFreq(RANGE_HIGH - tr + 10, state.a4));
+    range.minF = Math.max(28, midiToFreq(rangeLo() - tr - 4, state.a4));
+    range.maxF = Math.min(4400, midiToFreq(rangeHi() - tr + 10, state.a4));
   }
 
   function micError(err) {
@@ -1430,18 +1707,17 @@
      analysis chain (realistic tendencies: flat low stack,
      sharp upper register and palm keys, a sharp middle C♯)
      ========================================================= */
-  const DEMO_PROFILE = [
-    -12, -10, -11, -7,                            // B♭3 B3 C4 C♯4
-    -3, -1, 2, 0, 1, 3, -2, 1, 2, 4, 1, 16,       // D4 … C♯5
-    6, 8, 7, 9, 11, 10, 12, 13, 12, 15, 14, 13,   // D5 … C♯6
-    17, 19, 22, 26                                // D6 E♭6 E6 F6
-  ];
+  // Typical tendencies: flat at the bottom, climbing sharp toward the top, one stubborn note
+  function demoDev(i, n) {
+    const p = i / Math.max(1, n - 1);
+    return -11 + 33 * Math.pow(p, 1.6) + (i === Math.round(n * 0.47) ? 14 : 0);
+  }
   const DEMO_NOTE = 1.6, DEMO_GAP = 0.24;
   const demo = { running: false, nodes: [], timer: 0 };
 
   async function startDemo() {
     const I = inst();
-    if (hasData() && !window.confirm('Play the demo? It replaces the current ' + I.label.toLowerCase() + ' matrix with a simulated player’s results.')) return;
+    if (hasData() && !window.confirm('Play the demo? It replaces the current ' + I.name + ' matrix with a simulated player’s results.')) return;
     stopMic();
     try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio, so the demo cannot play.', 'error'); return; }
     clearData();
@@ -1468,9 +1744,9 @@
     env.connect(audio.input);
     env.connect(speaker); speaker.connect(ctx.destination);
 
-    for (let i = 0; i <= RANGE_HIGH - RANGE_LOW; i++) {
-      const written = RANGE_LOW + i;
-      const dev = DEMO_PROFILE[i] + (Math.random() - 0.5) * 2.4;
+    for (let i = 0; i <= rangeHi() - rangeLo(); i++) {
+      const written = rangeLo() + i;
+      const dev = demoDev(i, noteCount()) + (Math.random() - 0.5) * 2.4;
       const f = midiToFreq(written - I.transpose, state.a4) * Math.pow(2, dev / 1200);
       const s = t0 + i * (DEMO_NOTE + DEMO_GAP), e = s + DEMO_NOTE;
       osc.frequency.setValueAtTime(f * Math.pow(2, -28 / 1200), s);   // attack scoop
@@ -1483,7 +1759,7 @@
       lfoDepth.gain.linearRampToValueAtTime(f * 0.0016, s + DEMO_NOTE * 0.75); // late, gentle vibrato
       lfoDepth.gain.setValueAtTime(0, e);
     }
-    const tEnd = t0 + (RANGE_HIGH - RANGE_LOW + 1) * (DEMO_NOTE + DEMO_GAP);
+    const tEnd = t0 + (rangeHi() - rangeLo() + 1) * (DEMO_NOTE + DEMO_GAP);
     osc.start(t0 - 0.05); lfo.start(t0 - 0.05); noise.start(t0 - 0.05);
     osc.stop(tEnd + 0.2); lfo.stop(tEnd + 0.2); noise.stop(tEnd + 0.2);
 
@@ -1562,7 +1838,7 @@
 
   function capture(det, dt) {
     const m = det.note;
-    if (m < RANGE_LOW || m > RANGE_HIGH) { setHud('out', { note: m }); return; }
+    if (m < rangeLo() || m > rangeHi()) { setHud('out', { note: m }); return; }
     if (track.stable < SETTLE_TIME) {
       if (!state.take || state.take.midi !== m) setHud('settle', { note: m });
       return;
@@ -1628,7 +1904,7 @@
         break;
       case 'armed':
         title = 'Listening for a sustained note';
-        sub = 'Hold any note from low B♭ to high F for ' + CAPTURE_TARGET + ' seconds at a steady volume.';
+        sub = 'Hold any note from ' + noteText(rangeLo()) + ' to ' + noteText(rangeHi()) + ' for ' + CAPTURE_TARGET + ' seconds at a steady volume.';
         break;
       case 'settle':
         title = 'Hold ' + noteText(d.note) + ' steady';
@@ -1652,7 +1928,7 @@
         break;
       case 'out':
         title = noteText(d.note) + ' is outside the matrix';
-        sub = 'The matrix covers written low B♭ to high F.';
+        sub = 'The matrix for your ' + inst().name + ' covers ' + noteText(rangeLo()) + ' to ' + noteText(rangeHi()) + '.';
         break;
     }
     const key = kind + '|' + title + '|' + sub + '|' + Math.round(progress * 100);
@@ -1675,7 +1951,7 @@
   const cells = {};
   function buildMatrix() {
     const frag = document.createDocumentFragment();
-    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+    for (let m = rangeLo(); m <= rangeHi(); m++) {
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'cell is-empty';
@@ -1725,7 +2001,7 @@
     el.setAttribute('aria-label', noteText(m) + ', average ' + fmtCents(s.mean).replace('−', 'minus ') + ' over ' + s.takes + ' takes');
     if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
   }
-  function renderAllCells() { for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) renderCell(m); }
+  function renderAllCells() { for (let m = rangeLo(); m <= rangeHi(); m++) renderCell(m); }
 
   function hasData() { return Object.keys(store).length > 0; }
   function clearData() {
@@ -1738,49 +2014,198 @@
   }
 
   /* =========================================================
-     Coaching engine
+     Coaching engine: the analysis is shared, the advice comes from
+     the instrument family (how you actually fix pitch on it)
      ========================================================= */
-  function mouthpieceMM(cents) {
-    // Approximate the sounding air-column length at written A4 (half wavelength of a conical bore)
-    const f = midiToFreq(69 - inst().transpose, state.a4);
-    const L = 343000 / (2 * f);
+  const FAMILIES = {
+    sax: {
+      setupSharp: 'Pull the mouthpiece out about {mm} mm on the neck cork', setupFlat: 'Push the mouthpiece in about {mm} mm on the neck cork',
+      highWhySharp: 'Pitch that climbs with the register usually means the jaw closes and the lower lip pinches the reed as you go up.',
+      highWhyFlat: 'The top of the horn drops when air speed falls or the tongue sits too low in the mouth.',
+      highSharp: ['Drop the jaw slightly and keep the lower lip cushioned; shape an open "oh" inside the mouth as you go up.', 'Lead with faster air from your core instead of extra lip pressure on the reed.'],
+      highFlat: ['Keep the air fast through the break and voice higher by arching the tongue toward an "ee" shape.', 'Firm the corners of the embouchure without biting down.', 'If the top still sags with good air, your reed may be too soft; try half a strength harder.'],
+      topSharp: 'On sharp palm-key notes, try adding right-hand fingers 2 and 3 to lower the pitch.',
+      lowWhySharp: 'Squeezing to make low notes speak raises the pitch and thins the tone.',
+      lowWhyFlat: 'Low notes drop when the jaw opens too far and the air slows down for soft entries.',
+      lowSharp: ['Ease lower-lip pressure and let the reed vibrate freely; low notes need air, not grip.', 'Open the throat with an "oh" shape and use more air volume to make the note speak.'],
+      lowFlat: ['Keep the same embouchure you use for middle D; avoid dropping the jaw for low notes.', 'Play low-note long tones at mezzo-forte against a drone with fast, warm air.'],
+      octWhySharp: 'The embouchure is likely tightening when the octave key opens.', octWhyFlat: 'Air support is likely dropping as you cross the break.',
+      octSharp: ['Keep jaw, lips and tongue exactly where they are across the break; let the octave key do the work.', 'Slur D4 to D5, E4 to E5 and F4 to F5 slowly with the tuner. The needle should not move.'],
+      octFlat: ['Increase air speed (not volume) as the octave key opens.', 'Slur D4 to D5 slowly, keeping a slightly higher tongue position on the top note.'],
+      noteSharp: 'relax lip pressure and voice lower with an "oh" shape', noteFlat: 'use faster air and a slightly higher tongue position ("ee")',
+      steady: ['Daily long tones: four counts crescendo, four counts decrescendo, needle steady the whole time.', 'Check the reed. A chipped or warped reed makes pitch unstable.'],
+      gear: 'reeds and mouthpieces'
+    },
+    clarinet: {
+      setupSharp: 'Pull out about {mm} mm at the barrel (split it with the middle joint if the low notes are sharp too)', setupFlat: 'Push the barrel in, or try a shorter barrel if it is already all the way in',
+      highWhySharp: 'Clarion and altissimo notes climb when you bite or pinch as you go up.', highWhyFlat: 'Upper notes sag when the air slows or the tongue drops.',
+      highSharp: ['Keep the chin flat and pointed and take pressure off the reed with the lower lip.', 'Use faster, warmer air instead of more lip.'],
+      highFlat: ['Keep the tongue high ("ee") and the air fast through the break.', 'Firm the corners of the embouchure without biting.'],
+      topSharp: 'In the altissimo, try resonance fingerings (adding right-hand ring keys) to bring sharp notes down.',
+      lowWhySharp: 'Pinching to make the chalumeau speak pushes it sharp.', lowWhyFlat: 'The low register drops when the jaw relaxes too far or the air slows down.',
+      lowSharp: ['Relax the embouchure and let the reed vibrate; the low register needs air, not grip.', 'Open the throat with an "oh" shape.'],
+      lowFlat: ['Keep the embouchure set as you go down; do not drop the jaw.', 'Long tones from low E to G against a drone.'],
+      octWhySharp: 'The embouchure is likely tightening when the register key opens.', octWhyFlat: 'Air support is likely dropping as you cross the break.',
+      octSharp: ['Keep the embouchure still as you add the register key; let the key do the work.', 'Slur twelfths slowly (low G to D, low A to E) with the tuner. The needle should not move.'],
+      octFlat: ['Speed up the air as the register key opens.', 'Slur twelfths slowly with a high tongue position on the top note.'],
+      noteSharp: 'relax the lip and voice lower with an "oh" shape', noteFlat: 'use faster air and a higher tongue position ("ee")',
+      steady: ['Daily long tones with a steady air stream and the needle centered.', 'Check the reed. A chipped or warped reed makes pitch unstable.'],
+      gear: 'reeds, barrels and mouthpieces'
+    },
+    flute: {
+      setupSharp: 'Pull the headjoint out about {mm} mm', setupFlat: 'Push the headjoint in about {mm} mm',
+      highWhySharp: 'High notes climb when the air is aimed too high or blown too hard.', highWhyFlat: 'High notes sag when the air slows down or the flute is rolled in.',
+      highSharp: ['Aim the air stream slightly lower by dropping the jaw a little; keep the lips relaxed.', 'Play high notes with a smaller, faster air stream instead of more pressure.'],
+      highFlat: ['Aim the air a little higher and make the lip opening smaller.', 'Keep the air speed up and check that you are not rolling the flute in.'],
+      lowWhySharp: 'Rolling out or aiming high to make low notes speak pushes them sharp.', lowWhyFlat: 'Low notes drop when the flute is rolled in or the embouchure hole is covered too much.',
+      lowSharp: ['Do not roll the flute out to make low notes speak; aim the air down into the embouchure hole.', 'Use a relaxed, open lip opening and slower, warm air.'],
+      lowFlat: ['Avoid rolling in or covering too much of the embouchure hole.', 'Keep the air steady on low notes; long tones on low C to E.'],
+      octWhySharp: 'You are probably changing octaves by blowing harder.', octWhyFlat: 'The air direction is probably not moving up enough for the higher octave.',
+      octSharp: ['Change octaves with the lips and air direction, not by blowing harder.', 'Slur octaves (low D to middle D) slowly with the tuner and keep the needle still.'],
+      octFlat: ['Move the lips slightly forward and speed up the air as you go up.', 'Slur octaves slowly, aiming the air a touch higher for the top note.'],
+      noteSharp: 'aim the air slightly lower and relax the lips', noteFlat: 'aim the air slightly higher with a faster, smaller air stream',
+      steady: ['Long tones with an even air stream, keeping the needle still.', 'Check that your vibrato stays centered on the pitch.'],
+      gear: 'headjoint position'
+    },
+    doublereed: {
+      setupSharp: 'Pull the reed out a little (on bassoon, try a longer bocal)', setupFlat: 'Push the reed all the way in (on bassoon, try a shorter bocal) and check the reed is not too soft',
+      highWhySharp: 'Upper notes climb when the lips bite the reed as you go up.', highWhyFlat: 'Upper notes sag when the air support drops.',
+      highSharp: ['Take lip pressure off the reed and keep the air fast instead.', 'Use a little less reed in the mouth on high notes.'],
+      highFlat: ['Support with more air and a firmer, rounder embouchure.', 'Try a little more reed in the mouth.'],
+      lowWhySharp: 'Pinching to get low notes to speak raises the pitch.', lowWhyFlat: 'The low register drops when the embouchure goes slack.',
+      lowSharp: ['Relax the lips and open the throat so low notes speak without pinching.', 'Use more air volume, not more pressure.'],
+      lowFlat: ['Keep the embouchure firm and round as you go down.', 'Check the reed: a soft or worn reed makes the low register sag.'],
+      octWhySharp: 'The embouchure is probably tightening as you go up.', octWhyFlat: 'Air support is probably dropping as you go up.',
+      octSharp: ['Keep the embouchure still as you slur up an octave; let the octave key do the work.', 'Slur octaves slowly with the tuner.'],
+      octFlat: ['Speed up the air as you slur up an octave.', 'Slur octaves slowly with firm corners on the top note.'],
+      noteSharp: 'take pressure off the reed', noteFlat: 'support with more air and a firmer, rounder embouchure',
+      steady: ['Long tones with steady air support and the needle centered.', 'Check the reed. A worn reed makes pitch unstable.'],
+      gear: 'reeds'
+    },
+    brass: {
+      setupSharp: 'Pull the main tuning slide out about {mm} mm', setupFlat: 'Push the main tuning slide in about {mm} mm',
+      highWhySharp: 'Upper partials climb when the lips pinch and the aperture closes.', highWhyFlat: 'Upper partials sag when air speed drops or the corners let go.',
+      highSharp: ['Keep the aperture open; pinching the lips raises the pitch.', 'Let faster air, not more mouthpiece pressure, carry you up.'],
+      highFlat: ['Firm the corners and use faster air as you go up.', 'Keep the tongue arched higher ("ee") in the upper register.'],
+      lowWhySharp: 'Low notes go sharp when the lips stay too tight or a valve combination runs sharp.', lowWhyFlat: 'Low notes drop when the air slows and the sound goes slack.',
+      lowSharp: ['Relax the lips and drop the jaw so low notes vibrate freely.', 'Valve combinations 1-3 and 1-2-3 run sharp; extend the 1st or 3rd slide (on trombone, adjust the slide position).'],
+      lowFlat: ['Keep the air fast on low notes; do not let the sound go slack.', 'Long tones on low notes against a drone.'],
+      octWhySharp: 'The lips are likely pinching as you go up to the next partial.', octWhyFlat: 'Air speed is likely dropping as you go up to the next partial.',
+      octSharp: ['Slur between partials slowly without pinching; let the air do the work.', 'Lip slurs with the tuner, keeping the needle centered.'],
+      octFlat: ['Speed up the air as you slur to the higher partial.', 'Lip slurs with the tuner, arching the tongue higher for the top note.'],
+      noteSharp: 'adjust with a slide (or lip the note down without pinching)', noteFlat: 'use faster air, or shorten the slide on that note',
+      steady: ['Long tones with steady air pressure and firm corners.', 'Check that the mouthpiece pressure stays even through each note.'],
+      gear: 'mouthpieces'
+    },
+    strings: {
+      setupSharp: 'Retune your open strings with the drone, then check your first-finger placement', setupFlat: 'Retune your open strings with the drone, then check your first-finger placement',
+      highWhySharp: 'Shifts into high positions are likely overshooting.', highWhyFlat: 'Fingers are likely too close together in high positions.',
+      highSharp: ['Practice slow shifts with a guide finger and arrive gently.', 'Check high-position notes against natural harmonics and open strings.'],
+      highFlat: ['Finger spacing narrows as you go up, but less than you think; widen it slightly.', 'Check notes against the octave harmonic halfway up the string.'],
+      lowWhySharp: 'The first finger is probably creeping up in low positions.', lowWhyFlat: 'The first and second fingers are probably sitting too far back.',
+      lowSharp: ['Check your first finger against the open string an octave or unison away.', 'Keep the hand frame relaxed and balanced.'],
+      lowFlat: ['Check notes against open strings and ring tones.', 'Slow scales against a drone.'],
+      octWhySharp: 'Your hand frame is probably stretching too wide for octaves.', octWhyFlat: 'Your hand frame is probably too narrow for octaves.',
+      octSharp: ['Play the lower note on an open string, then the octave with the 4th finger, and match them.', 'Practice octave shifts slowly with the tuner.'],
+      octFlat: ['Play the lower note on an open string, then the octave with the 4th finger, and match them.', 'Practice octave shifts slowly with the tuner.'],
+      noteSharp: 'move the finger back slightly and check against an open string', noteFlat: 'move the finger forward slightly and check against an open string',
+      steady: ['Keep bow speed and weight even; uneven bowing makes the pitch wobble.', 'Make sure vibrato swings below and back to the note, centered on pitch.'],
+      gear: 'strings'
+    },
+    guitar: {
+      setupSharp: 'Retune every string with the tuner', setupFlat: 'Retune every string with the tuner',
+      highWhySharp: 'Notes up the neck go sharp when you press too hard or the saddle intonation is off.', highWhyFlat: 'Notes up the neck go flat when the saddle intonation is off or the strings are old.',
+      highSharp: ['Use just enough fretting pressure; pressing hard bends notes sharp.', 'If the 12th fret is sharp against the 12th-fret harmonic, the saddle intonation needs adjusting.'],
+      highFlat: ['If the 12th fret is flat against the 12th-fret harmonic, the saddle intonation needs adjusting.', 'Old strings play out of tune up the neck; try a fresh set.'],
+      lowWhySharp: 'Low notes go sharp when strings get pulled sideways or pressed too hard.', lowWhyFlat: 'Low notes go flat when the open strings have drifted.',
+      lowSharp: ['Fret right behind the fret wire with light pressure.', 'Avoid pulling the string sideways as you fret.'],
+      lowFlat: ['Retune the open strings, then sample again.', 'Old strings lose pitch accuracy; consider changing them.'],
+      octWhySharp: 'The 12th fret is probably sharp against the open string.', octWhyFlat: 'The 12th fret is probably flat against the open string.',
+      octSharp: ['Compare each open string with its 12th fret note; a sharp 12th fret needs a saddle adjustment.', 'Use lighter fretting pressure.'],
+      octFlat: ['Compare each open string with its 12th fret note; a flat 12th fret needs a saddle adjustment.', 'Check for worn strings.'],
+      noteSharp: 'use lighter fretting pressure', noteFlat: 'check that string is in tune',
+      steady: ['Pluck evenly; hard attacks push the start of each note sharp.', 'Check that the strings are not slipping at the tuning pegs.'],
+      gear: 'strings'
+    },
+    voice: {
+      setupSharp: 'Take your pitch from the drone and sing with less pressure', setupFlat: 'Take your pitch from the drone and sing with more breath support and a brighter vowel',
+      highWhySharp: 'High notes go sharp when you push or squeeze to reach them.', highWhyFlat: 'High notes go flat when breath support drops or the soft palate falls.',
+      highSharp: ['Avoid pushing or squeezing; let the breath carry high notes.', 'Use a slightly taller vowel instead of more pressure.'],
+      highFlat: ['Support with the breath and lift the soft palate (an inner yawn).', 'Brighten the vowel slightly and think of the pitch from above.'],
+      lowWhySharp: 'Low notes go sharp when the larynx presses down for them.', lowWhyFlat: 'Low notes go flat when the voice loses energy and turns breathy.',
+      lowSharp: ['Relax the larynx; do not press for low notes.', 'Speak the low notes first, then sing them on the same pitch.'],
+      lowFlat: ['Keep energy in low notes; do not let the voice go breathy.', 'Hum low notes against the drone to lock in the pitch.'],
+      octWhySharp: 'You are probably overshooting octave leaps.', octWhyFlat: 'You are probably undershooting octave leaps.',
+      octSharp: ['Sing slow octave slides, arriving on the top note gently.', 'Check octave leaps against the drone.'],
+      octFlat: ['Sing slow octave slides, aiming for the top note from above.', 'Check octave leaps against the drone.'],
+      noteSharp: 'sing with less pressure and a taller vowel', noteFlat: 'add breath support and brighten the vowel',
+      steady: ['Long sustained notes on one vowel with steady breath support.', 'Keep vibrato even and centered on the pitch.'],
+      gear: 'warm-ups'
+    },
+    other: {
+      setupSharp: 'Tune your instrument down to the reference pitch', setupFlat: 'Tune your instrument up to the reference pitch',
+      highWhySharp: 'Your upper range runs sharp.', highWhyFlat: 'Your upper range runs flat.',
+      highSharp: ['Check the upper notes one at a time against the drone.', 'Play the upper range softer and more relaxed.'],
+      highFlat: ['Check the upper notes one at a time against the drone.', 'Give the upper range more energy and support.'],
+      lowWhySharp: 'Your low range runs sharp.', lowWhyFlat: 'Your low range runs flat.',
+      lowSharp: ['Check the low notes one at a time against the drone.', 'Play the low range more relaxed.'],
+      lowFlat: ['Check the low notes one at a time against the drone.', 'Give the low range more energy.'],
+      octWhySharp: 'Your octaves are stretched wide.', octWhyFlat: 'Your octaves are squeezed narrow.',
+      octSharp: ['Play slow octaves with the tuner.', 'Match each upper note to the lower one by ear.'],
+      octFlat: ['Play slow octaves with the tuner.', 'Match each upper note to the lower one by ear.'],
+      noteSharp: 'bring the pitch down slightly', noteFlat: 'bring the pitch up slightly',
+      steady: ['Daily long tones, keeping the needle still.', 'Listen for beats against the drone and smooth them out.'],
+      gear: 'setup'
+    }
+  };
+
+  function tuningMM(cents) {
+    // Length of the sounding air column at written A4, then the change that shifts it by this many cents
+    const I = inst();
+    const f = midiToFreq(69 - I.transpose, state.a4);
+    const L = 343000 / ((I.pipe || 2) * f);
     const mm = L * (Math.pow(2, Math.abs(cents) / 1200) - 1);
-    return clamp(Math.round(mm * 2) / 2, 0.5, 10);
+    return clamp(Math.round(mm * 2) / 2, 0.5, 15);
   }
 
   function levelFor(sev) { return sev >= 14 ? 'High priority' : sev >= 7 ? 'Medium priority' : 'Tip'; }
   const nameList = notes => notes.map(n => noteText(n.midi) + ' ' + fmtCents(n.mean, 0)).join(', ');
+  const noteNames = notes => notes.map(n => noteText(n.midi)).join(', ');
 
   function buildInsights(st) {
-    const I = inst();
-    const horn = I.horn;
+    const I = inst(), F = FAMILIES[I.family] || FAMILIES.other, regs = I.regs, total = noteCount();
     if (st.count < 3) {
       return [
-        { tone: 'info', level: 'Getting started', title: 'Map your horn one note at a time',
-          body: 'Turn on Sample notes, then sustain each note for about ' + CAPTURE_TARGET + ' seconds at a comfortable mezzo-forte. Its square fills with your running average.',
-          actions: ['Play each note two or three times for a reliable average.', 'No saxophone nearby? Play demo runs a simulated player through all 32 notes.'] },
+        { tone: 'info', level: 'Getting started', title: 'Map your ' + I.name + ' one note at a time',
+          body: 'Turn on Sample notes, then sustain each note for about ' + CAPTURE_TARGET + ' seconds at a comfortable volume. Its square fills with your running average.',
+          actions: ['Play each note two or three times for a reliable average.', 'Want to see how it works first? Play demo runs a simulated player through all ' + total + ' notes.'] },
         { tone: 'info', level: 'Getting started', title: 'Coaching starts after three notes',
-          body: 'You have sampled ' + st.count + ' of 3. Covering the low stack, middle register and palm keys gives the most specific advice.' }
+          body: 'You have sampled ' + st.count + ' of 3. Covering the ' + listJoin(regs.map(r => r.name.toLowerCase())) + ' gives the most specific advice.' }
       ];
     }
 
     const out = [];
     const byMidi = {};
     st.notes.forEach(n => { byMidi[n.midi] = n; });
-    const group = (lo, hi) => {
-      const ns = st.notes.filter(n => n.midi >= lo && n.midi <= hi);
+    const group = (a, b) => {
+      const ns = st.notes.filter(n => n.midi >= a && n.midi <= b);
       return ns.length ? { mean: avg(ns.map(n => n.mean)), count: ns.length, notes: ns } : null;
     };
-    const low = group(58, 61), mid = group(62, 73), upper = group(74, 85), palm = group(86, 89), high = group(74, 89);
+    const lowR = regs[0], topR = regs[regs.length - 1], highLo = regs[Math.floor(regs.length / 2)].lo;
+    const low = group(lowR.lo, lowR.hi), high = group(highLo, topR.hi), top = regs.length > 2 ? group(topR.lo, topR.hi) : null;
     const covered = []; // { lo, hi, sign } regions already explained by an insight
 
-    // Octave consistency (same fingering, octave key on vs off)
+    // Register-change consistency: the same fingering an octave (a twelfth on clarinet) apart
+    const ov = I.overblow || 12, ovName = ov === 19 ? 'twelfth' : 'octave';
     const octDiffs = [];
-    for (let m = 62; m <= 73; m++) if (byMidi[m] && byMidi[m + 12]) octDiffs.push(byMidi[m + 12].mean - byMidi[m].mean);
+    let firstPair = null;
+    for (let m = rangeLo(); m + ov <= rangeHi(); m++) {
+      if (byMidi[m] && byMidi[m + ov]) { octDiffs.push(byMidi[m + ov].mean - byMidi[m].mean); if (firstPair === null) firstPair = m; }
+    }
     const octDiff = octDiffs.length >= 2 ? avg(octDiffs) : null;
 
-    // 1. Uniform offset → mouthpiece position
-    const regMeans = [low, mid, upper, palm].filter(Boolean).map(g => g.mean);
+    // 1. Uniform offset → tuning setup
+    const regMeans = regs.map(r => group(r.lo, r.hi)).filter(Boolean).map(g => g.mean);
     const spread = regMeans.length ? Math.max.apply(null, regMeans) - Math.min.apply(null, regMeans) : 0;
     const lean = st.meanAll;
     const sameSide = st.notes.filter(n => Math.sign(n.mean) === Math.sign(lean) && Math.abs(n.mean) > 2).length / st.count;
@@ -1790,80 +2215,53 @@
       globalSign = sharp ? 1 : -1;
       out.push({
         sev: Math.abs(lean) * 1.4, tone: sharp ? 'sharp' : 'flat', metric: fmtCents(lean),
-        title: sharp ? 'Your whole ' + horn + ' is sharp: pull the mouthpiece out' : 'Your whole ' + horn + ' is flat: push the mouthpiece in',
-        body: Math.round(sameSide * 100) + '% of sampled notes lean ' + (sharp ? 'sharp' : 'flat') + ' by a similar amount. An even offset across every register is a setup issue, so fix it before changing your embouchure.',
+        title: 'Your whole ' + I.name + ' is ' + (sharp ? 'sharp' : 'flat'),
+        body: Math.round(sameSide * 100) + '% of sampled notes lean ' + (sharp ? 'sharp' : 'flat') + ' by a similar amount. An even offset across every register is a tuning issue, not a technique one, so fix it first.',
         actions: [
-          (sharp ? 'Pull the mouthpiece out' : 'Push the mouthpiece in') + ' about ' + mouthpieceMM(lean) + ' mm on the neck cork, then re-sample three or four notes.',
-          'Judge the change on relaxed mezzo-forte middle-register notes, not loud or forced ones.'
+          (sharp ? F.setupSharp : F.setupFlat).replace('{mm}', tuningMM(lean)) + ', then re-sample three or four notes.',
+          'Judge the change on relaxed, medium-volume notes in the middle of your range.'
         ]
       });
-      covered.push({ lo: 58, hi: 89, sign: globalSign });
+      covered.push({ lo: rangeLo(), hi: rangeHi(), sign: globalSign });
     }
 
-    // 2. Upper register + palm keys
+    // 2. Upper registers
     if (high && high.count >= 3 && Math.abs(high.mean) > 9 && Math.sign(high.mean) !== globalSign) {
       const sharp = high.mean > 0;
-      const palmTxt = palm ? ', with the palm keys at ' + fmtCents(palm.mean) : '';
+      const topTxt = top ? ', with the ' + topR.name.toLowerCase() + ' at ' + fmtCents(top.mean) : '';
       const octTxt = octDiff !== null && Math.sign(octDiff) === Math.sign(high.mean) && Math.abs(octDiff) > 6
-        ? ' Octave-key notes sit ' + fmtCents(octDiff) + ' from the same fingering an octave down, so the shift happens as you cross the break.' : '';
-      const sopTxt = state.instrument === 'soprano' ? ' The soprano reacts to tiny changes, so adjust in small steps.' : '';
-      const actions = sharp ? [
-        'Drop the jaw slightly and keep the lower lip cushioned; shape an open "oh" inside the mouth as you ascend.',
-        'Lead with faster air from your core instead of extra lip pressure on the reed.'
-      ] : [
-        'Keep the air fast through the break and voice higher by arching the tongue toward an "ee" shape.',
-        'Firm the corners of the embouchure without biting down.'
-      ];
-      if (sharp && palm && palm.mean > 10) actions.push('On sharp palm-key notes (D to F), try adding right-hand fingers 2 and 3 to lower the pitch.');
-      if (!sharp) actions.push('If the top still sags with good air, your reed may be too soft; try half a strength harder.');
+        ? ' Notes a ' + ovName + ' up sit ' + fmtCents(octDiff) + ' from the same note below, so the shift happens as you change register.' : '';
+      const actions = (sharp ? F.highSharp : F.highFlat).slice(0, 2);
+      if (sharp && F.topSharp && top && top.mean > 10) actions.push(F.topSharp);
       out.push({
-        sev: Math.abs(high.mean) * 1.15 + (palm ? Math.abs(palm.mean) * 0.15 : 0),
+        sev: Math.abs(high.mean) * 1.15 + (top ? Math.abs(top.mean) * 0.15 : 0),
         tone: sharp ? 'sharp' : 'flat', metric: fmtCents(high.mean),
-        title: sharp ? 'High register is running sharp' : 'High register is sagging flat',
-        body: 'Notes from written D5 upward average ' + fmtCents(high.mean) + palmTxt + '. ' +
-          (sharp ? 'Pitch that climbs with the register usually means the jaw closes and the lower lip pinches the reed as you go up.'
-                 : 'The top of the horn drops when air speed falls or the tongue sits too low in the mouth.') + octTxt + sopTxt,
-        actions: actions.slice(0, 3)
+        title: sharp ? 'Upper range is running sharp' : 'Upper range is sagging flat',
+        body: 'Notes from ' + noteText(highLo) + ' upward average ' + fmtCents(high.mean) + topTxt + '. ' + (sharp ? F.highWhySharp : F.highWhyFlat) + octTxt,
+        actions: actions
       });
-      covered.push({ lo: 74, hi: 89, sign: sharp ? 1 : -1 });
+      covered.push({ lo: highLo, hi: rangeHi(), sign: sharp ? 1 : -1 });
     } else if (octDiff !== null && Math.abs(octDiff) > 8) {
-      // 3. Octave jump (only when the high-register insight did not already explain it)
+      // 3. Register jump (only when the upper-range insight did not already explain it)
       const sharp = octDiff > 0;
       out.push({
         sev: Math.abs(octDiff), tone: sharp ? 'sharp' : 'flat', metric: fmtCents(octDiff),
-        title: sharp ? 'Octave-key notes jump sharp' : 'Upper octave falls flat',
-        body: 'Across ' + octDiffs.length + ' octave pairs (for example D4 to D5), the upper note sits ' + fmtCents(octDiff) + ' from its lower octave. ' +
-          (sharp ? 'The embouchure is likely tightening when the octave key engages.' : 'Air support is likely dropping as you cross the break.'),
-        actions: sharp ? [
-          'Keep jaw, lips and tongue exactly where they are across the break; let the octave vent do the work.',
-          'Slur D4 to D5, E4 to E5 and F4 to F5 slowly with the tuner. The needle should not move.'
-        ] : [
-          'Increase air speed (not volume) as the octave key opens.',
-          'Slur D4 to D5 slowly, keeping a slightly higher tongue position on the top note.'
-        ]
+        title: sharp ? 'Notes a ' + ovName + ' up jump sharp' : 'Notes a ' + ovName + ' up fall flat',
+        body: 'Across ' + octDiffs.length + ' pairs (for example ' + noteText(firstPair) + ' to ' + noteText(firstPair + ov) + '), the upper note sits ' + fmtCents(octDiff) + ' from the lower one. ' + (sharp ? F.octWhySharp : F.octWhyFlat),
+        actions: sharp ? F.octSharp : F.octFlat
       });
     }
 
-    // 4. Low stack
+    // 4. Lowest register
     if (low && low.count >= 2 && Math.abs(low.mean) > 8 && Math.sign(low.mean) !== globalSign) {
       const sharp = low.mean > 0;
-      const bigHorn = state.instrument === 'tenor' || state.instrument === 'bari';
       out.push({
         sev: Math.abs(low.mean), tone: sharp ? 'sharp' : 'flat', metric: fmtCents(low.mean),
-        title: sharp ? 'Low notes are pinched sharp' : 'Low notes are flat',
-        body: 'Your low-stack notes (B♭3 to C♯4) average ' + fmtCents(low.mean) + '. ' +
-          (sharp ? 'Squeezing to make low notes speak raises the pitch and thins the tone.'
-                 : 'Low notes drop when the jaw opens too far and the air slows down for soft entries.') +
-          (bigHorn ? ' On the ' + horn + ', the low register needs a very open throat and generous air volume.' : ''),
-        actions: sharp ? [
-          'Ease lower-lip pressure and let the reed vibrate freely; low notes need air, not grip.',
-          'Open the throat with an "oh" shape and use more air volume to make the note speak.'
-        ] : [
-          'Keep the same embouchure you use for middle D; avoid dropping the jaw for low notes.',
-          'Play low B♭ to low D long tones at mezzo-forte against a drone with fast, warm air.'
-        ]
+        title: sharp ? 'Low notes run sharp' : 'Low notes are flat',
+        body: 'Your ' + lowR.name.toLowerCase() + ' (' + noteText(lowR.lo) + ' to ' + noteText(lowR.hi) + ') averages ' + fmtCents(low.mean) + '. ' + (sharp ? F.lowWhySharp : F.lowWhyFlat),
+        actions: sharp ? F.lowSharp : F.lowFlat
       });
-      covered.push({ lo: 58, hi: 61, sign: sharp ? 1 : -1 });
+      covered.push({ lo: lowR.lo, hi: lowR.hi, sign: sharp ? 1 : -1 });
     }
 
     // 5. Individual problem notes
@@ -1871,19 +2269,27 @@
     const problems = st.notes.filter(n => Math.abs(n.mean) > 15 && !isCovered(n))
       .sort((a, b) => Math.abs(b.mean) - Math.abs(a.mean)).slice(0, 4);
     if (problems.length) {
-      const sharps = problems.filter(n => n.mean > 0), flats = problems.filter(n => n.mean < 0);
+      let sharps = problems.filter(n => n.mean > 0);
+      const flats = problems.filter(n => n.mean < 0);
       const actions = [];
-      if (byMidi[73] && problems.indexOf(byMidi[73]) >= 0 && byMidi[73].mean > 0) actions.push('C♯5: add the low C♯ pinky key and right-hand fingers 1 to 3 to add resonance and pull the pitch down.');
-      const palmSharp = sharps.filter(n => n.midi >= 86);
-      if (palmSharp.length) actions.push(palmSharp.map(n => noteText(n.midi)).join(', ') + ': add right-hand fingers 2 and 3 to bring the pitch down.');
-      const otherSharp = sharps.filter(n => n.midi !== 73 && n.midi < 86);
-      if (otherSharp.length) actions.push(otherSharp.map(n => noteText(n.midi)).join(', ') + ': relax lip pressure and voice lower with an "oh" shape.');
-      if (flats.length) actions.push(flats.map(n => noteText(n.midi)).join(', ') + ': use faster air and a slightly higher tongue position ("ee").');
+      if (I.family === 'sax') {
+        if (sharps.some(n => n.midi === 73)) actions.push('C♯5: add the low C♯ pinky key and right-hand fingers 1 to 3 to add resonance and pull the pitch down.');
+        const palm = sharps.filter(n => n.midi >= 86);
+        if (palm.length) actions.push(noteNames(palm) + ': add right-hand fingers 2 and 3 to bring the pitch down.');
+        sharps = sharps.filter(n => n.midi !== 73 && n.midi < 86);
+      }
+      if (I.valveSlide) {
+        const v = sharps.filter(n => I.valveSlide.indexOf(n.midi) >= 0);
+        if (v.length) actions.push(noteNames(v) + ': these valve combinations run sharp, so kick out the 3rd valve slide a little.');
+        sharps = sharps.filter(n => I.valveSlide.indexOf(n.midi) < 0);
+      }
+      if (sharps.length) actions.push(noteNames(sharps) + ': ' + F.noteSharp + '.');
+      if (flats.length) actions.push(noteNames(flats) + ': ' + F.noteFlat + '.');
       out.push({
         sev: Math.abs(problems[0].mean) - 6, tone: problems[0].mean > 0 ? 'sharp' : 'flat',
         metric: problems.length + (problems.length === 1 ? ' note' : ' notes'),
         title: 'Problem notes: ' + nameList(problems),
-        body: (problems.length === 1 ? 'This note is' : 'These notes are') + ' more than 15 cents off and stand out from the rest of the register. Isolate them with long tones against a drone.',
+        body: (problems.length === 1 ? 'This note is' : 'These notes are') + ' more than 15 cents off and stand out from the rest of the range. Isolate them with long tones against the drone.',
         actions: actions.slice(0, 3)
       });
     }
@@ -1893,11 +2299,8 @@
       out.push({
         sev: st.avgSd, tone: 'info', metric: '±' + st.avgSd.toFixed(1) + '¢',
         title: 'Pitch wavers inside sustained notes',
-        body: 'Your notes drift by about ±' + st.avgSd.toFixed(1) + ' cents while you hold them. Steadier air support will tighten every square on the matrix.',
-        actions: [
-          'Daily long tones: four counts crescendo, four counts decrescendo, needle steady the whole time.',
-          'Check the reed. A chipped or warped reed makes pitch unstable.'
-        ]
+        body: 'Your notes drift by about ±' + st.avgSd.toFixed(1) + ' cents while you hold them. Steadier notes will tighten every square on the matrix.',
+        actions: F.steady
       });
     }
 
@@ -1905,36 +2308,36 @@
     if (st.meanAbs < 5 && st.count >= 5) {
       out.push({
         sev: 1, tone: 'good', metric: st.inTune + ' of ' + st.count + ' in tune',
-        title: 'Excellent centering across the horn',
+        title: 'Excellent centering across your ' + I.name,
         body: 'Your sampled notes average only ' + st.meanAbs.toFixed(1) + ' cents from center.',
-        actions: ['Re-sample the same notes at pianissimo and fortissimo; dynamics are the next intonation challenge.']
+        actions: ['Re-sample the same notes very soft and very loud; dynamics are the next intonation challenge.']
       });
     }
 
     // 8. Coverage
-    if (st.count < 32) {
-      const missing = REGISTERS.filter(r => !st.regs.find(g => g.id === r.id).count).map(r => r.name.toLowerCase());
+    if (st.count < total) {
+      const missing = regs.filter(r => !st.regs.find(g => g.id === r.id).count).map(r => r.name.toLowerCase());
       out.push({
-        sev: 0.3, tone: 'info', metric: st.count + ' of 32',
+        sev: 0.3, tone: 'info', metric: st.count + ' of ' + total,
         title: 'Complete the map',
-        body: 'Sample the remaining ' + (32 - st.count) + ' notes' + (missing.length ? ', starting with the ' + missing.join(' and ') : '') + ', so the coaching can compare every register.'
+        body: 'Sample the remaining ' + (total - st.count) + ' notes' + (missing.length ? ', starting with the ' + listJoin(missing) : '') + ', so the coaching can compare your whole range.'
       });
     }
 
     // Always give at least two pieces of guidance
     if (out.length < 2) {
       out.push({
-        sev: 0.2, tone: 'info', metric: st.count + ' of 32',
+        sev: 0.2, tone: 'info', metric: st.count + ' of ' + total,
         title: 'Keep your map current',
-        body: 'Intonation shifts with reeds, temperature and fatigue. Re-sample after warming up and whenever you change reeds or mouthpieces.',
-        actions: ['Warm up for five minutes before sampling so the horn reaches playing temperature.', 'Play each note two or three times; the running average smooths out single takes.']
+        body: 'Intonation shifts with temperature, fatigue and ' + F.gear + '. Re-sample after warming up and whenever something in your setup changes.',
+        actions: ['Warm up for five minutes before sampling.', 'Play each note two or three times; the running average smooths out single takes.']
       });
     }
 
     out.sort((a, b) => b.sev - a.sev);
-    const top = out.slice(0, 3);
-    top.forEach(it => { if (!it.level) it.level = it.tone === 'good' ? 'Strength' : levelFor(it.sev); });
-    return top;
+    const best = out.slice(0, 3);
+    best.forEach(it => { if (!it.level) it.level = it.tone === 'good' ? 'Strength' : levelFor(it.sev); });
+    return best;
   }
 
   function renderInsight(it) {
@@ -1952,7 +2355,7 @@
   const RING_LEN = 2 * Math.PI * 42;
   function renderAnalytics() {
     const st = computeStats();
-    els.countPill.textContent = st.count + ' of 32 notes';
+    els.countPill.textContent = st.count + ' of ' + noteCount() + ' notes';
     if (!st.count) {
       els.scoreNum.textContent = '–';
       els.ringFg.style.strokeDashoffset = RING_LEN;
@@ -1971,7 +2374,7 @@
       els.statSd.textContent = '±' + st.avgSd.toFixed(1) + '¢';
     }
 
-    const regsSrc = st.count ? st.regs : REGISTERS.map(r => Object.assign({}, r, { count: 0, mean: null }));
+    const regsSrc = st.count ? st.regs : inst().regs.map(r => Object.assign({}, r, { count: 0, mean: null }));
     els.regs.innerHTML = regsSrc.map(r => {
       const rangeTxt = noteText(r.lo) + '–' + noteText(r.hi);
       let bar = '', val = '–', color = '';
@@ -2087,14 +2490,14 @@
         els.centsText.innerHTML = '0.0<small>¢</small>';
         els.verdict.dataset.tone = '';
         els.verdict.textContent = audio.mode === 'off' ? 'No signal' : 'Listening';
-        if (live.note === null) els.concertText.textContent = 'Written pitch for ' + I.label.toLowerCase();
+        if (live.note === null) els.concertText.textContent = I.transpose ? 'Written pitch for ' + I.label : I.label + ', concert pitch';
         els.freqText.textContent = audio.mode === 'off' ? 'Start the microphone to begin' : 'Play a note';
       }
       const lvl = audio.mode === 'off' ? 0 : clamp((live.levelDb + 72) / 72, 0, 1);
       els.levelFill.style.width = (lvl * 100).toFixed(1) + '%';
     }
 
-    const lc = voiced && live.note !== null && live.note >= RANGE_LOW && live.note <= RANGE_HIGH ? live.note : null;
+    const lc = voiced && live.note !== null && live.note >= rangeLo() && live.note <= rangeHi() ? live.note : null;
     if (lc !== view.liveCell) {
       if (view.liveCell !== null) cells[view.liveCell].el.classList.remove('is-live');
       if (lc !== null) cells[lc].el.classList.add('is-live');
@@ -2190,12 +2593,13 @@
     metEls.dots.innerHTML = html;
     metRun.shown = -1;
   }
-  function playClick(t, level) {
-    const ctx = audio.ctx, c = CLICKS[met.sound] || CLICKS.wood;
+  function playClick(t, level, vol, sound) {
+    if (vol === undefined) vol = met.vol;
+    const ctx = audio.ctx, c = CLICKS[sound || met.sound] || CLICKS.wood;
     const o = ctx.createOscillator(), g = ctx.createGain();
     o.type = c.type;
     o.frequency.value = c.f[level];
-    const peak = Math.max(0.0002, met.vol * [0.22, 0.5, 0.8][level] * (c.type === 'square' ? 0.35 : 0.9));
+    const peak = Math.max(0.0002, vol * [0.22, 0.5, 0.8][level] * (c.type === 'square' ? 0.35 : 0.9));
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(peak, t + 0.002);
     g.gain.exponentialRampToValueAtTime(0.0001, t + c.dur);
@@ -2224,6 +2628,7 @@
   }
   async function startMet() {
     try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio.', 'error'); return; }
+    if (rhyRun.on) stopRhy();
     metRun.on = true; metRun.beat = 0; metRun.subIdx = 0; metRun.bars = 0; metRun.queue = [];
     metRun.next = audio.ctx.currentTime + 0.08;
     metSchedule();
@@ -2384,13 +2789,13 @@
     let info = '<strong>' + droneFreq().toFixed(1) + ' Hz</strong>';
     if (I.transpose) {
       info += drone.names === 'written'
-        ? 'Written for ' + I.label.toLowerCase() + ', sounds ' + noteText(concert) + ' concert'
-        : 'Concert pitch, written ' + noteText(concert + I.transpose) + ' for ' + I.label.toLowerCase();
+        ? 'Written for ' + I.name + ', sounds ' + noteText(concert) + ' concert'
+        : 'Concert pitch, written ' + noteText(concert + I.transpose) + ' for ' + I.name;
     } else info += 'Concert pitch';
     droneEls.info.innerHTML = info;
     [...droneEls.pitches.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pc) === drone.pc)));
     [...droneEls.names.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.names === drone.names)));
-    droneEls.names.children[0].textContent = I.transpose ? 'Written for ' + I.label.toLowerCase() : 'Written';
+    droneEls.names.children[0].textContent = I.transpose ? 'Written for ' + I.name : 'Written';
     droneEls.toggle.innerHTML = (droneRun.on ? ICONS.stop + '<span>Stop drone</span>' : ICONS.play + '<span>Play drone</span>');
     droneEls.toggle.classList.toggle('is-on', droneRun.on);
     droneEls.wave.classList.toggle('on', droneRun.on);
@@ -2478,7 +2883,8 @@
         rec.src = audio.ctx.createMediaStreamSource(stream);
         rec.analyser = audio.ctx.createAnalyser(); rec.analyser.fftSize = 1024;
         rec.lvlBuf = new Float32Array(rec.analyser.fftSize);
-        rec.src.connect(rec.analyser);
+        const sink = audio.ctx.createGain(); sink.gain.value = 0;
+        rec.src.connect(rec.analyser); rec.analyser.connect(sink); sink.connect(audio.ctx.destination);
       } catch (e) { rec.analyser = null; }
       rec.timer = window.setInterval(() => { recEls.time.textContent = clockText((performance.now() - rec.startAt) / 1000); }, 250);
       recEls.status.textContent = 'Recording… press the button again to stop.';
@@ -2573,29 +2979,32 @@
   }
 
   /* =========================================================
-     Practice session planner + timer
+     Practice session: planner, timer and the blue practice bar
      ========================================================= */
-  const TOOLS = { none: 'No tool', tuner: 'Tuner', metronome: 'Metronome', drone: 'Drone', recorder: 'Recorder' };
+  const TOOLS = { none: 'No tool', tuner: 'Tuner', metronome: 'Metronome', rhythm: 'Rhythm trainer', drone: 'Drone', recorder: 'Recorder' };
   const DEFAULT_PLAN = [
     { name: 'Long tones with the drone', min: 10, tool: 'drone' },
     { name: 'Scales & technique', min: 15, tool: 'metronome' },
-    { name: 'Etude', min: 15, tool: 'metronome' },
+    { name: 'Rhythm work', min: 10, tool: 'rhythm' },
     { name: 'Repertoire', min: 20, tool: 'recorder' },
     { name: 'Intonation check', min: 5, tool: 'tuner' }
   ];
   const sessEls = {
     label: $('nowLabel'), name: $('nowName'), clock: $('clock'), sub: $('clockSub'), prog: $('blockProg'),
     toggle: $('sessToggle'), next: $('sessNext'), finish: $('sessFinish'), tool: $('toolLink'), notes: $('sessNotes'),
-    plan: $('plan'), add: $('planAdd'), reset: $('planReset'), total: $('planTotal')
+    plan: $('plan'), add: $('planAdd'), reset: $('planReset'), total: $('planTotal'),
+    bar: $('pbar'), barState: $('pbState'), barTime: $('pbTime'), barBlock: $('pbBlock'), barPause: $('pbPause'), barFinish: $('pbFinish'),
+    railStart: $('railStart')
   };
   let plan = store_.get('ws.plan', null) || DEFAULT_PLAN.map(b => Object.assign({}, b));
-  // Live session survives a reload: { idx, spent: [secs], running, chimed: [bool], started }
+  // A live session survives a reload: { idx, spent: [secs per block], elapsed, chimed, running, started }
   let sess = store_.get('ws.session', null);
+  if (sess && typeof sess.elapsed !== 'number') sess.elapsed = (sess.spent || []).reduce((t, v) => t + v, 0);
   let sessLast = 0, sessTimer = 0, sessSavedAt = 0;
   const savePlan = () => store_.set('ws.plan', plan);
   const saveSess = () => store_.set('ws.session', sess);
-  const planSecs = () => plan.reduce((s, b) => s + b.min * 60, 0);
-  const sessTotal = () => sess ? sess.spent.reduce((s, v) => s + v, 0) : 0;
+  const planSecs = () => plan.reduce((t, b) => t + b.min * 60, 0);
+  const sessTotal = () => (sess ? sess.elapsed : 0);
 
   function renderPlan() {
     sessEls.plan.innerHTML = plan.map((b, i) => {
@@ -2613,14 +3022,35 @@
     sessEls.total.textContent = 'Planned: ' + minText(planSecs());
   }
 
+  function blockLeft() {
+    const b = sess && plan[sess.idx];
+    return b ? b.min * 60 - (sess.spent[sess.idx] || 0) : 0;
+  }
+
+  // The blue bar across the top while a session is on
+  function renderBar() {
+    const on = !!sess;
+    sessEls.bar.hidden = !on;
+    sessEls.railStart.hidden = on;
+    document.documentElement.style.setProperty('--pbar-h', on ? sessEls.bar.offsetHeight + 'px' : '0px');
+    if (!on) return;
+    const b = plan[sess.idx], left = blockLeft();
+    sessEls.bar.classList.toggle('is-paused', !sess.running);
+    sessEls.barState.textContent = sess.running ? 'Practicing' : 'Paused';
+    sessEls.barTime.textContent = clockText(sess.elapsed);
+    sessEls.barBlock.textContent = b ? b.name + ' · ' + (left >= 0 ? clockText(left) + ' left' : clockText(-left) + ' over') : 'Free practice';
+    sessEls.barPause.textContent = sess.running ? 'Pause' : 'Resume';
+  }
+
   function renderSessNow() {
+    renderBar();
     const total = planSecs();
     if (!sess) {
       sessEls.label.textContent = 'Ready';
-      sessEls.name.textContent = plan.length ? 'First up: ' + plan[0].name : 'Add a block to your plan';
+      sessEls.name.textContent = plan.length ? 'First up: ' + plan[0].name : 'Free practice (no blocks planned)';
       sessEls.clock.textContent = plan.length ? clockText(plan[0].min * 60) : '0:00';
       sessEls.clock.classList.remove('is-over');
-      sessEls.sub.textContent = 'Total planned: ' + minText(total) + ' in ' + plan.length + (plan.length === 1 ? ' block' : ' blocks');
+      sessEls.sub.textContent = plan.length ? 'Total planned: ' + minText(total) + ' in ' + plan.length + (plan.length === 1 ? ' block' : ' blocks') : 'The timer will count up as you practice.';
       sessEls.prog.firstElementChild.style.width = '0';
       sessEls.prog.classList.remove('is-over');
       sessEls.toggle.textContent = 'Start session';
@@ -2631,17 +3061,27 @@
       return;
     }
     const b = plan[sess.idx];
-    const spent = sess.spent[sess.idx] || 0, goal = b ? b.min * 60 : 0, left = goal - spent;
-    sessEls.label.textContent = 'Block ' + (sess.idx + 1) + ' of ' + plan.length + (sess.running ? '' : ' · paused');
-    sessEls.name.textContent = b ? b.name : 'Session';
-    sessEls.clock.textContent = left >= 0 ? clockText(left) : '+' + clockText(-left);
-    sessEls.clock.classList.toggle('is-over', left < 0);
-    sessEls.prog.firstElementChild.style.width = (goal ? clamp(spent / goal, 0, 1) * 100 : 0).toFixed(1) + '%';
-    sessEls.prog.classList.toggle('is-over', left < 0);
-    sessEls.sub.textContent = 'Session time ' + clockText(sessTotal()) + ' of ' + minText(total) + ' planned';
+    if (b) {
+      const spent = sess.spent[sess.idx] || 0, goal = b.min * 60, left = goal - spent;
+      sessEls.label.textContent = 'Block ' + (sess.idx + 1) + ' of ' + plan.length + (sess.running ? '' : ' · paused');
+      sessEls.name.textContent = b.name;
+      sessEls.clock.textContent = left >= 0 ? clockText(left) : '+' + clockText(-left);
+      sessEls.clock.classList.toggle('is-over', left < 0);
+      sessEls.prog.firstElementChild.style.width = (goal ? clamp(spent / goal, 0, 1) * 100 : 0).toFixed(1) + '%';
+      sessEls.prog.classList.toggle('is-over', left < 0);
+      sessEls.sub.textContent = 'Session time ' + clockText(sessTotal()) + ' of ' + minText(total) + ' planned';
+    } else {
+      sessEls.label.textContent = 'Free practice' + (sess.running ? '' : ' · paused');
+      sessEls.name.textContent = 'No blocks planned, so the timer just counts your practice';
+      sessEls.clock.textContent = clockText(sessTotal());
+      sessEls.clock.classList.remove('is-over');
+      sessEls.prog.firstElementChild.style.width = '0';
+      sessEls.prog.classList.remove('is-over');
+      sessEls.sub.textContent = 'Session time';
+    }
     sessEls.toggle.textContent = sess.running ? 'Pause' : 'Resume';
     sessEls.toggle.classList.toggle('is-on', sess.running);
-    sessEls.next.disabled = sess.idx >= plan.length - 1;
+    sessEls.next.disabled = !b || sess.idx >= plan.length - 1;
     sessEls.finish.disabled = false;
     setToolLink(b);
     $('dotSession').hidden = !sess.running;
@@ -2655,22 +3095,24 @@
 
   function sessTick() {
     if (!sess || !sess.running) return;
-    const now = performance.now();
-    const dt = Math.min(5, (now - sessLast) / 1000);
+    const now = Date.now();
+    // Wall-clock time, so background tabs still count; a long gap (laptop asleep) is capped
+    const dt = Math.min(90, Math.max(0, (now - sessLast) / 1000));
     sessLast = now;
+    sess.elapsed += dt;
     const i = sess.idx, b = plan[i];
-    if (!b) return;
-    sess.spent[i] = (sess.spent[i] || 0) + dt;
-    if (!sess.chimed[i] && sess.spent[i] >= b.min * 60) {
-      sess.chimed[i] = true;
-      chime();
-      const nb = plan[i + 1];
-      toast(nb ? 'Time for "' + nb.name + '". Press Next block when you’re ready.' : 'Last block done. Press Finish to save the session.');
-      renderPlan();
+    if (b) {
+      sess.spent[i] = (sess.spent[i] || 0) + dt;
+      if (!sess.chimed[i] && sess.spent[i] >= b.min * 60) {
+        sess.chimed[i] = true;
+        chime();
+        const nb = plan[i + 1];
+        toast(nb ? 'Time for "' + nb.name + '". Press Next block when you’re ready.' : 'Last block done. Press Finish to save the session.');
+        renderPlan();
+      }
     }
     if (now - sessSavedAt > 2000) { sessSavedAt = now; saveSess(); }
     renderSessNow();
-    renderRunning();
   }
   function chime() {
     ensureAudio().then(() => {
@@ -2688,21 +3130,19 @@
   function runSess(on) {
     sess.running = on;
     window.clearInterval(sessTimer);
-    if (on) { sessLast = performance.now(); sessTimer = window.setInterval(sessTick, 250); }
+    if (on) { sessLast = Date.now(); sessTimer = window.setInterval(sessTick, 250); }
     saveSess();
     renderSessNow();
-    renderRunning();
+  }
+  function startSess() {
+    if (sess) return;
+    sess = { idx: 0, spent: plan.map(() => 0), chimed: plan.map(() => false), elapsed: 0, running: false, started: Date.now() };
+    ensureAudio().catch(() => {});
+    runSess(true);
+    renderPlan();
   }
   function toggleSess() {
-    if (!plan.length) { toast('Add a block to your plan first.'); return; }
-    if (!sess) {
-      sess = { idx: 0, spent: plan.map(() => 0), chimed: plan.map(() => false), running: false, started: Date.now() };
-      ensureAudio().catch(() => {});
-      runSess(true);
-      renderPlan();
-      return;
-    }
-    runSess(!sess.running);
+    if (!sess) startSess(); else runSess(!sess.running);
   }
   function gotoBlock(i) {
     if (!sess || i < 0 || i >= plan.length) return;
@@ -2723,7 +3163,7 @@
       };
       log.unshift(entry);
       saveLog();
-      toast('Saved ' + minText(total) + ' to your practice log.');
+      toast('Saved ' + minText(total) + ' of practice to your log.');
       sessEls.notes.value = '';
       store_.set('ws.notes', '');
     }
@@ -2732,7 +3172,6 @@
     saveSess();
     renderPlan();
     renderSessNow();
-    renderRunning();
     renderLog();
   }
   function initSession() {
@@ -2740,13 +3179,19 @@
     if (sess) {
       while (sess.spent.length < plan.length) { sess.spent.push(0); sess.chimed.push(false); }
       if (sess.idx >= plan.length) sess.idx = Math.max(0, plan.length - 1);
-      if (sess.running) { sess.running = false; toast('Your session was paused while the app was closed. Press Resume to carry on.'); }
+      if (sess.running) { sess.running = false; toast('Your practice session was paused while the app was closed. Press Resume in the blue bar to carry on.'); }
     }
     sessEls.notes.value = store_.get('ws.notes', '');
     sessEls.notes.addEventListener('input', () => store_.set('ws.notes', sessEls.notes.value));
     sessEls.toggle.addEventListener('click', toggleSess);
     sessEls.next.addEventListener('click', () => gotoBlock(sess.idx + 1));
     sessEls.finish.addEventListener('click', finishSess);
+    sessEls.barPause.addEventListener('click', () => { if (sess) runSess(!sess.running); });
+    sessEls.barFinish.addEventListener('click', finishSess);
+    sessEls.railStart.addEventListener('click', () => {
+      startSess();
+      toast('Practice timer started. The blue bar keeps time while you use any tool.');
+    });
     sessEls.add.addEventListener('click', () => {
       plan.push({ name: 'New block', min: 10, tool: 'none' });
       if (sess) { sess.spent.push(0); sess.chimed.push(false); saveSess(); }
@@ -2782,6 +3227,7 @@
         savePlan(); renderPlan(); renderSessNow();
       }
     });
+    if ('ResizeObserver' in window) new ResizeObserver(renderBar).observe(sessEls.bar);
     renderPlan();
     renderSessNow();
   }
@@ -2872,10 +3318,569 @@
   }
 
   /* =========================================================
+     Rhythm trainer
+     A rhythm is one string per beat, like "x-xx": its length is how
+     finely the beat is split, "x" is a note and "-" a rest.
+     ========================================================= */
+  const RHY_PRESETS = [
+    ['Basics', 'Quarter notes', 4, 4, 'x x x x'],
+    ['Basics', 'Half notes', 4, 4, 'x - x -'],
+    ['Basics', 'Eighth notes', 4, 4, 'xx xx xx xx'],
+    ['Basics', 'Quarters and eighths', 4, 4, 'x xx x xx'],
+    ['Basics', 'Eighths with rests', 4, 4, 'x- xx -x xx'],
+    ['Basics', 'Sixteenth notes', 4, 4, 'xxxx xxxx xxxx xxxx'],
+    ['Sixteenth patterns', 'Gallop (eighth + two sixteenths)', 4, 4, 'x-xx x-xx x-xx x-xx'],
+    ['Sixteenth patterns', 'Reverse gallop (two sixteenths + eighth)', 4, 4, 'xxx- xxx- xxx- xxx-'],
+    ['Sixteenth patterns', 'Dotted eighth + sixteenth', 4, 4, 'x--x x--x x--x x--x'],
+    ['Sixteenth patterns', 'Scotch snap (sixteenth + dotted eighth)', 4, 4, 'xx-- xx-- xx-- xx--'],
+    ['Sixteenth patterns', 'Syncopa (sixteenth, eighth, sixteenth)', 4, 4, 'xx-x xx-x xx-x xx-x'],
+    ['Sixteenth patterns', 'Mixed sixteenths', 4, 4, 'x-xx -x-x xx-x -xx-'],
+    ['Syncopation', 'Off-beat eighths', 4, 4, '-x -x -x -x'],
+    ['Syncopation', 'Charleston', 4, 4, 'x- -x -- --'],
+    ['Syncopation', 'Eighth, quarter, eighth', 4, 4, 'xx -x xx -x'],
+    ['Syncopation', 'Push to beat 3', 4, 4, 'x x -x -'],
+    ['Triplets & swing', 'Eighth-note triplets', 4, 4, 'xxx xxx xxx xxx'],
+    ['Triplets & swing', 'Swing / shuffle', 4, 4, 'x-x x-x x-x x-x'],
+    ['Triplets & swing', 'Triplet partials', 4, 4, 'x-x xx- -xx xxx'],
+    ['Triplets & swing', 'Quarter-note triplets', 4, 4, 'x-x -x- x-x -x-'],
+    ['Triplets & swing', 'Sixteenths against triplets', 4, 4, 'xxxx xxx xxxx xxx'],
+    ['Latin & world', 'Tresillo (3-3-2)', 4, 4, 'x- -x -- x-'],
+    ['Latin & world', 'Son clave 3-2', 4, 4, 'x- -x -- x- -- x- x- --'],
+    ['Latin & world', 'Son clave 2-3', 4, 4, '-- x- x- -- x- -x -- x-'],
+    ['Latin & world', 'Rumba clave 3-2', 4, 4, 'x- -x -- -x -- x- x- --'],
+    ['Latin & world', 'Bossa nova clave', 4, 4, 'x- -x -- x- -- x- -x --'],
+    ['Latin & world', 'Cinquillo', 4, 4, 'x-xx -xx- x-xx -xx-'],
+    ['Odd meters', '5/4 quarters', 5, 4, 'x x x x x'],
+    ['Odd meters', '6/8 (3+3)', 6, 8, 'x x x x x x', '3+3'],
+    ['Odd meters', '6/8 long-short', 6, 8, 'x - x x - x', '3+3'],
+    ['Odd meters', '5/8 (3+2)', 5, 8, 'x x x x x', '3+2'],
+    ['Odd meters', '7/8 (2+2+3)', 7, 8, 'x x x x x x x', '2+2+3'],
+    ['Odd meters', '9/8 (2+2+2+3)', 9, 8, 'x x x x x x x x x', '2+2+2+3'],
+    ['Odd meters', '12/8 blues shuffle', 12, 8, 'x - x x - x x - x x - x', '3+3+3+3'],
+    ['Polyrhythms', '3 against 2', 2, 4, 'x-x -x-'],
+    ['Polyrhythms', '2 against 3', 3, 4, 'x- -x --'],
+    ['Polyrhythms', '3 against 4', 4, 4, 'x-- -x- --x ---'],
+    ['Polyrhythms', '4 against 3', 3, 4, 'x--x --x- -x--'],
+    ['Polyrhythms', '5 against 4', 4, 4, 'x---x ---x- --x-- -x---'],
+    ['Tuplets', 'Quintuplets', 4, 4, 'xxxxx xxxxx xxxxx xxxxx'],
+    ['Tuplets', 'Sextuplets', 4, 4, 'xxxxxx xxxxxx xxxxxx xxxxxx'],
+    ['Tuplets', 'Speeding up: 1, 2, 3, 4 per beat', 4, 4, 'x xx xxx xxxx']
+  ].map(p => ({ group: p[0], name: p[1], beats: p[2], unit: p[3], cells: p[4].split(' '), groups: p[5] || '' }));
+  const RHY_PALETTE = ['x', '-', 'xx', 'x-', '-x', 'xxx', 'x-x', 'xx-', '-xx', 'xxxx', 'x-xx', 'xxx-', 'xx-x', 'x--x', 'xx--', '-xx-', '-x-x', 'x-x-', 'xxxxx', 'xxxxxx'];
+  const RHY_POOLS = {
+    easy: ['x', 'x', 'x', 'xx', 'xx', '-', 'x-'],
+    medium: ['x', 'xx', 'xx', '-x', 'x-xx', 'xxx-', 'xxxx', 'x--x', 'xx-x', 'xxx', '-', 'x-x'],
+    hard: ['x--x', 'xx--', '-xx-', 'x-xx', 'xx-x', '-x-x', 'xxx', 'x-x', '-xx', 'xxxxx', '-xxxx', 'xxxxxx', '-x', 'x--', '-xx-x', 'xx-xx']
+  };
+  const DEFAULT_GROUPS = { 5: '3+2', 6: '3+3', 7: '2+2+3', 8: '3+3+2', 9: '3+3+3', 10: '3+3+2+2', 11: '3+3+3+2', 12: '3+3+3+3' };
+  const rhyFromPreset = p => ({ name: p.name, beats: p.beats, unit: p.unit, cells: p.cells.slice(), groups: p.groups });
+  const rhy = Object.assign({ bpm: 80, mode: 'listen', countIn: true, click: true, hear: false, speedUp: false, vol: 0.8, offset: 0, src: 'p:0' },
+    rhyFromPreset(RHY_PRESETS[0]), store_.get('ws.rhy', {}));
+  rhy.sel = 0;
+  let myRhythms = store_.get('ws.rhythms', []);
+  const saveRhy = () => store_.set('ws.rhy', { bpm: rhy.bpm, mode: rhy.mode, countIn: rhy.countIn, click: rhy.click, hear: rhy.hear, speedUp: rhy.speedUp, vol: rhy.vol, offset: rhy.offset,
+    src: rhy.src, name: rhy.name, beats: rhy.beats, unit: rhy.unit, cells: rhy.cells, groups: rhy.groups });
+  const rhyEls = {
+    preset: $('rhyPreset'), level: $('rhyLevel'), random: $('rhyRandom'), beats: $('rhyBeats'), unit: $('rhyUnit'), bars: $('rhyBars'),
+    groupsWrap: $('rhyGroupsWrap'), groups: $('rhyGroups'), strip: $('rhyStrip'), beTitle: $('beTitle'), beDiv: $('beDiv'), bePads: $('bePads'),
+    palette: $('bePalette'), copy: $('beCopy'), reset: $('beReset'), name: $('rhyName'), save: $('rhySave'), del: $('rhyDelete'),
+    mode: $('rhyMode'), modeHint: $('rhyModeHint'), play: $('rhyPlay'), minus: $('rhyMinus'), plus: $('rhyPlus'), bpm: $('rhyBpm'), slider: $('rhySlider'),
+    status: $('rhyStatus'), pad: $('tapPad'), micMeter: $('micMeter'), micLevel: $('rhyMicLevel'),
+    count: $('rhyCount'), click: $('rhyClick'), hear: $('rhyHear'), hearWrap: $('rhyHearWrap'), speed: $('rhySpeed'), vol: $('rhyVol'), offset: $('rhyOffset'), offsetTxt: $('rhyOffsetTxt'),
+    last: $('rLast'), best: $('rBest'), timing: $('rTiming'), streak: $('rStreak'), hist: $('rHist'), tip: $('rTip')
+  };
+  const rhyRun = { on: false, timer: 0, ev: [], evIdx: 0, loop: 0, loopStart: 0, loopLen: 0, beatDur: 0.75, minGap: 0.5, beatQ: [], expected: [], loops: {}, shownLoop: -1, shownBeat: null, history: [], best: 0, streak: 0, mic: null };
+  const rhyBars = () => Math.max(1, Math.round(rhy.cells.length / rhy.beats));
+  const MODE_HINTS = {
+    listen: 'Hear how the rhythm should sound, with a click on the beat.',
+    tap: 'Tap every note of the rhythm on the pad (or the Space bar) while the click keeps the beat.',
+    mic: 'Play every note of the rhythm on your instrument. Tongue or attack each note clearly so the microphone can hear it.'
+  };
+
+  function accentStarts() {
+    if (rhy.unit !== 8) return new Set([0]);
+    const parts = String(rhy.groups || '').split('+').map(Number).filter(n => n > 0);
+    if (!parts.length || parts.reduce((t, v) => t + v, 0) !== rhy.beats) return new Set([0]);
+    const set = new Set();
+    let at = 0;
+    parts.forEach(n => { set.add(at); at += n; });
+    return set;
+  }
+  const countLabels = n => n === 2 ? ['', '&'] : n === 3 ? ['', '&', 'a'] : n === 4 ? ['', 'e', '&', 'a'] : [''].concat(Array(Math.max(0, n - 1)).fill('·'));
+
+  // One beat as rhythm notation: noteheads, stems, beams or flags, rests and count syllables
+  function cellSVG(cell, eighthUnit, num, idp) {
+    const n = cell.length, Y = 60, TOP = 22;
+    const xs = [], hits = [];
+    for (let i = 0; i < n; i++) { xs.push(16 + i * 74 / n); if (cell[i] === 'x') hits.push(i); }
+    const beams = (n === 1 ? 0 : n <= 3 ? 1 : n <= 7 ? 2 : 3) + (eighthUnit ? 1 : 0);
+    const labels = countLabels(n);
+    let s = '<line class="sl" x1="0" y1="' + Y + '" x2="100" y2="' + Y + '"/>';
+    for (let i = 0; i < n; i++) {
+      const x = xs[i].toFixed(1), sx = (xs[i] + 5.6).toFixed(1);
+      if (cell[i] === 'x') {
+        s += '<ellipse ' + (idp ? 'id="' + idp + '-' + i + '" ' : '') + 'class="nh" cx="' + x + '" cy="' + Y + '" rx="6.4" ry="4.6" transform="rotate(-22 ' + x + ' ' + Y + ')"/>';
+        s += '<line class="st" x1="' + sx + '" y1="' + (Y - 1.5) + '" x2="' + sx + '" y2="' + TOP + '"/>';
+      } else if (n === 1 && !eighthUnit) {
+        s += '<path class="rs" d="M' + (xs[i] - 1).toFixed(1) + ' 34l5 7-4 5 5 7c-3-1-6 0-4 4"/>';
+      } else {
+        s += '<circle class="rd" cx="' + (xs[i] - 1).toFixed(1) + '" cy="' + (Y - 14) + '" r="2.3"/><path class="rs" d="M' + (xs[i] - 1).toFixed(1) + ' ' + (Y - 12) + 'q4 1 6-2l-5 13"/>';
+      }
+      const lab = i === 0 ? String(num) : labels[i];
+      if (lab) s += '<text class="' + (i === 0 ? 'cl cl-1' : 'cl') + '" x="' + x + '" y="86">' + lab + '</text>';
+    }
+    if (beams && hits.length >= 2) {
+      const a = xs[hits[0]] + 5.6, b = xs[hits[hits.length - 1]] + 5.6;
+      for (let k = 0; k < beams; k++) s += '<rect class="bm" x="' + (a - 0.8).toFixed(1) + '" y="' + (TOP + k * 6) + '" width="' + (b - a + 1.6).toFixed(1) + '" height="4"/>';
+    } else if (beams && hits.length === 1) {
+      const a = (xs[hits[0]] + 5.6).toFixed(1);
+      for (let k = 0; k < beams; k++) s += '<path class="fl" d="M' + a + ' ' + (TOP + k * 6) + 'q9 5 7 15"/>';
+    }
+    if ([3, 5, 6, 7].indexOf(n) >= 0 && hits.length) s += '<text class="tup" x="' + ((xs[0] + xs[n - 1]) / 2 + 5).toFixed(1) + '" y="14">' + n + '</text>';
+    return '<svg viewBox="0 0 100 92" aria-hidden="true">' + s + '</svg>';
+  }
+
+  function renderStrip() {
+    const acc = accentStarts(), e8 = rhy.unit === 8;
+    let html = '<div class="rbars">';
+    for (let bar = 0; bar < rhyBars(); bar++) {
+      html += '<div class="rbar"><span class="rbar-num">' + (bar + 1) + '</span>';
+      for (let k = 0; k < rhy.beats; k++) {
+        const b = bar * rhy.beats + k;
+        html += '<button type="button" class="rbeat' + (b === rhy.sel ? ' is-sel' : '') + (k > 0 && acc.has(k) ? ' grp' : '') + '" data-b="' + b + '" aria-label="Edit beat ' + (k + 1) + ' of bar ' + (bar + 1) + '">' +
+          cellSVG(rhy.cells[b], e8, k + 1, 'rh-' + b) + '</button>';
+      }
+      html += '</div>';
+    }
+    rhyEls.strip.innerHTML = html + '<div class="rbar-end"></div></div>';
+    rhyRun.shownBeat = null;
+  }
+
+  function openEditor(open) {
+    $('beatEdit').hidden = !open;
+    const t = $('rhyEditToggle');
+    t.textContent = open ? 'Done editing' : 'Edit this rhythm';
+    t.setAttribute('aria-expanded', String(open));
+  }
+  function renderBeatEditor() {
+    if (rhy.sel >= rhy.cells.length) rhy.sel = 0;
+    const cell = rhy.cells[rhy.sel], n = cell.length, k = rhy.sel % rhy.beats, bar = Math.floor(rhy.sel / rhy.beats);
+    rhyEls.beTitle.textContent = 'Editing beat ' + (k + 1) + (rhyBars() > 1 ? ' of bar ' + (bar + 1) : '');
+    let d = '';
+    for (let i = 1; i <= 8; i++) d += '<button type="button" data-d="' + i + '" aria-pressed="' + (i === n) + '">' + i + '</button>';
+    rhyEls.beDiv.innerHTML = d;
+    const labels = countLabels(n);
+    rhyEls.bePads.innerHTML = cell.split('').map((c, i) => '<button type="button" class="pad" data-i="' + i + '" aria-pressed="' + (c === 'x') + '" aria-label="' + (c === 'x' ? 'Note' : 'Rest') + ' ' + (i + 1) + '">' +
+      (i === 0 ? k + 1 : labels[i] === '·' ? i + 1 : labels[i]) + '</button>').join('');
+    rhyEls.palette.innerHTML = RHY_PALETTE.map(p => '<button type="button" class="pal" data-p="' + p + '" aria-pressed="' + (p === cell) + '" aria-label="Pattern ' + p.replace(/x/g, 'note ').replace(/-/g, 'rest ') + '">' + cellSVG(p, rhy.unit === 8, '', '') + '</button>').join('');
+  }
+
+  function renderPresetSelect() {
+    let html = '', g = '';
+    RHY_PRESETS.forEach((p, i) => {
+      if (p.group !== g) { html += (g ? '</optgroup>' : '') + '<optgroup label="' + p.group + '">'; g = p.group; }
+      html += '<option value="p:' + i + '">' + esc(p.name) + '</option>';
+    });
+    html += '</optgroup>';
+    if (myRhythms.length) html += '<optgroup label="My rhythms">' + myRhythms.map((r, i) => '<option value="s:' + i + '">' + esc(r.name) + '</option>').join('') + '</optgroup>';
+    if (rhy.src === 'custom') html += '<option value="custom">' + esc(rhy.name || 'Custom rhythm') + ' (edited)</option>';
+    rhyEls.preset.innerHTML = html;
+    rhyEls.preset.value = rhy.src;
+    if (rhyEls.preset.value !== rhy.src) { rhy.src = 'custom'; renderPresetSelect(); return; }
+    rhyEls.del.hidden = rhy.src.indexOf('s:') !== 0;
+    rhyEls.name.value = rhy.name || '';
+  }
+  function syncMeter() {
+    rhyEls.beats.value = rhy.beats;
+    rhyEls.unit.value = rhy.unit;
+    rhyEls.bars.value = rhyBars();
+    rhyEls.groupsWrap.hidden = rhy.unit !== 8;
+    rhyEls.groups.value = rhy.groups || '';
+  }
+  function renderRhythm() { syncMeter(); renderPresetSelect(); renderStrip(); renderBeatEditor(); }
+
+  function rhythmEdited() {
+    if (rhy.src !== 'custom') { rhy.src = 'custom'; renderPresetSelect(); }
+    saveRhy();
+  }
+  function setCell(b, cell) {
+    rhy.cells[b] = cell;
+    rhythmEdited();
+    renderStrip();
+    renderBeatEditor();
+  }
+  function loadRhythm(r, src) {
+    Object.assign(rhy, { name: r.name, beats: r.beats, unit: r.unit, cells: r.cells.slice(), groups: r.groups || '' });
+    rhy.src = src; rhy.sel = 0;
+    saveRhy();
+    renderRhythm();
+  }
+  function reshape(beats, bars) {
+    const old = rhy.cells, ob = rhy.beats, obars = rhyBars(), cells = [];
+    for (let bar = 0; bar < bars; bar++) {
+      const from = bar < obars ? bar : 0;
+      for (let k = 0; k < beats; k++) cells.push(k < ob ? old[from * ob + k] : 'x');
+    }
+    rhy.beats = beats;
+    rhy.cells = cells;
+  }
+  function randomRhythm() {
+    const level = rhyEls.level.value, pool = RHY_POOLS[level];
+    rhy.cells = rhy.cells.map(() => pool[Math.floor(Math.random() * pool.length)]);
+    if (rhy.cells[0][0] !== 'x') rhy.cells[0] = 'x' + rhy.cells[0].slice(1);
+    rhy.name = 'Random rhythm (' + level + ')';
+    rhy.src = 'custom'; rhy.sel = 0;
+    saveRhy();
+    renderRhythm();
+  }
+
+  /* ---------- Engine: loops scheduled ahead on the shared AudioContext ---------- */
+  let noiseBuf = null;
+  function playHit(t) {
+    const ctx = audio.ctx;
+    if (!noiseBuf) {
+      noiseBuf = ctx.createBuffer(1, Math.round(ctx.sampleRate * 0.15), ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const peak = Math.max(0.0002, rhy.vol * 0.7);
+    const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noiseBuf; bp.type = 'bandpass'; bp.frequency.value = 2200; bp.Q.value = 1.1;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + 0.12);
+    // A short pitched body so the rhythm reads as notes, not just noise
+    const o = ctx.createOscillator(), og = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = 392;
+    og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(peak * 0.8, t + 0.004); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    o.connect(og); og.connect(ctx.destination); o.start(t); o.stop(t + 0.13);
+  }
+
+  function rhyBuild() {
+    const ev = [], acc = accentStarts(), hitPos = [];
+    rhy.cells.forEach((cell, b) => {
+      ev.push({ pos: b, kind: 'beat', beat: b, accent: acc.has(b % rhy.beats) });
+      for (let i = 0; i < cell.length; i++) if (cell[i] === 'x') { const pos = b + i / cell.length; ev.push({ pos: pos, kind: 'hit', beat: b, slot: i }); hitPos.push(pos); }
+    });
+    ev.sort((a, c) => a.pos - c.pos || (a.kind === 'hit') - (c.kind === 'hit'));
+    rhyRun.ev = ev; rhyRun.evIdx = 0;
+    rhyRun.beatDur = 60 / rhy.bpm;
+    rhyRun.loopLen = rhy.cells.length * rhyRun.beatDur;
+    let gap = rhy.cells.length;
+    for (let i = 0; i < hitPos.length; i++) gap = Math.min(gap, (i + 1 < hitPos.length ? hitPos[i + 1] : hitPos[0] + rhy.cells.length) - hitPos[i]);
+    rhyRun.minGap = gap * rhyRun.beatDur;
+    rhyRun.loops[rhyRun.loop] = { need: hitPos.length, n: 0, sum: 0, extra: 0, errs: [], misses: 0, done: false };
+  }
+  function rhySchedule() {
+    const ctx = audio.ctx;
+    for (let guard = 0; guard < 400; guard++) {
+      if (rhyRun.evIdx >= rhyRun.ev.length) {
+        // Edits and tempo changes take effect at the start of the next loop
+        rhyRun.loopStart += rhyRun.loopLen;
+        rhyRun.loop++;
+        rhyBuild();
+        rhyRun.beatQ.push({ t: rhyRun.loopStart, loopStart: rhyRun.loop });
+      }
+      const e = rhyRun.ev[rhyRun.evIdx];
+      const t = rhyRun.loopStart + e.pos * rhyRun.beatDur;
+      if (t > ctx.currentTime + 0.12) break;
+      if (e.kind === 'beat') {
+        if (rhy.click) playClick(t, e.accent ? 2 : 1, rhy.vol * 0.8, 'wood');
+        rhyRun.beatQ.push({ t: t, beat: e.beat });
+      } else {
+        if (rhy.mode === 'listen' || rhy.hear) playHit(t);
+        if (rhy.mode !== 'listen') rhyRun.expected.push({ t: t, beat: e.beat, slot: e.slot, loop: rhyRun.loop, res: null });
+      }
+      rhyRun.evIdx++;
+    }
+  }
+  async function startRhy() {
+    try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio.', 'error'); return; }
+    if (rhy.mode === 'mic' && !(await rhyMicOn())) return;
+    if (metRun.on) stopMet();
+    const ctx = audio.ctx;
+    Object.assign(rhyRun, { on: true, loop: 0, beatQ: [], expected: [], loops: {}, shownLoop: -1 });
+    rhyBuild();
+    let t0 = ctx.currentTime + 0.12;
+    if (rhy.countIn) {
+      const acc = accentStarts();
+      for (let k = 0; k < rhy.beats; k++) {
+        playClick(t0 + k * rhyRun.beatDur, acc.has(k) ? 2 : 1, rhy.vol, 'wood');
+        rhyRun.beatQ.push({ t: t0 + k * rhyRun.beatDur, count: k + 1 });
+      }
+      t0 += rhy.beats * rhyRun.beatDur;
+    }
+    rhyRun.loopStart = t0;
+    rhyRun.beatQ.push({ t: t0, loopStart: 0 });
+    rhySchedule();
+    rhyRun.timer = window.setInterval(rhySchedule, 25);
+    renderRhyRun();
+  }
+  function stopRhy() {
+    window.clearInterval(rhyRun.timer);
+    rhyRun.on = false; rhyRun.beatQ = []; rhyRun.expected = [];
+    rhyMicOff();
+    showRhyBeat(null);
+    renderRhyRun();
+  }
+  const toggleRhy = () => (rhyRun.on ? stopRhy() : startRhy());
+
+  function showRhyBeat(b) {
+    if (b === rhyRun.shownBeat) return;
+    const prev = rhyRun.shownBeat !== null && rhyEls.strip.querySelector('.rbeat[data-b="' + rhyRun.shownBeat + '"]');
+    if (prev) prev.classList.remove('is-now');
+    const cur = b !== null && rhyEls.strip.querySelector('.rbeat[data-b="' + b + '"]');
+    if (cur) cur.classList.add('is-now');
+    rhyRun.shownBeat = b;
+  }
+  const clearMarks = () => rhyEls.strip.querySelectorAll('.nh').forEach(h => h.setAttribute('class', 'nh'));
+  const rhyLatency = () => (audio.ctx.outputLatency || audio.ctx.baseLatency || 0) + (rhy.mode === 'mic' ? 0.03 : 0);
+  const rhyWin = () => clamp(rhyRun.minGap * 0.45, 0.04, 0.15);
+
+  function rhyFrame() {
+    if (!rhyRun.on || !audio.ctx) return;
+    const now = audio.ctx.currentTime, heard = now - (audio.ctx.outputLatency || 0);
+    while (rhyRun.beatQ.length && rhyRun.beatQ[0].t <= heard) {
+      const q = rhyRun.beatQ.shift();
+      if (q.count) { rhyEls.status.textContent = 'Count-in: ' + q.count + ' of ' + rhy.beats; showRhyBeat(null); }
+      else if (q.loopStart !== undefined) { rhyRun.shownLoop = q.loopStart; clearMarks(); rhyEls.status.textContent = 'Loop ' + (q.loopStart + 1) + (rhy.mode === 'listen' ? ' · listening' : ' · your turn'); }
+      else showRhyBeat(q.beat);
+    }
+    if (rhy.mode !== 'listen') {
+      const judgeNow = now - rhyLatency() - rhy.offset / 1000, win = rhyWin();
+      rhyRun.expected.forEach(x => { if (!x.res && judgeNow > x.t + win) judge(x, null); });
+      if (rhyRun.expected.length > 64) rhyRun.expected = rhyRun.expected.filter(x => !x.res);
+    }
+    if (rhy.mode === 'mic') micOnset(now);
+  }
+
+  function registerHit(T) {
+    if (!rhyRun.on || rhy.mode === 'listen') return;
+    const win = rhyWin();
+    let best = null, bestD = 1e9;
+    rhyRun.expected.forEach(x => { if (!x.res) { const d = Math.abs(T - x.t); if (d < bestD) { bestD = d; best = x; } } });
+    if (best && bestD <= win) judge(best, T - best.t);
+    else { const L = rhyRun.loops[rhyRun.shownLoop]; if (L) L.extra++; }
+  }
+  function rhyTap() {
+    if (!rhyRun.on) { startRhy(); return; }
+    registerHit(audio.ctx.currentTime - rhyLatency() - rhy.offset / 1000);
+    rhyEls.pad.classList.remove('hit'); void rhyEls.pad.offsetWidth; rhyEls.pad.classList.add('hit');
+  }
+  function judge(x, err) {
+    let res, pts;
+    if (err === null) { res = 'miss'; pts = 0; }
+    else {
+      const a = Math.abs(err);
+      if (a <= 0.03) { res = 'perfect'; pts = 1; } else if (a <= 0.07) { res = 'good'; pts = 0.7; } else { res = err < 0 ? 'early' : 'late'; pts = 0.3; }
+    }
+    x.res = res;
+    if (x.loop === rhyRun.shownLoop) { const h = $('rh-' + x.beat + '-' + x.slot); if (h) h.setAttribute('class', 'nh r-' + res); }
+    const L = rhyRun.loops[x.loop];
+    if (!L) return;
+    L.n++; L.sum += pts;
+    if (err === null) L.misses++; else L.errs.push(err);
+    if (L.n >= L.need) finishLoop(L);
+  }
+  function finishLoop(L) {
+    if (L.done || !L.need) return;
+    L.done = true;
+    const score = Math.round(clamp((L.sum - 0.25 * L.extra) / L.need, 0, 1) * 100);
+    rhyRun.history.push(score);
+    if (rhyRun.history.length > 12) rhyRun.history.shift();
+    rhyRun.best = Math.max(rhyRun.best, score);
+    rhyRun.streak = score >= 90 ? rhyRun.streak + 1 : 0;
+    const mean = L.errs.length ? avg(L.errs) * 1000 : 0;
+    rhyEls.last.innerHTML = score + '<small>%</small>';
+    rhyEls.best.innerHTML = rhyRun.best + '<small>%</small>';
+    rhyEls.streak.innerHTML = rhyRun.streak + '<small>' + (rhyRun.streak === 1 ? 'loop' : 'loops') + '</small>';
+    const ms = Math.round(Math.abs(mean));
+    rhyEls.timing.textContent = !L.errs.length ? '–' : ms < 10 ? 'Right on time' : ms < 30 ? 'Slightly ' + (mean < 0 ? 'ahead' : 'behind') + ' (' + ms + ' ms)' : (mean < 0 ? 'Rushing by ' : 'Dragging by ') + ms + ' ms';
+    let tip;
+    if (L.misses > L.need / 3) tip = 'You missed ' + L.misses + ' of ' + L.need + ' notes. Slow the tempo down until every note lands, then build it back up.';
+    else if (L.extra > 1) tip = rhy.mode === 'mic' ? 'Extra notes were heard. If you didn’t play them, room noise may be getting picked up; raise the noise gate on the Tuner tab.' : 'Some extra taps were counted. Tap only the notes written in the rhythm.';
+    else if (mean < -30) tip = 'You’re rushing: notes land ahead of the click. Relax and let the beat come to you.';
+    else if (mean > 30) tip = 'You’re dragging behind the click. Feel the subdivisions in your head ("1 e & a") so you are ready for each note.';
+    else if (score >= 90) tip = 'Great loop!' + (rhy.speedUp ? '' : ' Try it a few BPM faster.');
+    else tip = 'Keep going. Count the subdivisions out loud to lock the rhythm in.';
+    rhyEls.tip.textContent = tip;
+    renderHist();
+    if (rhy.speedUp && score >= 90 && rhy.bpm < 240) { setRhyBpm(rhy.bpm + 4); toast('Nice! Tempo up to ' + rhy.bpm + ' BPM.'); }
+  }
+  function renderHist() {
+    const h = rhyRun.history;
+    rhyEls.hist.innerHTML = h.length
+      ? h.map(v => '<div title="' + v + '%"><i style="height:' + Math.max(2, v * 0.56).toFixed(1) + 'px"></i><span>' + v + '</span></div>').join('')
+      : '<p class="rhist-empty">Scores appear here after each loop in Tap along or Play along.</p>';
+  }
+
+  async function rhyMicOn() {
+    if (rhyRun.mic) return true;
+    if (micUnsupported()) return false;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false });
+      const src = audio.ctx.createMediaStreamSource(stream), an = audio.ctx.createAnalyser();
+      an.fftSize = 1024;
+      // A silent path to the speakers keeps the analyser running in every browser
+      const sink = audio.ctx.createGain(); sink.gain.value = 0;
+      src.connect(an); an.connect(sink); sink.connect(audio.ctx.destination);
+      rhyRun.mic = { stream: stream, src: src, an: an, buf: new Float32Array(an.fftSize), hist: [], last: 0 };
+      return true;
+    } catch (err) {
+      toast(micError(err), 'error');
+      return false;
+    }
+  }
+  function rhyMicOff() {
+    const m = rhyRun.mic;
+    if (!m) return;
+    try { m.src.disconnect(); } catch (e) { /* gone */ }
+    m.stream.getTracks().forEach(t => t.stop());
+    rhyRun.mic = null;
+    rhyEls.micLevel.style.width = '0';
+  }
+  // A note starts when the level jumps well above where it was a few frames ago
+  function micOnset(now) {
+    const m = rhyRun.mic;
+    if (!m) return;
+    m.an.getFloatTimeDomainData(m.buf);
+    let e = 0;
+    for (let i = m.buf.length - 256; i < m.buf.length; i++) e += m.buf[i] * m.buf[i];
+    const db = 20 * Math.log10(Math.max(Math.sqrt(e / 256), 1e-6));
+    rhyEls.micLevel.style.width = (clamp((db + 60) / 60, 0, 1) * 100).toFixed(1) + '%';
+    const base = m.hist.length ? Math.min.apply(null, m.hist) : db;
+    m.hist.push(db);
+    if (m.hist.length > 4) m.hist.shift();
+    if (db > state.gateDb + 10 && db - base > 9 && now - m.last > 0.1) {
+      m.last = now;
+      registerHit(now - 128 / audio.sr - rhyLatency() - rhy.offset / 1000);
+    }
+  }
+
+  function setRhyBpm(v) {
+    rhy.bpm = Math.round(clamp(Number(v) || 80, 30, 240));
+    rhyEls.bpm.textContent = rhy.bpm;
+    rhyEls.slider.value = rhy.bpm;
+    saveRhy();
+    renderRunning();
+  }
+  function renderRhyRun() {
+    rhyEls.play.textContent = rhyRun.on ? 'Stop' : 'Play';
+    rhyEls.play.classList.toggle('is-on', rhyRun.on);
+    [...rhyEls.mode.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === rhy.mode)));
+    rhyEls.modeHint.textContent = MODE_HINTS[rhy.mode];
+    rhyEls.pad.hidden = rhy.mode !== 'tap';
+    rhyEls.micMeter.hidden = rhy.mode !== 'mic';
+    rhyEls.hearWrap.hidden = rhy.mode === 'listen';
+    if (!rhyRun.on) rhyEls.status.textContent = rhy.mode === 'listen' ? 'Press Play (or Space) to hear the rhythm.' : 'Press Play (or Space) to start. You get a one-bar count-in if it’s turned on.';
+    if (rhy.mode === 'listen' && !rhyRun.history.length) rhyEls.tip.textContent = 'Choose Tap along or Play along to get scored.';
+    renderRunning();
+  }
+
+  function initRhythm() {
+    let opts = '';
+    for (let i = 1; i <= 12; i++) opts += '<option value="' + i + '">' + i + '</option>';
+    rhyEls.beats.innerHTML = opts;
+    if (!Array.isArray(rhy.cells) || !rhy.cells.length || rhy.cells.some(c => !/^[x-]{1,8}$/.test(c)) || rhy.cells.length % rhy.beats) Object.assign(rhy, rhyFromPreset(RHY_PRESETS[0]), { src: 'p:0' });
+    rhyEls.count.checked = rhy.countIn; rhyEls.click.checked = rhy.click; rhyEls.hear.checked = rhy.hear; rhyEls.speed.checked = rhy.speedUp;
+    rhyEls.vol.value = rhy.vol; rhyEls.offset.value = rhy.offset;
+    rhyEls.offsetTxt.textContent = (rhy.offset > 0 ? '+' : '') + rhy.offset + ' ms';
+    setRhyBpm(rhy.bpm);
+    renderRhythm();
+    renderRhyRun();
+    renderHist();
+
+    rhyEls.preset.addEventListener('change', () => {
+      const v = rhyEls.preset.value;
+      if (v.indexOf('p:') === 0) loadRhythm(RHY_PRESETS[Number(v.slice(2))], v);
+      else if (v.indexOf('s:') === 0) loadRhythm(myRhythms[Number(v.slice(2))], v);
+    });
+    rhyEls.random.addEventListener('click', randomRhythm);
+    rhyEls.beats.addEventListener('change', () => {
+      reshape(Number(rhyEls.beats.value), rhyBars());
+      if (rhy.unit === 8) rhy.groups = DEFAULT_GROUPS[rhy.beats] || '';
+      rhythmEdited(); renderRhythm();
+    });
+    rhyEls.unit.addEventListener('change', () => {
+      rhy.unit = Number(rhyEls.unit.value);
+      rhy.groups = rhy.unit === 8 ? (DEFAULT_GROUPS[rhy.beats] || '') : '';
+      rhythmEdited(); renderRhythm();
+    });
+    rhyEls.bars.addEventListener('change', () => { reshape(rhy.beats, Number(rhyEls.bars.value)); rhythmEdited(); renderRhythm(); });
+    rhyEls.groups.addEventListener('change', () => {
+      const v = rhyEls.groups.value.replace(/\s+/g, '');
+      const sum = v.split('+').map(Number).reduce((t, n) => t + (n || 0), 0);
+      if (v && sum !== rhy.beats) { toast('The groups need to add up to ' + rhy.beats + ', for example ' + (DEFAULT_GROUPS[rhy.beats] || rhy.beats) + '.', 'error'); rhyEls.groups.value = rhy.groups; return; }
+      rhy.groups = v; rhythmEdited(); renderStrip();
+    });
+    rhyEls.strip.addEventListener('click', e => {
+      const b = e.target.closest('.rbeat');
+      if (!b) return;
+      rhy.sel = Number(b.dataset.b);
+      rhyEls.strip.querySelectorAll('.rbeat.is-sel').forEach(x => x.classList.remove('is-sel'));
+      b.classList.add('is-sel');
+      renderBeatEditor();
+      openEditor(true);
+    });
+    $('rhyEditToggle').addEventListener('click', () => openEditor($('beatEdit').hidden));
+    rhyEls.beDiv.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setCell(rhy.sel, 'x'.repeat(Number(b.dataset.d))); });
+    rhyEls.bePads.addEventListener('click', e => {
+      const b = e.target.closest('.pad');
+      if (!b) return;
+      const c = rhy.cells[rhy.sel].split(''), i = Number(b.dataset.i);
+      c[i] = c[i] === 'x' ? '-' : 'x';
+      setCell(rhy.sel, c.join(''));
+    });
+    rhyEls.palette.addEventListener('click', e => { const b = e.target.closest('.pal'); if (b) setCell(rhy.sel, b.dataset.p); });
+    rhyEls.copy.addEventListener('click', () => { const c = rhy.cells[rhy.sel]; rhy.cells = rhy.cells.map(() => c); rhythmEdited(); renderStrip(); renderBeatEditor(); });
+    rhyEls.reset.addEventListener('click', () => { rhy.cells = rhy.cells.map(() => 'x'); rhythmEdited(); renderStrip(); renderBeatEditor(); });
+    rhyEls.name.addEventListener('change', () => { rhy.name = rhyEls.name.value.trim() || rhy.name; saveRhy(); });
+    rhyEls.save.addEventListener('click', () => {
+      const name = rhyEls.name.value.trim() || 'My rhythm';
+      const item = { name: name, beats: rhy.beats, unit: rhy.unit, cells: rhy.cells.slice(), groups: rhy.groups };
+      let i = myRhythms.findIndex(r => r.name === name);
+      if (i >= 0) myRhythms[i] = item; else { myRhythms.push(item); i = myRhythms.length - 1; }
+      store_.set('ws.rhythms', myRhythms);
+      rhy.name = name; rhy.src = 's:' + i;
+      saveRhy(); renderPresetSelect();
+      toast('Saved "' + name + '" to My rhythms.');
+    });
+    rhyEls.del.addEventListener('click', () => {
+      const i = Number(rhy.src.slice(2));
+      if (!myRhythms[i] || !window.confirm('Delete "' + myRhythms[i].name + '" from My rhythms?')) return;
+      myRhythms.splice(i, 1);
+      store_.set('ws.rhythms', myRhythms);
+      rhy.src = 'custom';
+      saveRhy(); renderPresetSelect();
+    });
+    rhyEls.mode.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b || b.dataset.mode === rhy.mode) return;
+      if (rhyRun.on) stopRhy();
+      rhy.mode = b.dataset.mode;
+      saveRhy(); renderRhyRun();
+    });
+    rhyEls.play.addEventListener('click', () => { rhyEls.play.blur(); toggleRhy(); });
+    rhyEls.minus.addEventListener('click', () => setRhyBpm(rhy.bpm - 1));
+    rhyEls.plus.addEventListener('click', () => setRhyBpm(rhy.bpm + 1));
+    rhyEls.slider.addEventListener('input', () => setRhyBpm(rhyEls.slider.value));
+    rhyEls.pad.addEventListener('pointerdown', e => { e.preventDefault(); rhyTap(); });
+    rhyEls.count.addEventListener('change', () => { rhy.countIn = rhyEls.count.checked; saveRhy(); });
+    rhyEls.click.addEventListener('change', () => { rhy.click = rhyEls.click.checked; saveRhy(); });
+    rhyEls.hear.addEventListener('change', () => { rhy.hear = rhyEls.hear.checked; saveRhy(); });
+    rhyEls.speed.addEventListener('change', () => { rhy.speedUp = rhyEls.speed.checked; saveRhy(); });
+    rhyEls.vol.addEventListener('input', () => { rhy.vol = Number(rhyEls.vol.value); saveRhy(); });
+    rhyEls.offset.addEventListener('input', () => {
+      rhy.offset = Number(rhyEls.offset.value);
+      rhyEls.offsetTxt.textContent = (rhy.offset > 0 ? '+' : '') + rhy.offset + ' ms';
+      saveRhy();
+    });
+  }
+
+  /* =========================================================
      Menu, routing and the "running" chips
      ========================================================= */
-  const VIEWS = ['session', 'tuner', 'metronome', 'drone', 'recorder', 'log'];
-  const TITLES = { session: 'Session', tuner: 'Tuner', metronome: 'Metronome', drone: 'Drone', recorder: 'Recorder', log: 'Practice log' };
+  const VIEWS = ['session', 'tuner', 'metronome', 'rhythm', 'drone', 'recorder', 'log'];
+  const TITLES = { session: 'Session', tuner: 'Tuner', metronome: 'Metronome', rhythm: 'Rhythm trainer', drone: 'Drone', recorder: 'Recorder', log: 'Practice log' };
   function showView(v) {
     if (VIEWS.indexOf(v) < 0) v = 'session';
     state.view = v;
@@ -2892,15 +3897,16 @@
   }
   function renderRunning() {
     const chips = [];
-    if (sess && sess.running) chips.push(['session', 'Session', clockText(sessTotal())]);
     if (audio.mode === 'mic') chips.push(['tuner', 'Mic on', 'Stop']);
     if (metRun.on) chips.push(['metronome', 'Metronome', met.bpm + ' BPM']);
+    if (rhyRun.on) chips.push(['rhythm', 'Rhythm', rhy.bpm + ' BPM']);
     if (droneRun.on) chips.push(['drone', 'Drone', pcText(drone.pc)]);
     if (rec.mr) chips.push(['recorder', 'Recording', 'Stop']);
-    const html = chips.map(c => '<button class="run-chip" type="button" data-run="' + c[0] + '" title="' + (c[0] === 'session' ? 'Open the session' : 'Stop') + '"><i></i><span>' + c[1] + '</span><span>' + c[2] + '</span></button>').join('');
+    const html = chips.map(c => '<button class="run-chip" type="button" data-run="' + c[0] + '" title="Stop"><i></i><span>' + c[1] + '</span><span>' + c[2] + '</span></button>').join('');
     if (html !== els.running.innerHTML) els.running.innerHTML = html;
     $('dotTuner').hidden = audio.mode !== 'mic';
     $('dotMet').hidden = !metRun.on;
+    $('dotRhy').hidden = !rhyRun.on;
     $('dotDrone').hidden = !droneRun.on;
   }
 
@@ -2949,6 +3955,7 @@
     if (drop) history = history.slice(drop);
 
     metFrame();
+    rhyFrame();
     recFrame();
     if (state.view === 'tuner') {
       updateLiveUI(now, dt);
@@ -2980,11 +3987,38 @@
 
   function toggleMic() { if (audio.mode === 'mic') stopMic(); else startMic(); }
 
+  function buildInstrumentMenu() {
+    let html = '', g = '';
+    Object.keys(INSTRUMENTS).forEach(k => {
+      const I = INSTRUMENTS[k];
+      if (I.group !== g) { html += (g ? '</optgroup>' : '') + '<optgroup label="' + I.group + '">'; g = I.group; }
+      html += '<option value="' + k + '">' + I.label + '</option>';
+    });
+    els.instrument.innerHTML = html + '</optgroup>';
+  }
   function applyInstrument() {
     const I = inst();
     els.instrument.value = state.instrument;
-    els.matrixSub.textContent = 'Written pitch for ' + I.label.toLowerCase() + ', low B♭ to high F. Each square keeps your running average in cents.';
+    els.matrixSub.textContent = (I.transpose ? 'Written pitch for ' : 'Pitch for ') + I.label + ', ' + noteText(rangeLo()) + ' to ' + noteText(rangeHi()) +
+      ' (' + noteCount() + ' notes). Each square keeps your running average in cents.';
+    // The matrix covers this instrument's own range
+    if (state.selected !== null) { state.selected = null; els.inspector.hidden = true; }
+    els.matrix.innerHTML = '';
+    Object.keys(cells).forEach(k => { delete cells[k]; });
+    view.liveCell = null;
+    buildMatrix();
     updateRange();
+  }
+  function setA4(v) {
+    v = Math.round(clamp(Number(v) || 440, 415, 466) * 10) / 10;
+    state.a4 = v;
+    els.a4.value = v;
+    els.footA4.textContent = v;
+    saveSettings();
+    updateRange();
+    renderInspector();
+    renderDrone();
+    retuneDrone();
   }
 
   let toastTimer = 0;
@@ -2999,7 +4033,7 @@
   function exportCSV() {
     const I = inst();
     const rows = [['written_note', 'concert_note', 'register', 'mean_cents', 'std_cents', 'takes', 'seconds', 'status']];
-    for (let m = RANGE_LOW; m <= RANGE_HIGH; m++) {
+    for (let m = rangeLo(); m <= rangeHi(); m++) {
       const s = noteStats(m, false);
       const status = !s ? 'not sampled' : Math.abs(s.mean) <= IN_TUNE ? 'in tune' : s.mean > 0 ? 'sharp' : 'flat';
       rows.push([noteAscii(m), noteAscii(m - I.transpose), registerOf(m).name,
@@ -3010,12 +4044,12 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'intonation-' + I.horn + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.download = 'intonation-' + state.instrument + '-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('Exported the ' + I.label.toLowerCase() + ' matrix as CSV.');
+    toast('Exported the ' + I.name + ' matrix as CSV.');
   }
 
   function buildTicks() {
@@ -3050,31 +4084,24 @@
       renderInspector();
       renderDrone();
       retuneDrone();
-      toast('Switched to ' + inst().label.toLowerCase() + '. Notes now show written pitch for this horn.');
+      toast('Switched to ' + inst().label + (inst().transpose ? '. Notes now show written pitch for it.' : '.'));
     });
-    els.a4.addEventListener('change', () => {
-      state.a4 = Number(els.a4.value);
-      els.footA4.textContent = state.a4;
-      saveSettings();
-      updateRange();
-      renderInspector();
-      renderDrone();
-      retuneDrone();
-      toast('Reference set to A4 = ' + state.a4 + ' Hz.');
-    });
+    els.a4.addEventListener('change', () => { setA4(els.a4.value); toast('Tuning set to A4 = ' + state.a4 + ' Hz.'); });
+    $('a4Down').addEventListener('click', () => setA4(state.a4 - 1));
+    $('a4Up').addEventListener('click', () => setA4(state.a4 + 1));
     els.gate.addEventListener('input', () => { state.gateDb = Number(els.gate.value); updateGateUI(); saveSettings(); });
     els.exportBtn.addEventListener('click', exportCSV);
     els.resetBtn.addEventListener('click', () => {
       if (!hasData()) { toast('The matrix is already empty.'); return; }
-      if (window.confirm('Clear every saved note for the ' + inst().label.toLowerCase() + '?')) { clearData(); toast('Matrix cleared.'); }
+      if (window.confirm('Clear every saved note for the ' + inst().name + '?')) { clearData(); toast('Matrix cleared.'); }
     });
     els.inspClose.addEventListener('click', () => selectNote(null));
     els.running.addEventListener('click', e => {
       const b = e.target.closest('[data-run]'); if (!b) return;
       const k = b.dataset.run;
-      if (k === 'session') location.hash = '#session';
-      else if (k === 'tuner') stopMic();
+      if (k === 'tuner') stopMic();
       else if (k === 'metronome') stopMet();
+      else if (k === 'rhythm') stopRhy();
       else if (k === 'drone') stopDrone();
       else if (k === 'recorder') stopRec();
     });
@@ -3093,6 +4120,12 @@
       else if (v === 'metronome' && k === 't') { e.preventDefault(); tapTempo(); }
       else if (v === 'drone' && e.key === ' ' && tag !== 'button') { e.preventDefault(); toggleDrone(); }
       else if (v === 'recorder' && k === 'r') { e.preventDefault(); toggleRec(); }
+      else if (v === 'rhythm' && e.key === ' ') {
+        e.preventDefault();
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+        if (rhyRun.on && rhy.mode === 'tap') rhyTap(); else toggleRhy();
+      }
+      else if (v === 'rhythm' && e.key === 'Escape') stopRhy();
     });
     if ('ResizeObserver' in window) new ResizeObserver(sizeTrace).observe(els.trace);
     else window.addEventListener('resize', sizeTrace);
@@ -3106,13 +4139,14 @@
   els.a4.value = String(state.a4);
   els.footA4.textContent = state.a4;
   buildTicks();
-  buildMatrix();
+  buildInstrumentMenu();
   loadData();
   applyInstrument();
   updateGateUI();
   renderAllCells();
   renderAnalytics();
   initMet();
+  initRhythm();
   initDrone();
   initRecorder();
   initLog();

@@ -1,7 +1,7 @@
 {
   "name": "Woodshed – Practice Room",
   "short_name": "Woodshed",
-  "description": "Session planner, tuner, metronome, drone, recorder and practice log for saxophone.",
+  "description": "Practice timer, session planner, tuner, metronome, rhythm trainer, drone, recorder and practice log for any instrument.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
