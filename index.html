@@ -663,6 +663,38 @@
   .ai-foot button { border: 0; background: none; padding: 0; color: var(--text-2); cursor: pointer; text-decoration: underline; font-size: 12.5px; }
   @media (max-width: 720px) { .ai-fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } }
 
+  /* ---------- Warm accents on the tool tabs ---------- */
+  .warm { background: linear-gradient(180deg, #fbf4e6 0%, #fffdf9 45%, #fff 100%); border-top: 3px solid var(--accent-hi); }
+  .panel-head h2::before { content: ""; display: inline-block; width: 4px; height: 15px; margin-right: 9px; background: var(--accent-hi); vertical-align: -1px; }
+  .pendulum { position: relative; width: 220px; height: 116px; margin: 0 auto -8px; }
+  .pendulum::before { content: ""; position: absolute; left: 50%; bottom: 0; width: 200px; height: 100px; margin-left: -100px; border: 2px dashed #e6d3ad; border-bottom: 0; border-radius: 100px 100px 0 0; }
+  .pendulum::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--text); }
+  .pendulum i { position: absolute; left: 50%; bottom: 0; width: 3px; height: 104px; margin-left: -1.5px; background: var(--text); transform-origin: 50% 100%; transform: rotate(-28deg); transition: transform var(--swing, .65s) cubic-bezier(.45, 0, .55, 1); }
+  .pendulum.right i { transform: rotate(28deg); }
+  .pendulum.rest i { transform: rotate(0deg); transition-duration: .4s; }
+  .pendulum i::before { content: ""; position: absolute; left: 50%; top: var(--w, 30px); width: 20px; height: 12px; margin-left: -10px; background: var(--accent-hi); border-radius: 2px; transition: top .2s; }
+  .tempo-chips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .tempo-chips button { height: 30px; min-width: 44px; padding: 0 10px; border: 1px solid var(--line-2); background: var(--bg); border-radius: 3px; font: 600 13px var(--mono); cursor: pointer; }
+  .tempo-chips button:hover { border-color: var(--accent-hi); color: var(--accent); }
+  .tempo-chips button[aria-pressed="true"] { background: var(--accent-hi); border-color: var(--accent-hi); color: #fff; }
+  .bpm-row .bpm { color: var(--text); }
+  .round-btn:hover { border-color: var(--accent-hi); color: var(--accent); }
+  .pitch[aria-pressed="true"] { background: var(--accent-hi); border-color: var(--accent-hi); color: #fff; }
+  .pitch:hover:not([aria-pressed="true"]) { border-color: var(--accent-hi); }
+  .drone-note.on { color: var(--accent); }
+  .wave i { background: #eee2c8; }
+  .tune-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--text-2); }
+  .tune-chips button { height: 32px; padding: 0 12px; border-radius: 3px; border: 1px solid var(--accent-hi); background: var(--accent-tint); color: var(--accent); font-weight: 600; cursor: pointer; }
+  .tune-chips button:hover { background: rgba(181,120,26,.18); }
+  .rec-btn { border: 3px solid #f3d6d9; box-shadow: 0 0 0 10px rgba(211,58,71,.06); }
+  .rec-btn.is-on { animation: recpulse 1.4s ease-in-out infinite; }
+  @keyframes recpulse { 50% { box-shadow: 0 0 0 18px rgba(211,58,71,.12); } }
+  .rec-time.on { color: var(--sharp); }
+  .take { border-left: 3px solid var(--accent-hi); }
+  .take-wave { height: 34px; }
+  .take-wave svg { display: block; width: 100%; height: 34px; }
+  .take-wave rect { fill: var(--accent-hi); }
+
   /* ---------- Toast ---------- */
   .toast {
     position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: min(560px, calc(100vw - 32px));
@@ -1030,7 +1062,8 @@
         </div>
       </div>
       <div class="met-layout">
-        <div class="panel met-main">
+        <div class="panel met-main warm">
+          <div class="pendulum rest" id="pendulum" aria-hidden="true"><i></i></div>
           <div class="beats" id="beats" aria-hidden="true"></div>
           <div class="bpm-row">
             <button class="round-btn" id="metMinus" type="button" aria-label="Slower">−</button>
@@ -1042,6 +1075,7 @@
           </div>
           <div class="marking" id="marking">Andante</div>
           <input class="met-slider" type="range" id="metSlider" min="30" max="260" step="1" value="92" aria-label="Tempo" />
+          <div class="tempo-chips" id="tempoChips" role="group" aria-label="Tempo presets"></div>
           <div class="met-actions">
             <button class="btn btn-primary btn-big" id="metToggle" type="button">Start</button>
             <button class="btn btn-big" id="metTap" type="button">Tap tempo</button>
@@ -1201,13 +1235,18 @@
         </div>
       </div>
       <div class="drone-layout">
-        <div class="panel drone-main">
+        <div class="panel drone-main warm">
           <div class="drone-now">
             <div class="drone-note" id="droneNote"></div>
             <div class="drone-info" id="droneInfo"></div>
           </div>
           <div class="wave" id="wave" aria-hidden="true"></div>
           <div class="pitches" id="pitches" role="group" aria-label="Drone pitch"></div>
+          <div class="tune-chips" id="tuneChips"><span>Band tuning notes:</span>
+            <button type="button" data-pc="10" data-oct="3">Concert B♭</button>
+            <button type="button" data-pc="9" data-oct="4">Concert A</button>
+            <button type="button" data-pc="5" data-oct="3">Concert F</button>
+          </div>
           <div class="met-actions" style="justify-content:flex-start">
             <button class="btn btn-primary btn-big" id="droneToggle" type="button">Play drone</button>
           </div>
@@ -1258,7 +1297,7 @@
         </div>
       </div>
       <div class="rec-layout">
-        <div class="panel rec-main">
+        <div class="panel rec-main warm">
           <button class="rec-btn" id="recBtn" type="button" aria-label="Start recording"><i></i></button>
           <div class="rec-time" id="recTime">0:00</div>
           <div class="rec-level"><i id="recLevel"></i></div>
@@ -2665,6 +2704,9 @@
     metEls.bpm.textContent = met.bpm;
     metEls.slider.value = met.bpm;
     metEls.marking.textContent = TEMPO_MARKS.find(t => met.bpm < t[0])[1];
+    // A real metronome weight sits higher for slower tempos
+    $('pendulum').style.setProperty('--w', (6 + (met.bpm - 30) / 230 * 62).toFixed(1) + 'px');
+    [...$('tempoChips').children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.bpm) === met.bpm)));
     saveMet();
     renderRunning();
   }
@@ -2734,6 +2776,12 @@
     if (metRun.shown >= 0 && dots[metRun.shown]) dots[metRun.shown].classList.remove('on');
     if (b >= 0 && dots[b]) dots[b].classList.add('on');
     metRun.shown = b;
+    const pend = $('pendulum');
+    if (b < 0) { pend.classList.add('rest'); return; }
+    pend.classList.remove('rest');
+    metRun.side = !metRun.side;
+    pend.style.setProperty('--swing', (60 / met.bpm).toFixed(3) + 's');
+    pend.classList.toggle('right', metRun.side);
   }
   function metFrame() {
     if (!metRun.on || !audio.ctx) return;
@@ -2753,6 +2801,8 @@
     }
   }
   function initMet() {
+    $('tempoChips').innerHTML = [60, 72, 80, 92, 100, 120, 144, 160].map(v => '<button type="button" data-bpm="' + v + '">' + v + '</button>').join('');
+    $('tempoChips').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setBpm(b.dataset.bpm); });
     let opts = '';
     for (let i = 1; i <= 12; i++) opts += '<option value="' + i + '">' + i + (i === 1 ? ' (no accent)' : '') + '</option>';
     metEls.beats.innerHTML = opts;
@@ -2880,6 +2930,7 @@
     droneEls.toggle.innerHTML = (droneRun.on ? ICONS.stop + '<span>Stop drone</span>' : ICONS.play + '<span>Play drone</span>');
     droneEls.toggle.classList.toggle('is-on', droneRun.on);
     droneEls.wave.classList.toggle('on', droneRun.on);
+    droneEls.note.classList.toggle('on', droneRun.on);
     renderRunning();
   }
   function initDrone() {
@@ -2910,6 +2961,14 @@
       if (droneRun.on) droneRun.master.gain.setTargetAtTime(droneLevel(), audio.ctx.currentTime, 0.05);
     });
     droneEls.toggle.addEventListener('click', toggleDrone);
+    $('tuneChips').addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      Object.assign(drone, { names: 'concert', pc: Number(b.dataset.pc), oct: Number(b.dataset.oct) });
+      droneEls.oct.value = drone.oct;
+      saveDrone(); renderDrone();
+      if (droneRun.on) retuneDrone(); else startDrone();
+    });
     renderDrone();
   }
 
@@ -2969,6 +3028,7 @@
       } catch (e) { rec.analyser = null; }
       rec.timer = window.setInterval(() => { recEls.time.textContent = clockText((performance.now() - rec.startAt) / 1000); }, 250);
       recEls.status.textContent = 'Recording… press the button again to stop.';
+      recEls.time.classList.add('on');
       renderRecBtn();
     } catch (err) {
       toast(micError(err), 'error');
@@ -2987,6 +3047,7 @@
     const blob = new Blob(rec.chunks, { type: type });
     rec.mr = null; rec.stream = null; rec.chunks = [];
     recEls.level.style.width = '0';
+    recEls.time.classList.remove('on');
     renderRecBtn();
     if (!blob.size) { recEls.status.textContent = 'Nothing was recorded. Try again.'; return; }
     const now = new Date();
@@ -3027,10 +3088,33 @@
       return '<li class="take" data-id="' + t.id + '">' +
         '<div class="take-top"><input class="input" value="' + esc(t.name) + '" aria-label="Take name" />' +
         '<span class="take-meta">' + clockText(t.duration) + ' · ' + new Date(t.created).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + '</span></div>' +
+        '<div class="take-wave" data-wave="' + t.id + '"></div>' +
         '<audio controls preload="metadata" src="' + takeUrl(t) + '"></audio>' +
         '<div class="take-actions"><a class="btn btn-quiet" href="' + takeUrl(t) + '" download="' + esc(file) + '">Download</a>' +
         '<button class="btn btn-quiet" type="button" data-del>Delete</button></div></li>';
     }).join('');
+    rec.takes.forEach(t => takePeaks(t).then(peaks => {
+      const el = recEls.takes.querySelector('[data-wave="' + t.id + '"]');
+      if (el && peaks) el.innerHTML = '<svg viewBox="0 0 128 34" preserveAspectRatio="none" aria-hidden="true">' +
+        peaks.map((v, i) => { const h = Math.max(1.5, v * 30); return '<rect x="' + (i * 2 + 0.3) + '" y="' + (17 - h / 2).toFixed(1) + '" width="1.4" height="' + h.toFixed(1) + '" rx="0.7"/>'; }).join('') + '</svg>';
+    }).catch(() => {}));
+  }
+  // 64 loudness peaks for a take's waveform, computed once and saved with it
+  async function takePeaks(t) {
+    if (t.peaks) return t.peaks;
+    const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!AC || !t.blob) return null;
+    const data = await new AC(1, 1, 44100).decodeAudioData(await t.blob.arrayBuffer());
+    const d = data.getChannelData(0), n = 64, step = Math.max(1, Math.floor(d.length / n)), peaks = [];
+    for (let i = 0; i < n; i++) {
+      let m = 0;
+      for (let j = i * step, end = Math.min(d.length, (i + 1) * step); j < end; j += 8) m = Math.max(m, Math.abs(d[j]));
+      peaks.push(m);
+    }
+    const top = Math.max(0.01, ...peaks);
+    t.peaks = peaks.map(v => Math.round(v / top * 100) / 100);
+    idb.put(t).catch(() => {});
+    return t.peaks;
   }
   function initRecorder() {
     recEls.btn.addEventListener('click', toggleRec);
