@@ -58,7 +58,7 @@
   h1, h2, h3, h4, p { margin: 0; }
   .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
-  
+  /* ---------- Shell: menu rail + content ---------- */
   .shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); min-height: 100vh; }
   .rail {
     position: sticky; top: var(--pbar-h); height: calc(100vh - var(--pbar-h));
@@ -98,7 +98,7 @@
   .run-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-hi); animation: pulse 1.4s ease-in-out infinite; }
   .run-chip span:last-child { margin-left: auto; font-weight: 500; }
 
-  /*  Content */
+  /* ---------- Content ---------- */
   .content { min-width: 0; padding: 26px 32px 40px; }
   .view { max-width: 1400px; margin: 0 auto; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -106,7 +106,7 @@
   .page-head p { margin-top: 4px; color: var(--text-2); font-size: 14px; max-width: 70ch; }
   .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-  /*  Controls  */
+  /* ---------- Controls ---------- */
   .select {
     position: relative; display: flex; align-items: center; gap: 8px;
     height: 38px; padding: 0 0 0 11px;
@@ -162,7 +162,7 @@
   .seg button { height: 32px; padding: 0 12px; border: 0; border-radius: 3px; background: transparent; cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--text); font-weight: 600; box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(0,0,0,.05); }
 
-  /* Panels */
+  /* ---------- Panels ---------- */
   .panel { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; min-width: 0; }
   .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; }
   .panel-head h2 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.005em; }
@@ -171,7 +171,7 @@
   .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .muted { color: var(--text-3); }
 
-  /*  Tuner  */
+  /* ================= Tuner ================= */
   .tuner-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
   .tuner-main, .tuner-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 
@@ -364,7 +364,7 @@
   kbd { display: inline-block; min-width: 20px; padding: 1px 6px; margin: 0 4px 0 10px; border-radius: 2px; border: 1px solid var(--line-2); background: var(--bg); color: var(--text-2); font: 600 11.5px var(--sans); text-align: center; }
   kbd:first-child { margin-left: 0; }
 
-  /* Session  */
+  /* ================= Session ================= */
   .session-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   .now { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
   .now-label { font-size: 12.5px; font-weight: 600; color: var(--text-3); letter-spacing: .04em; text-transform: uppercase; }
@@ -399,7 +399,7 @@
   .plan-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 20px 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--text-2); }
   .plan-actual { font-size: 12px; color: var(--text-3); grid-column: 2 / -1; margin-top: -4px; padding-left: 2px; font-variant-numeric: tabular-nums; }
 
-  /*  Metronome  */
+  /* ================= Metronome ================= */
   .met-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   .met-main { padding: 26px 24px 24px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
   .beats { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 34px; }
@@ -423,7 +423,7 @@
   .trainer-grid .input { width: 100%; }
   .note-small { font-size: 12.5px; color: var(--text-3); }
 
-  /* = Drone = */
+  /* ================= Drone ================= */
   .drone-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   .drone-main { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
   .drone-now { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -441,7 +441,7 @@
   .wave.on i { background: var(--accent-hi); animation: wave 1.6s ease-in-out infinite; }
   @keyframes wave { 0%, 100% { height: 8px; } 50% { height: 38px; } }
 
-  /* = Recorder  */
+  /* ================= Recorder ================= */
   .rec-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 18px; align-items: start; }
   .rec-main { padding: 30px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
   .rec-btn { width: 112px; height: 112px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--bg); cursor: pointer; display: grid; place-items: center; transition: transform .15s; }
@@ -462,7 +462,7 @@
   .take-actions a { text-decoration: none; color: inherit; }
   .empty { padding: 22px 20px 26px; font-size: 14px; color: var(--text-3); text-align: center; }
 
-  /*  Log  */
+  /* ================= Log ================= */
   .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
   .tile { border: 1px solid var(--line); border-radius: 4px; padding: 16px 18px; }
   .tile dt { font-size: 12.5px; color: var(--text-2); font-weight: 500; }
@@ -499,7 +499,7 @@
   .add-form .full { grid-column: 1 / -1; }
   .add-form textarea.input { min-height: 70px; }
 
-  /*  Practice bar + setup  */
+  /* ---------- Practice bar + setup ---------- */
   .pbar {
     position: sticky; top: 0; z-index: 40;
     display: flex; align-items: center; gap: 8px 18px;
@@ -533,7 +533,7 @@
   .a4-ctl button { width: 28px; height: 28px; flex: none; border-radius: 3px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; padding: 0; }
   .a4-ctl button:hover { background: var(--sunken); }
 
-  /*  Rhythm  */
+  /* ================= Rhythm ================= */
   .rhy-head { flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 8px; }
   .rhy-pick, .rhy-meter, .rhy-random { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .rhy-meter { margin-left: auto; }
@@ -620,7 +620,7 @@
     .pb-time { font-size: 19px; }
   }
 
-  /*  AI assistant  */
+  /* ---------- AI assistant ---------- */
   .ai-fab {
     position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
     display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 18px;
@@ -663,7 +663,7 @@
   .ai-foot button { border: 0; background: none; padding: 0; color: var(--text-2); cursor: pointer; text-decoration: underline; font-size: 12.5px; }
   @media (max-width: 720px) { .ai-fab { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } }
 
-  /*  Warm accents on the tool tabs  */
+  /* ---------- Warm accents on the tool tabs ---------- */
   .warm { background: linear-gradient(180deg, #fbf4e6 0%, #fffdf9 45%, #fff 100%); border-top: 3px solid var(--accent-hi); }
   .panel-head h2::before { content: ""; display: inline-block; width: 4px; height: 15px; margin-right: 9px; background: var(--accent-hi); vertical-align: -1px; }
   .pendulum { position: relative; width: 220px; height: 116px; margin: 0 auto -8px; }
@@ -695,7 +695,7 @@
   .take-wave svg { display: block; width: 100%; height: 34px; }
   .take-wave rect { fill: var(--accent-hi); }
 
-  /*  Toast  */
+  /* ---------- Toast ---------- */
   .toast {
     position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: min(560px, calc(100vw - 32px));
     transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
@@ -706,7 +706,7 @@
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
   .toast[data-kind="error"] { background: #8f1d27; }
 
-  /*  Responsive  */
+  /* ---------- Responsive ---------- */
   @media (max-width: 1320px) {
     .tuner-layout { grid-template-columns: minmax(0, 1fr); }
     .tuner-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start; }
@@ -861,7 +861,7 @@
 
   <div class="content">
 
-    <!-- = SESSION = -->
+    <!-- ===================== SESSION ===================== -->
     <section class="view" data-view="session" aria-labelledby="hSession" hidden>
       <div class="page-head">
         <div>
@@ -908,7 +908,7 @@
       </div>
     </section>
 
-    <!-- = TUNER = -->
+    <!-- ===================== TUNER ===================== -->
     <section class="view" data-view="tuner" aria-labelledby="hTuner" hidden>
       <div class="page-head">
         <div>
@@ -1054,7 +1054,7 @@
       </footer>
     </section>
 
-    <!-- = METRONOME = -->
+    <!-- ===================== METRONOME ===================== -->
     <section class="view" data-view="metronome" aria-labelledby="hMet" hidden>
       <div class="page-head">
         <div>
@@ -1128,7 +1128,7 @@
       </div>
     </section>
 
-    <!-- = RHYTHM = -->
+    <!-- ===================== RHYTHM ===================== -->
     <section class="view" data-view="rhythm" aria-labelledby="hRhy" hidden>
       <div class="page-head">
         <div>
@@ -1227,7 +1227,7 @@
       </div>
     </section>
 
-    <!--= DRONE = -->
+    <!-- ===================== DRONE ===================== -->
     <section class="view" data-view="drone" aria-labelledby="hDrone" hidden>
       <div class="page-head">
         <div>
@@ -1289,7 +1289,7 @@
       </div>
     </section>
 
-    <!-- = RECORDER = -->
+    <!-- ===================== RECORDER ===================== -->
     <section class="view" data-view="recorder" aria-labelledby="hRec" hidden>
       <div class="page-head">
         <div>
@@ -1312,7 +1312,7 @@
       </div>
     </section>
 
-    <!-- = LOG = -->
+    <!-- ===================== LOG ===================== -->
     <section class="view" data-view="log" aria-labelledby="hLog" hidden>
       <div class="page-head">
         <div>
@@ -1399,9 +1399,9 @@
 (() => {
   'use strict';
 
-  /* 
+  /* =========================================================
      Musical model
-      */
+     ========================================================= */
   const LETTERS = ['C', 'C', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'A', 'B', 'B'];
   const ACCS    = ['',  '♯', '',  '♭', '',  '',  '♯', '',  '♯', '',  '♭', ''];
   const ACC_ASCII = { '♯': '#', '♭': 'b', '': '' };
@@ -1509,10 +1509,10 @@
     set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } }
   };
 
-  /* 
+  /* =========================================================
      Heat-map colour scale (tuned for a white background)
      green within ±5¢, progressively deeper red (sharp) / blue (flat)
-      */
+     ========================================================= */
   function heat(c) {
     const a = Math.abs(c);
     let h, s, l, al, t = 0;
@@ -1615,9 +1615,9 @@
   }
   // ---- Pitch detection core (end) ----
 
-  /* 
+  /* =========================================================
      State
-      */
+     ========================================================= */
   const state = {
     instrument: 'alto',
     a4: 440,
@@ -1638,9 +1638,9 @@
   const inst = () => INSTRUMENTS[state.instrument];
   const gateRms = () => Math.pow(10, state.gateDb / 20);
 
-  /* 
+  /* =========================================================
      DOM references
-      */
+     ========================================================= */
   const $ = id => document.getElementById(id);
   const els = {
     instrument: $('instrument'), a4: $('a4'), demoBtn: $('demoBtn'), sampleBtn: $('sampleBtn'), micBtn: $('micBtn'),
@@ -1662,9 +1662,9 @@
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
   };
 
-  /* 
+  /* =========================================================
      Persistence (per instrument)
-      */
+     ========================================================= */
   const dataKey = () => 'sit.v1.data.' + state.instrument;
   function loadData() {
     store = {};
@@ -1692,14 +1692,14 @@
     try { localStorage.setItem('sit.v1.settings', JSON.stringify({ instrument: state.instrument, a4: state.a4, gateDb: state.gateDb })); } catch (e) { /* ignore */ }
   }
 
-  /* 
+  /* =========================================================
      Note statistics
-      */
+     ========================================================= */
   function noteStats(m, includeLive) {
     const r = store[m];
     let n = r ? r.n : 0, sum = r ? r.sum : 0, sq = r ? r.sq : 0, dur = r ? r.dur : 0;
     const tk = state.take;
-    const isLive = !!(includeLive && tk && tk.midi  m && !tk.locked && tk.n > 0);
+    const isLive = !!(includeLive && tk && tk.midi === m && !tk.locked && tk.n > 0);
     if (isLive) { n += tk.n; sum += tk.sum; sq += tk.sq; dur += tk.dur; }
     if (!n) return null;
     const mean = sum / n;
@@ -1737,9 +1737,9 @@
     };
   }
 
-  /* 
+  /* =========================================================
      Audio engine (one AudioContext shared by every tool)
-      */
+     ========================================================= */
   const audio = { ctx: null, input: null, analyser: null, buf: null, bytes: null, sr: 48000, mic: null, stream: null, mode: 'off' };
 
   function ensureAudio() {
@@ -1760,7 +1760,7 @@
       if (!an.getFloatTimeDomainData) audio.bytes = new Uint8Array(an.fftSize);
       detector = createDetector(an.fftSize);
     }
-    return audio.ctx.state  'suspended' ? audio.ctx.resume() : Promise.resolve();
+    return audio.ctx.state === 'suspended' ? audio.ctx.resume() : Promise.resolve();
   }
 
   function updateRange() {
@@ -1771,15 +1771,15 @@
 
   function micError(err) {
     const name = err && err.name;
-    if (name  'NotAllowedError' || name  'SecurityError') return 'Microphone access is blocked. Allow it in your browser’s site settings, then try again.';
-    if (name  'NotFoundError' || name  'OverconstrainedError') return 'No microphone was found. Connect one, then try again.';
-    if (name  'NotReadableError') return 'Another app is using the microphone. Close it, then try again.';
-    if (name  'NoWebAudio') return 'This browser does not support Web Audio. Use a current version of Chrome, Edge, Firefox or Safari.';
+    if (name === 'NotAllowedError' || name === 'SecurityError') return 'Microphone access is blocked. Allow it in your browser’s site settings, then try again.';
+    if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No microphone was found. Connect one, then try again.';
+    if (name === 'NotReadableError') return 'Another app is using the microphone. Close it, then try again.';
+    if (name === 'NoWebAudio') return 'This browser does not support Web Audio. Use a current version of Chrome, Edge, Firefox or Safari.';
     return 'The microphone could not start. Check that no other app is using it, then try again.';
   }
   function micUnsupported() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) return false;
-    toast(window.isSecureContext  false
+    toast(window.isSecureContext === false
       ? 'The microphone only works on a secure page. Open the app with start.command (localhost) or over https.'
       : 'This browser does not support microphone input. Use a current version of Chrome, Edge, Firefox or Safari.', 'error');
     return true;
@@ -1815,20 +1815,20 @@
   function stopMic() {
     if (audio.mic) { try { audio.mic.disconnect(); } catch (e) { /* already gone */ } audio.mic = null; }
     if (audio.stream) { audio.stream.getTracks().forEach(t => t.stop()); audio.stream = null; }
-    if (audio.mode  'mic') audio.mode = 'off';
+    if (audio.mode === 'mic') audio.mode = 'off';
     resetTracking();
     updateRunUI();
   }
 
-  /* 
+  /* =========================================================
      Demo: a simulated saxophonist played through the same
      analysis chain (realistic tendencies: flat low stack,
      sharp upper register and palm keys, a sharp middle C♯)
-      */
+     ========================================================= */
   // Typical tendencies: flat at the bottom, climbing sharp toward the top, one stubborn note
   function demoDev(i, n) {
     const p = i / Math.max(1, n - 1);
-    return -11 + 33 * Math.pow(p, 1.6) + (i  Math.round(n * 0.47) ? 14 : 0);
+    return -11 + 33 * Math.pow(p, 1.6) + (i === Math.round(n * 0.47) ? 14 : 0);
   }
   const DEMO_NOTE = 1.6, DEMO_GAP = 0.24;
   const demo = { running: false, nodes: [], timer: 0 };
@@ -1901,15 +1901,15 @@
     });
     demo.nodes = [];
     demo.running = false;
-    if (audio.mode  'demo') audio.mode = 'off';
+    if (audio.mode === 'demo') audio.mode = 'off';
     resetTracking();
     updateRunUI();
   }
 
-  /* 
+  /* =========================================================
      Tracking + Sample Note state machine
      idle → armed → settle → capture → saved (or too short) → armed
-      */
+     ========================================================= */
   function resetTracking() {
     endNote();
     track.note = null; track.stable = 0; track.silent = 0; track.pending = null; track.pendingTime = 0;
@@ -1937,10 +1937,10 @@
     const w = det.written;
     let cand = Math.round(w);
     if (track.note !== null && Math.abs(w - track.note) < 0.62) cand = track.note; // hysteresis
-    if (track.note  null) {
+    if (track.note === null) {
       track.note = cand; track.stable = 0; track.pending = null;
     } else if (cand !== track.note) {
-      if (track.pending  cand) track.pendingTime += dt; else { track.pending = cand; track.pendingTime = dt; }
+      if (track.pending === cand) track.pendingTime += dt; else { track.pending = cand; track.pendingTime = dt; }
       if (track.pendingTime < SWITCH_TIME) return { hold: true };
       endNote();
       track.note = cand; track.stable = 0; track.pending = null;
@@ -1998,18 +1998,18 @@
     renderCell(m, true);
     cells[m].prog.style.width = '0';
     renderAnalytics();
-    if (state.selected  m) renderInspector();
+    if (state.selected === m) renderInspector();
     setHud('saved', { note: m, take: takeMean, avg: r.sum / r.n, count: r.takes });
   }
 
-  /* 
+  /* =========================================================
      HUD (sample-state banner)
-      */
+     ========================================================= */
   let hudKey = '', hudHoldUntil = 0;
   function setHud(kind, d) {
     d = d || {};
     const now = performance.now() / 1000;
-    if ((kind  'armed' || kind  'settle' || kind  'out' || kind  'off') && now < hudHoldUntil) return;
+    if ((kind === 'armed' || kind === 'settle' || kind === 'out' || kind === 'off') && now < hudHoldUntil) return;
     let title = '', sub = '', progress = 0;
     switch (kind) {
       case 'idle':
@@ -2035,7 +2035,7 @@
         break;
       case 'saved':
         title = 'Saved ' + noteText(d.note) + ' at ' + fmtCents(d.take);
-        sub = 'Running average ' + fmtCents(d.avg) + ' across ' + d.count + (d.count  1 ? ' take.' : ' takes.');
+        sub = 'Running average ' + fmtCents(d.avg) + ' across ' + d.count + (d.count === 1 ? ' take.' : ' takes.');
         progress = 1;
         hudHoldUntil = now + 1.8;
         break;
@@ -2050,7 +2050,7 @@
         break;
     }
     const key = kind + '|' + title + '|' + sub + '|' + Math.round(progress * 100);
-    if (key  hudKey) return;
+    if (key === hudKey) return;
     hudKey = key;
     els.hud.dataset.state = kind;
     els.hudTitle.textContent = title;
@@ -2059,13 +2059,13 @@
   }
   function refreshHud() {
     hudHoldUntil = 0;
-    if (audio.mode  'off') setHud('idle');
+    if (audio.mode === 'off') setHud('idle');
     else setHud(state.sampling ? 'armed' : 'off');
   }
 
-  /* 
+  /* =========================================================
      Matrix
-      */
+     ========================================================= */
   const cells = {};
   function buildMatrix() {
     const frag = document.createDocumentFragment();
@@ -2080,7 +2080,7 @@
         '<span class="cell-val">–</span>' +
         '<span class="cell-dev"><i></i></span>' +
         '<span class="cell-prog"></span>';
-      el.addEventListener('click', () => selectNote(state.selected  m ? null : m));
+      el.addEventListener('click', () => selectNote(state.selected === m ? null : m));
       cells[m] = {
         el: el,
         count: el.querySelector('.cell-count'),
@@ -2114,7 +2114,7 @@
     el.style.setProperty('--ct', col.text);
     el.style.setProperty('--cg', col.glow);
     c.val.textContent = fmtCents(s.mean);
-    c.count.textContent = s.takes ? s.takes + (s.takes  1 ? ' take' : ' takes') : 'live';
+    c.count.textContent = s.takes ? s.takes + (s.takes === 1 ? ' take' : ' takes') : 'live';
     c.dot.style.left = (50 + clamp(s.mean, -30, 30) / 30 * 50).toFixed(2) + '%';
     el.setAttribute('aria-label', noteText(m) + ', average ' + fmtCents(s.mean).replace('−', 'minus ') + ' over ' + s.takes + ' takes');
     if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
@@ -2131,10 +2131,10 @@
     if (state.selected !== null) renderInspector();
   }
 
-  /* 
+  /* =========================================================
      Coaching engine: the analysis is shared, the advice comes from
      the instrument family (how you actually fix pitch on it)
-      */
+     ========================================================= */
   const FAMILIES = {
     sax: {
       setupSharp: 'Pull the mouthpiece out about {mm} mm on the neck cork', setupFlat: 'Push the mouthpiece in about {mm} mm on the neck cork',
@@ -2314,11 +2314,11 @@
     const covered = []; // { lo, hi, sign } regions already explained by an insight
 
     // Register-change consistency: the same fingering an octave (a twelfth on clarinet) apart
-    const ov = I.overblow || 12, ovName = ov  19 ? 'twelfth' : 'octave';
+    const ov = I.overblow || 12, ovName = ov === 19 ? 'twelfth' : 'octave';
     const octDiffs = [];
     let firstPair = null;
     for (let m = rangeLo(); m + ov <= rangeHi(); m++) {
-      if (byMidi[m] && byMidi[m + ov]) { octDiffs.push(byMidi[m + ov].mean - byMidi[m].mean); if (firstPair  null) firstPair = m; }
+      if (byMidi[m] && byMidi[m + ov]) { octDiffs.push(byMidi[m + ov].mean - byMidi[m].mean); if (firstPair === null) firstPair = m; }
     }
     const octDiff = octDiffs.length >= 2 ? avg(octDiffs) : null;
 
@@ -2326,7 +2326,7 @@
     const regMeans = regs.map(r => group(r.lo, r.hi)).filter(Boolean).map(g => g.mean);
     const spread = regMeans.length ? Math.max.apply(null, regMeans) - Math.min.apply(null, regMeans) : 0;
     const lean = st.meanAll;
-    const sameSide = st.notes.filter(n => Math.sign(n.mean)  Math.sign(lean) && Math.abs(n.mean) > 2).length / st.count;
+    const sameSide = st.notes.filter(n => Math.sign(n.mean) === Math.sign(lean) && Math.abs(n.mean) > 2).length / st.count;
     let globalSign = 0;
     if (st.count >= 4 && Math.abs(lean) > 6 && sameSide >= 0.75 && spread < 14) {
       const sharp = lean > 0;
@@ -2347,7 +2347,7 @@
     if (high && high.count >= 3 && Math.abs(high.mean) > 9 && Math.sign(high.mean) !== globalSign) {
       const sharp = high.mean > 0;
       const topTxt = top ? ', with the ' + topR.name.toLowerCase() + ' at ' + fmtCents(top.mean) : '';
-      const octTxt = octDiff !== null && Math.sign(octDiff)  Math.sign(high.mean) && Math.abs(octDiff) > 6
+      const octTxt = octDiff !== null && Math.sign(octDiff) === Math.sign(high.mean) && Math.abs(octDiff) > 6
         ? ' Notes a ' + ovName + ' up sit ' + fmtCents(octDiff) + ' from the same note below, so the shift happens as you change register.' : '';
       const actions = (sharp ? F.highSharp : F.highFlat).slice(0, 2);
       if (sharp && F.topSharp && top && top.mean > 10) actions.push(F.topSharp);
@@ -2383,15 +2383,15 @@
     }
 
     // 5. Individual problem notes
-    const isCovered = n => covered.some(c => n.midi >= c.lo && n.midi <= c.hi && Math.sign(n.mean)  c.sign);
+    const isCovered = n => covered.some(c => n.midi >= c.lo && n.midi <= c.hi && Math.sign(n.mean) === c.sign);
     const problems = st.notes.filter(n => Math.abs(n.mean) > 15 && !isCovered(n))
       .sort((a, b) => Math.abs(b.mean) - Math.abs(a.mean)).slice(0, 4);
     if (problems.length) {
       let sharps = problems.filter(n => n.mean > 0);
       const flats = problems.filter(n => n.mean < 0);
       const actions = [];
-      if (I.family  'sax') {
-        if (sharps.some(n => n.midi  73)) actions.push('C♯5: add the low C♯ pinky key and right-hand fingers 1 to 3 to add resonance and pull the pitch down.');
+      if (I.family === 'sax') {
+        if (sharps.some(n => n.midi === 73)) actions.push('C♯5: add the low C♯ pinky key and right-hand fingers 1 to 3 to add resonance and pull the pitch down.');
         const palm = sharps.filter(n => n.midi >= 86);
         if (palm.length) actions.push(noteNames(palm) + ': add right-hand fingers 2 and 3 to bring the pitch down.');
         sharps = sharps.filter(n => n.midi !== 73 && n.midi < 86);
@@ -2405,9 +2405,9 @@
       if (flats.length) actions.push(noteNames(flats) + ': ' + F.noteFlat + '.');
       out.push({
         sev: Math.abs(problems[0].mean) - 6, tone: problems[0].mean > 0 ? 'sharp' : 'flat',
-        metric: problems.length + (problems.length  1 ? ' note' : ' notes'),
+        metric: problems.length + (problems.length === 1 ? ' note' : ' notes'),
         title: 'Problem notes: ' + nameList(problems),
-        body: (problems.length  1 ? 'This note is' : 'These notes are') + ' more than 15 cents off and stand out from the rest of the range. Isolate them with long tones against the drone.',
+        body: (problems.length === 1 ? 'This note is' : 'These notes are') + ' more than 15 cents off and stand out from the rest of the range. Isolate them with long tones against the drone.',
         actions: actions.slice(0, 3)
       });
     }
@@ -2434,7 +2434,7 @@
 
     // 8. Coverage
     if (st.count < total) {
-      const missing = regs.filter(r => !st.regs.find(g => g.id  r.id).count).map(r => r.name.toLowerCase());
+      const missing = regs.filter(r => !st.regs.find(g => g.id === r.id).count).map(r => r.name.toLowerCase());
       out.push({
         sev: 0.3, tone: 'info', metric: st.count + ' of ' + total,
         title: 'Complete the map',
@@ -2454,7 +2454,7 @@
 
     out.sort((a, b) => b.sev - a.sev);
     const best = out.slice(0, 3);
-    best.forEach(it => { if (!it.level) it.level = it.tone  'good' ? 'Strength' : levelFor(it.sev); });
+    best.forEach(it => { if (!it.level) it.level = it.tone === 'good' ? 'Strength' : levelFor(it.sev); });
     return best;
   }
 
@@ -2467,9 +2467,9 @@
       '</article>';
   }
 
-  /* 
+  /* =========================================================
      Analytics panel
-      */
+     ========================================================= */
   const RING_LEN = 2 * Math.PI * 42;
   function renderAnalytics() {
     const st = computeStats();
@@ -2513,9 +2513,9 @@
     els.insights.innerHTML = buildInsights(st).map(renderInsight).join('');
   }
 
-  /* 
+  /* =========================================================
      Note inspector
-      */
+     ========================================================= */
   function selectNote(m) {
     if (state.selected !== null && cells[state.selected]) cells[state.selected].el.classList.remove('is-selected');
     state.selected = m;
@@ -2529,7 +2529,7 @@
 
   function renderInspector() {
     const m = state.selected;
-    if (m  null) { els.inspector.hidden = true; return; }
+    if (m === null) { els.inspector.hidden = true; return; }
     els.inspector.hidden = false;
     const I = inst();
     const reg = registerOf(m);
@@ -2572,9 +2572,9 @@
     });
   }
 
-  /* 
+  /* =========================================================
      Live display
-      */
+     ========================================================= */
   const view = { note: undefined, stale: null, disp: 0, textAt: 0, liveCell: null, idle: null };
 
   function updateLiveUI(now, dt) {
@@ -2583,7 +2583,7 @@
 
     if (live.note !== view.note) {
       view.note = live.note;
-      els.noteBig.innerHTML = live.note  null ? '<span class="nl">–</span>' : noteHTML(live.note);
+      els.noteBig.innerHTML = live.note === null ? '<span class="nl">–</span>' : noteHTML(live.note);
     }
     if (view.stale !== !voiced) { view.stale = !voiced; els.noteBig.classList.toggle('is-stale', !voiced); }
 
@@ -2601,17 +2601,17 @@
         els.centsText.innerHTML = fmtCents(c).replace('¢', '') + '<small>¢</small>';
         const tone = Math.abs(c) <= IN_TUNE ? 'tune' : c > 0 ? 'sharp' : 'flat';
         els.verdict.dataset.tone = tone;
-        els.verdict.textContent = tone  'tune' ? 'In tune' : tone  'sharp' ? 'Sharp' : 'Flat';
+        els.verdict.textContent = tone === 'tune' ? 'In tune' : tone === 'sharp' ? 'Sharp' : 'Flat';
         els.freqText.textContent = live.freq.toFixed(1) + ' Hz, target ' + midiToFreq(live.note - I.transpose, state.a4).toFixed(1) + ' Hz';
         els.concertText.textContent = I.transpose ? 'Sounds ' + noteText(live.note - I.transpose) + ' concert' : 'Concert pitch';
       } else {
         els.centsText.innerHTML = '0.0<small>¢</small>';
         els.verdict.dataset.tone = '';
-        els.verdict.textContent = audio.mode  'off' ? 'No signal' : 'Listening';
-        if (live.note  null) els.concertText.textContent = I.transpose ? 'Written pitch for ' + I.label : I.label + ', concert pitch';
-        els.freqText.textContent = audio.mode  'off' ? 'Start the microphone to begin' : 'Play a note';
+        els.verdict.textContent = audio.mode === 'off' ? 'No signal' : 'Listening';
+        if (live.note === null) els.concertText.textContent = I.transpose ? 'Written pitch for ' + I.label : I.label + ', concert pitch';
+        els.freqText.textContent = audio.mode === 'off' ? 'Start the microphone to begin' : 'Play a note';
       }
-      const lvl = audio.mode  'off' ? 0 : clamp((live.levelDb + 72) / 72, 0, 1);
+      const lvl = audio.mode === 'off' ? 0 : clamp((live.levelDb + 72) / 72, 0, 1);
       els.levelFill.style.width = (lvl * 100).toFixed(1) + '%';
     }
 
@@ -2623,9 +2623,9 @@
     }
   }
 
-  /* 
+  /* =========================================================
      Pitch trace canvas
-      */
+     ========================================================= */
   const trace = { ctx: els.trace.getContext('2d'), dpr: 1 };
   function sizeTrace() {
     const r = els.trace.getBoundingClientRect();
@@ -2661,9 +2661,9 @@
     let prev = null, lastNote = null, lastLabelX = -1e9;
     for (let i = 0; i < history.length; i++) {
       const p = history[i];
-      if (p.c  null) { prev = null; lastNote = null; continue; }
+      if (p.c === null) { prev = null; lastNote = null; continue; }
       const x = xOf(p.t), y = yOf(p.c);
-      if (prev && prev.n  p.n && p.t - prev.t < 0.12) {
+      if (prev && prev.n === p.n && p.t - prev.t < 0.12) {
         ctx.strokeStyle = heatSolid((p.c + prev.c) / 2);
         ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(x, y); ctx.stroke();
       }
@@ -2679,9 +2679,9 @@
     }
   }
 
-  /* 
+  /* =========================================================
      Metronome (look-ahead scheduler on the shared AudioContext)
-      */
+     ========================================================= */
   const TEMPO_MARKS = [[40, 'Grave'], [60, 'Largo'], [66, 'Larghetto'], [76, 'Adagio'], [108, 'Andante'], [120, 'Moderato'], [156, 'Allegro'], [176, 'Vivace'], [200, 'Presto'], [999, 'Prestissimo']];
   const CLICKS = {
     wood:  { type: 'triangle', f: [520, 800, 1250], dur: 0.045 },
@@ -2704,23 +2704,23 @@
     metEls.marking.textContent = TEMPO_MARKS.find(t => met.bpm < t[0])[1];
     // A real metronome weight sits higher for slower tempos
     $('pendulum').style.setProperty('--w', (6 + (met.bpm - 30) / 230 * 62).toFixed(1) + 'px');
-    [...$('tempoChips').children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.bpm)  met.bpm)));
+    [...$('tempoChips').children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.bpm) === met.bpm)));
     saveMet();
     renderRunning();
   }
   function buildDots() {
     let html = '';
-    for (let i = 0; i < met.beats; i++) html += '<span class="beat' + (i  0 && met.accent ? ' accent' : '') + '"></span>';
+    for (let i = 0; i < met.beats; i++) html += '<span class="beat' + (i === 0 && met.accent ? ' accent' : '') + '"></span>';
     metEls.dots.innerHTML = html;
     metRun.shown = -1;
   }
   function playClick(t, level, vol, sound) {
-    if (vol  undefined) vol = met.vol;
+    if (vol === undefined) vol = met.vol;
     const ctx = audio.ctx, c = CLICKS[sound || met.sound] || CLICKS.wood;
     const o = ctx.createOscillator(), g = ctx.createGain();
     o.type = c.type;
     o.frequency.value = c.f[level];
-    const peak = Math.max(0.0002, vol * [0.22, 0.5, 0.8][level] * (c.type  'square' ? 0.35 : 0.9));
+    const peak = Math.max(0.0002, vol * [0.22, 0.5, 0.8][level] * (c.type === 'square' ? 0.35 : 0.9));
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(peak, t + 0.002);
     g.gain.exponentialRampToValueAtTime(0.0001, t + c.dur);
@@ -2730,9 +2730,9 @@
   function metSchedule() {
     const ctx = audio.ctx;
     while (metRun.next < ctx.currentTime + 0.12) {
-      const level = metRun.subIdx > 0 ? 0 : (metRun.beat  0 && met.accent && met.beats > 1) ? 2 : 1;
+      const level = metRun.subIdx > 0 ? 0 : (metRun.beat === 0 && met.accent && met.beats > 1) ? 2 : 1;
       playClick(metRun.next, level);
-      if (metRun.subIdx  0) metRun.queue.push({ t: metRun.next, beat: metRun.beat });
+      if (metRun.subIdx === 0) metRun.queue.push({ t: metRun.next, beat: metRun.beat });
       metRun.next += 60 / met.bpm / met.sub;
       if (++metRun.subIdx >= met.sub) {
         metRun.subIdx = 0;
@@ -2742,7 +2742,7 @@
   }
   function metBarDone() {
     metRun.bars++;
-    if (met.trainOn && metRun.bars % Math.max(1, met.trainEvery)  0 && met.bpm < met.trainTarget) {
+    if (met.trainOn && metRun.bars % Math.max(1, met.trainEvery) === 0 && met.bpm < met.trainTarget) {
       setBpm(Math.min(met.trainTarget, met.bpm + met.trainStep));
       if (met.bpm >= met.trainTarget) toast('Speed trainer reached ' + met.trainTarget + ' BPM.');
     }
@@ -2769,7 +2769,7 @@
     renderRunning();
   }
   function showBeat(b) {
-    if (b  metRun.shown) return;
+    if (b === metRun.shown) return;
     const dots = metEls.dots.children;
     if (metRun.shown >= 0 && dots[metRun.shown]) dots[metRun.shown].classList.remove('on');
     if (b >= 0 && dots[b]) dots[b].classList.add('on');
@@ -2802,7 +2802,7 @@
     $('tempoChips').innerHTML = [60, 72, 80, 92, 100, 120, 144, 160].map(v => '<button type="button" data-bpm="' + v + '">' + v + '</button>').join('');
     $('tempoChips').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setBpm(b.dataset.bpm); });
     let opts = '';
-    for (let i = 1; i <= 12; i++) opts += '<option value="' + i + '">' + i + (i  1 ? ' (no accent)' : '') + '</option>';
+    for (let i = 1; i <= 12; i++) opts += '<option value="' + i + '">' + i + (i === 1 ? ' (no accent)' : '') + '</option>';
     metEls.beats.innerHTML = opts;
     metEls.beats.value = met.beats;
     metEls.sound.value = met.sound;
@@ -2810,7 +2810,7 @@
     metEls.vol.value = met.vol;
     metEls.trainOn.checked = met.trainOn;
     metEls.trainStep.value = met.trainStep; metEls.trainEvery.value = met.trainEvery; metEls.trainTarget.value = met.trainTarget;
-    [...metEls.sub.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.sub)  met.sub)));
+    [...metEls.sub.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.sub) === met.sub)));
     setBpm(met.bpm);
     buildDots();
 
@@ -2826,7 +2826,7 @@
     metEls.sub.addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
       met.sub = Number(b.dataset.sub); metRun.subIdx = 0;
-      [...metEls.sub.children].forEach(x => x.setAttribute('aria-pressed', String(x  b)));
+      [...metEls.sub.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
       saveMet();
     });
     const trainSync = () => {
@@ -2840,9 +2840,9 @@
     [metEls.trainOn, metEls.trainStep, metEls.trainEvery, metEls.trainTarget].forEach(x => x.addEventListener('change', trainSync));
   }
 
-  /* 
+  /* =========================================================
      Drone
-      */
+     ========================================================= */
   const drone = Object.assign({ pc: 0, oct: 4, names: 'written', sound: 'organ', fifth: false, octUp: false, vol: 0.5 }, store_.get('ws.drone', {}));
   const droneRun = { on: false, master: null, voices: [], filter: null };
   const droneEls = {
@@ -2852,7 +2852,7 @@
   const saveDrone = () => store_.set('ws.drone', { pc: drone.pc, oct: drone.oct, names: drone.names, sound: drone.sound, fifth: drone.fifth, octUp: drone.octUp, vol: drone.vol });
   // The pitch the player picked, as a MIDI number in the naming they chose (written or concert)
   const droneShownMidi = () => (drone.oct + 1) * 12 + drone.pc;
-  const droneConcertMidi = () => droneShownMidi() - (drone.names  'written' ? inst().transpose : 0);
+  const droneConcertMidi = () => droneShownMidi() - (drone.names === 'written' ? inst().transpose : 0);
   const droneFreq = () => midiToFreq(droneConcertMidi(), state.a4);
   const droneLevel = () => drone.vol * 0.22;
   let organWave = null;
@@ -2861,18 +2861,18 @@
     const ctx = audio.ctx, f = droneFreq();
     const master = ctx.createGain(); master.gain.value = 0.0001;
     const filter = ctx.createBiquadFilter(); filter.type = 'lowpass';
-    filter.frequency.value = drone.sound  'reed' ? 1500 : drone.sound  'organ' ? 4200 : 12000;
-    filter.Q.value = drone.sound  'reed' ? 2 : 0.7;
+    filter.frequency.value = drone.sound === 'reed' ? 1500 : drone.sound === 'organ' ? 4200 : 12000;
+    filter.Q.value = drone.sound === 'reed' ? 2 : 0.7;
     filter.connect(master); master.connect(ctx.destination);
     const parts = [{ r: 1, g: 1 }];
     if (drone.fifth) parts.push({ r: 1.5, g: 0.6 });
     if (drone.octUp) parts.push({ r: 2, g: 0.45 });
     const voices = parts.map(p => {
       const o = ctx.createOscillator(), g = ctx.createGain();
-      if (drone.sound  'organ') {
+      if (drone.sound === 'organ') {
         if (!organWave) organWave = ctx.createPeriodicWave(new Float32Array([0, 1, 0.55, 0.32, 0.2, 0.12, 0.06, 0.03]), new Float32Array(8));
         o.setPeriodicWave(organWave);
-      } else o.type = drone.sound  'reed' ? 'sawtooth' : 'sine';
+      } else o.type = drone.sound === 'reed' ? 'sawtooth' : 'sine';
       o.frequency.value = f * p.r;
       g.gain.value = p.g / parts.length * 1.4;
       o.connect(g); g.connect(filter);
@@ -2917,13 +2917,13 @@
     droneEls.note.innerHTML = noteHTML(shown);
     let info = '<strong>' + droneFreq().toFixed(1) + ' Hz</strong>';
     if (I.transpose) {
-      info += drone.names  'written'
+      info += drone.names === 'written'
         ? 'Written for ' + I.name + ', sounds ' + noteText(concert) + ' concert'
         : 'Concert pitch, written ' + noteText(concert + I.transpose) + ' for ' + I.name;
     } else info += 'Concert pitch';
     droneEls.info.innerHTML = info;
-    [...droneEls.pitches.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pc)  drone.pc)));
-    [...droneEls.names.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.names  drone.names)));
+    [...droneEls.pitches.children].forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pc) === drone.pc)));
+    [...droneEls.names.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.names === drone.names)));
     droneEls.names.children[0].textContent = I.transpose ? 'Written for ' + I.name : 'Written';
     droneEls.toggle.innerHTML = (droneRun.on ? ICONS.stop + '<span>Stop drone</span>' : ICONS.play + '<span>Play drone</span>');
     droneEls.toggle.classList.toggle('is-on', droneRun.on);
@@ -2970,9 +2970,9 @@
     renderDrone();
   }
 
-  /* 
+  /* =========================================================
      Recorder (MediaRecorder, takes kept in IndexedDB)
-      */
+     ========================================================= */
   const recEls = { btn: $('recBtn'), time: $('recTime'), status: $('recStatus'), level: $('recLevel'), takes: $('takes'), sub: $('takesSub') };
   const rec = { mr: null, stream: null, chunks: [], startAt: 0, timer: 0, analyser: null, src: null, lvlBuf: null, takes: [], urls: {} };
   const idb = {
@@ -3078,7 +3078,7 @@
   }
   function takeUrl(t) { return rec.urls[t.id] || (rec.urls[t.id] = URL.createObjectURL(t.blob)); }
   function renderTakes() {
-    recEls.sub.textContent = rec.takes.length ? rec.takes.length + (rec.takes.length  1 ? ' recording' : ' recordings') + ', newest first.' : 'Your recordings.';
+    recEls.sub.textContent = rec.takes.length ? rec.takes.length + (rec.takes.length === 1 ? ' recording' : ' recordings') + ', newest first.' : 'Your recordings.';
     if (!rec.takes.length) { recEls.takes.innerHTML = '<li class="empty">No takes yet.</li>'; return; }
     recEls.takes.innerHTML = rec.takes.map(t => {
       const ext = /mp4/.test(t.type) ? 'm4a' : /ogg/.test(t.type) ? 'ogg' : 'webm';
@@ -3119,7 +3119,7 @@
     recEls.takes.addEventListener('click', e => {
       if (!e.target.closest('[data-del]')) return;
       const id = e.target.closest('.take').dataset.id;
-      const t = rec.takes.find(x => x.id  id);
+      const t = rec.takes.find(x => x.id === id);
       if (!t || !window.confirm('Delete "' + t.name + '"?')) return;
       rec.takes = rec.takes.filter(x => x.id !== id);
       if (rec.urls[id]) { URL.revokeObjectURL(rec.urls[id]); delete rec.urls[id]; }
@@ -3128,7 +3128,7 @@
     });
     recEls.takes.addEventListener('change', e => {
       if (!e.target.matches('.take-top .input')) return;
-      const t = rec.takes.find(x => x.id  e.target.closest('.take').dataset.id);
+      const t = rec.takes.find(x => x.id === e.target.closest('.take').dataset.id);
       if (!t) return;
       t.name = e.target.value.trim() || t.name;
       idb.put(t).catch(() => {});
@@ -3136,14 +3136,14 @@
     });
     renderTakes();
     idb.all().then(list => {
-      rec.takes = (list || []).filter(t => t && t.blob).sort((a, b) => b.created - a.created).concat(rec.takes.filter(t => !(list || []).some(x => x.id  t.id)));
+      rec.takes = (list || []).filter(t => t && t.blob).sort((a, b) => b.created - a.created).concat(rec.takes.filter(t => !(list || []).some(x => x.id === t.id)));
       renderTakes();
     }).catch(() => { recEls.sub.textContent = 'This browser cannot store recordings, so download any take you want to keep.'; });
   }
 
-  /* 
+  /* =========================================================
      Practice session: planner, timer and the blue practice bar
-      */
+     ========================================================= */
   const TOOLS = { none: 'No tool', tuner: 'Tuner', metronome: 'Metronome', rhythm: 'Rhythm trainer', drone: 'Drone', recorder: 'Recorder' };
   const DEFAULT_PLAN = [
     { name: 'Long tones with the drone', min: 10, tool: 'drone' },
@@ -3171,8 +3171,8 @@
 
   function renderPlan() {
     sessEls.plan.innerHTML = plan.map((b, i) => {
-      const cur = sess && sess.idx  i, done = sess && (sess.spent[i] || 0) >= b.min * 60;
-      const opts = Object.keys(TOOLS).map(k => '<option value="' + k + '"' + (b.tool  k ? ' selected' : '') + '>' + TOOLS[k] + '</option>').join('');
+      const cur = sess && sess.idx === i, done = sess && (sess.spent[i] || 0) >= b.min * 60;
+      const opts = Object.keys(TOOLS).map(k => '<option value="' + k + '"' + (b.tool === k ? ' selected' : '') + '>' + TOOLS[k] + '</option>').join('');
       return '<li class="plan-row' + (cur ? ' is-current' : '') + (done ? ' is-done' : '') + '" data-i="' + i + '">' +
         '<button class="plan-idx" type="button" data-jump title="Go to this block">' + (done ? '✓' : i + 1) + '</button>' +
         '<input class="input" data-f="name" value="' + esc(b.name) + '" aria-label="Block name" />' +
@@ -3213,7 +3213,7 @@
       sessEls.name.textContent = plan.length ? 'First up: ' + plan[0].name : 'Free practice (no blocks planned)';
       sessEls.clock.textContent = plan.length ? clockText(plan[0].min * 60) : '0:00';
       sessEls.clock.classList.remove('is-over');
-      sessEls.sub.textContent = plan.length ? 'Total planned: ' + minText(total) + ' in ' + plan.length + (plan.length  1 ? ' block' : ' blocks') : 'The timer will count up as you practice.';
+      sessEls.sub.textContent = plan.length ? 'Total planned: ' + minText(total) + ' in ' + plan.length + (plan.length === 1 ? ' block' : ' blocks') : 'The timer will count up as you practice.';
       sessEls.prog.firstElementChild.style.width = '0';
       sessEls.prog.classList.remove('is-over');
       sessEls.toggle.textContent = 'Start session';
@@ -3250,7 +3250,7 @@
     $('dotSession').hidden = !sess.running;
   }
   function setToolLink(b) {
-    if (!b || !b.tool || b.tool  'none') { sessEls.tool.hidden = true; return; }
+    if (!b || !b.tool || b.tool === 'none') { sessEls.tool.hidden = true; return; }
     sessEls.tool.hidden = false;
     sessEls.tool.href = '#' + b.tool;
     sessEls.tool.innerHTML = 'Open the ' + TOOLS[b.tool].toLowerCase() + ' for this block ' + ICONS.arrow;
@@ -3372,9 +3372,9 @@
       const row = e.target.closest('.plan-row'), f = e.target.dataset.f;
       if (!row || !f) return;
       const b = plan[Number(row.dataset.i)];
-      if (f  'name') b.name = e.target.value.trim() || 'Untitled block';
-      else if (f  'min') b.min = clamp(Math.round(Number(e.target.value) || 1), 1, 180);
-      else if (f  'tool') b.tool = e.target.value;
+      if (f === 'name') b.name = e.target.value.trim() || 'Untitled block';
+      else if (f === 'min') b.min = clamp(Math.round(Number(e.target.value) || 1), 1, 180);
+      else if (f === 'tool') b.tool = e.target.value;
       savePlan(); renderPlan(); renderSessNow();
     });
     sessEls.plan.addEventListener('click', e => {
@@ -3384,7 +3384,7 @@
       if (e.target.closest('[data-jump]')) {
         if (sess) gotoBlock(i); else toast('Start the session to jump between blocks.');
       } else if (e.target.closest('[data-del]')) {
-        if (sess && sess.idx  i) { toast('You can’t remove the block you’re practicing.'); return; }
+        if (sess && sess.idx === i) { toast('You can’t remove the block you’re practicing.'); return; }
         plan.splice(i, 1);
         if (sess) { sess.spent.splice(i, 1); sess.chimed.splice(i, 1); if (sess.idx > i) sess.idx--; saveSess(); }
         savePlan(); renderPlan(); renderSessNow();
@@ -3395,9 +3395,9 @@
     renderSessNow();
   }
 
-  /* 
+  /* =========================================================
      Practice log
-      */
+     ========================================================= */
   let log = store_.get('ws.log', []);
   const saveLog = () => store_.set('ws.log', log);
   const dayKey = d => { const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
@@ -3414,7 +3414,7 @@
     while (byDay[dayKey(dayAt(start + streak))]) streak++;
     logEls.today.innerHTML = Math.round((byDay[dayKey(today)] || 0) / 60) + '<small>min</small>';
     logEls.week.innerHTML = Math.round(week / 60) + '<small>min</small>';
-    logEls.streak.innerHTML = streak + '<small>' + (streak  1 ? 'day' : 'days') + '</small>';
+    logEls.streak.innerHTML = streak + '<small>' + (streak === 1 ? 'day' : 'days') + '</small>';
     logEls.count.textContent = log.length;
 
     // 28-day bar chart, one series in the accent colour; today in ink
@@ -3425,8 +3425,8 @@
     const top = Math.ceil(peak / step) * step;
     let grid = '';
     for (let v = step; v <= top; v += step) grid += '<div class="chart-grid" style="bottom:' + (v / top * 100).toFixed(2) + '%"><span>' + v + '</span></div>';
-    const bars = days.map((x, i) => '<div class="bar-hit' + (i  27 ? ' is-today' : '') + '" data-i="' + i + '"><i style="height:' + (x.min / top * 100).toFixed(2) + '%"></i></div>').join('');
-    const xs = days.map((x, i) => '<span>' + (i % 7  6 || i  27 ? (i  27 ? 'Today' : x.d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) : '') + '</span>').join('');
+    const bars = days.map((x, i) => '<div class="bar-hit' + (i === 27 ? ' is-today' : '') + '" data-i="' + i + '"><i style="height:' + (x.min / top * 100).toFixed(2) + '%"></i></div>').join('');
+    const xs = days.map((x, i) => '<span>' + (i % 7 === 6 || i === 27 ? (i === 27 ? 'Today' : x.d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) : '') + '</span>').join('');
     logEls.chart.innerHTML = '<div class="chart-plot" role="img" aria-label="Minutes practiced per day over the last 28 days">' + grid + bars + '</div><div class="chart-x">' + xs + '</div>';
     const plot = logEls.chart.firstElementChild;
     let tip = null;
@@ -3461,7 +3461,7 @@
       e.preventDefault();
       const min = clamp(Math.round(Number(logEls.min.value) || 0), 1, 600);
       const parts = logEls.date.value.split('-').map(Number);
-      const d = parts.length  3 ? new Date(parts[0], parts[1] - 1, parts[2], 12) : new Date();
+      const d = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2], 12) : new Date();
       log.push({ id: String(Date.now()), date: d.toISOString(), secs: min * 60, blocks: [], notes: logEls.what.value.trim(), manual: true });
       log.sort((a, b) => new Date(b.date) - new Date(a.date));
       saveLog();
@@ -3480,7 +3480,11 @@
     renderLog();
   }
 
-  /* Rhythm trainer */
+  /* =========================================================
+     Rhythm trainer
+     A rhythm is one string per beat, like "x-xx": its length is how
+     finely the beat is split, "x" is a note and "-" a rest.
+     ========================================================= */
   const RHY_PRESETS = [
     ['Basics', 'Quarter notes', 4, 4, 'x x x x'],
     ['Basics', 'Half notes', 4, 4, 'x - x -'],
@@ -3565,33 +3569,33 @@
     parts.forEach(n => { set.add(at); at += n; });
     return set;
   }
-  const countLabels = n => n  2 ? ['', '&'] : n  3 ? ['', '&', 'a'] : n  4 ? ['', 'e', '&', 'a'] : [''].concat(Array(Math.max(0, n - 1)).fill('·'));
+  const countLabels = n => n === 2 ? ['', '&'] : n === 3 ? ['', '&', 'a'] : n === 4 ? ['', 'e', '&', 'a'] : [''].concat(Array(Math.max(0, n - 1)).fill('·'));
 
   // One beat as rhythm notation: noteheads, stems, beams or flags, rests and count syllables
   function cellSVG(cell, eighthUnit, num, idp) {
     const n = cell.length, Y = 60, TOP = 22;
     const xs = [], hits = [];
-    for (let i = 0; i < n; i++) { xs.push(16 + i * 74 / n); if (cell[i]  'x') hits.push(i); }
-    const beams = (n  1 ? 0 : n <= 3 ? 1 : n <= 7 ? 2 : 3) + (eighthUnit ? 1 : 0);
+    for (let i = 0; i < n; i++) { xs.push(16 + i * 74 / n); if (cell[i] === 'x') hits.push(i); }
+    const beams = (n === 1 ? 0 : n <= 3 ? 1 : n <= 7 ? 2 : 3) + (eighthUnit ? 1 : 0);
     const labels = countLabels(n);
     let s = '<line class="sl" x1="0" y1="' + Y + '" x2="100" y2="' + Y + '"/>';
     for (let i = 0; i < n; i++) {
       const x = xs[i].toFixed(1), sx = (xs[i] + 5.6).toFixed(1);
-      if (cell[i]  'x') {
+      if (cell[i] === 'x') {
         s += '<ellipse ' + (idp ? 'id="' + idp + '-' + i + '" ' : '') + 'class="nh" cx="' + x + '" cy="' + Y + '" rx="6.4" ry="4.6" transform="rotate(-22 ' + x + ' ' + Y + ')"/>';
         s += '<line class="st" x1="' + sx + '" y1="' + (Y - 1.5) + '" x2="' + sx + '" y2="' + TOP + '"/>';
-      } else if (n  1 && !eighthUnit) {
+      } else if (n === 1 && !eighthUnit) {
         s += '<path class="rs" d="M' + (xs[i] - 1).toFixed(1) + ' 34l5 7-4 5 5 7c-3-1-6 0-4 4"/>';
       } else {
         s += '<circle class="rd" cx="' + (xs[i] - 1).toFixed(1) + '" cy="' + (Y - 14) + '" r="2.3"/><path class="rs" d="M' + (xs[i] - 1).toFixed(1) + ' ' + (Y - 12) + 'q4 1 6-2l-5 13"/>';
       }
-      const lab = i  0 ? String(num) : labels[i];
-      if (lab) s += '<text class="' + (i  0 ? 'cl cl-1' : 'cl') + '" x="' + x + '" y="86">' + lab + '</text>';
+      const lab = i === 0 ? String(num) : labels[i];
+      if (lab) s += '<text class="' + (i === 0 ? 'cl cl-1' : 'cl') + '" x="' + x + '" y="86">' + lab + '</text>';
     }
     if (beams && hits.length >= 2) {
       const a = xs[hits[0]] + 5.6, b = xs[hits[hits.length - 1]] + 5.6;
       for (let k = 0; k < beams; k++) s += '<rect class="bm" x="' + (a - 0.8).toFixed(1) + '" y="' + (TOP + k * 6) + '" width="' + (b - a + 1.6).toFixed(1) + '" height="4"/>';
-    } else if (beams && hits.length  1) {
+    } else if (beams && hits.length === 1) {
       const a = (xs[hits[0]] + 5.6).toFixed(1);
       for (let k = 0; k < beams; k++) s += '<path class="fl" d="M' + a + ' ' + (TOP + k * 6) + 'q9 5 7 15"/>';
     }
@@ -3600,13 +3604,13 @@
   }
 
   function renderStrip() {
-    const acc = accentStarts(), e8 = rhy.unit  8;
+    const acc = accentStarts(), e8 = rhy.unit === 8;
     let html = '<div class="rbars">';
     for (let bar = 0; bar < rhyBars(); bar++) {
       html += '<div class="rbar"><span class="rbar-num">' + (bar + 1) + '</span>';
       for (let k = 0; k < rhy.beats; k++) {
         const b = bar * rhy.beats + k;
-        html += '<button type="button" class="rbeat' + (b  rhy.sel ? ' is-sel' : '') + (k > 0 && acc.has(k) ? ' grp' : '') + '" data-b="' + b + '" aria-label="Edit beat ' + (k + 1) + ' of bar ' + (bar + 1) + '">' +
+        html += '<button type="button" class="rbeat' + (b === rhy.sel ? ' is-sel' : '') + (k > 0 && acc.has(k) ? ' grp' : '') + '" data-b="' + b + '" aria-label="Edit beat ' + (k + 1) + ' of bar ' + (bar + 1) + '">' +
           cellSVG(rhy.cells[b], e8, k + 1, 'rh-' + b) + '</button>';
       }
       html += '</div>';
@@ -3626,12 +3630,12 @@
     const cell = rhy.cells[rhy.sel], n = cell.length, k = rhy.sel % rhy.beats, bar = Math.floor(rhy.sel / rhy.beats);
     rhyEls.beTitle.textContent = 'Editing beat ' + (k + 1) + (rhyBars() > 1 ? ' of bar ' + (bar + 1) : '');
     let d = '';
-    for (let i = 1; i <= 8; i++) d += '<button type="button" data-d="' + i + '" aria-pressed="' + (i  n) + '">' + i + '</button>';
+    for (let i = 1; i <= 8; i++) d += '<button type="button" data-d="' + i + '" aria-pressed="' + (i === n) + '">' + i + '</button>';
     rhyEls.beDiv.innerHTML = d;
     const labels = countLabels(n);
-    rhyEls.bePads.innerHTML = cell.split('').map((c, i) => '<button type="button" class="pad" data-i="' + i + '" aria-pressed="' + (c  'x') + '" aria-label="' + (c  'x' ? 'Note' : 'Rest') + ' ' + (i + 1) + '">' +
-      (i  0 ? k + 1 : labels[i]  '·' ? i + 1 : labels[i]) + '</button>').join('');
-    rhyEls.palette.innerHTML = RHY_PALETTE.map(p => '<button type="button" class="pal" data-p="' + p + '" aria-pressed="' + (p  cell) + '" aria-label="Pattern ' + p.replace(/x/g, 'note ').replace(/-/g, 'rest ') + '">' + cellSVG(p, rhy.unit  8, '', '') + '</button>').join('');
+    rhyEls.bePads.innerHTML = cell.split('').map((c, i) => '<button type="button" class="pad" data-i="' + i + '" aria-pressed="' + (c === 'x') + '" aria-label="' + (c === 'x' ? 'Note' : 'Rest') + ' ' + (i + 1) + '">' +
+      (i === 0 ? k + 1 : labels[i] === '·' ? i + 1 : labels[i]) + '</button>').join('');
+    rhyEls.palette.innerHTML = RHY_PALETTE.map(p => '<button type="button" class="pal" data-p="' + p + '" aria-pressed="' + (p === cell) + '" aria-label="Pattern ' + p.replace(/x/g, 'note ').replace(/-/g, 'rest ') + '">' + cellSVG(p, rhy.unit === 8, '', '') + '</button>').join('');
   }
 
   function renderPresetSelect() {
@@ -3642,7 +3646,7 @@
     });
     html += '</optgroup>';
     if (myRhythms.length) html += '<optgroup label="My rhythms">' + myRhythms.map((r, i) => '<option value="s:' + i + '">' + esc(r.name) + '</option>').join('') + '</optgroup>';
-    if (rhy.src  'custom') html += '<option value="custom">' + esc(rhy.name || 'Custom rhythm') + ' (edited)</option>';
+    if (rhy.src === 'custom') html += '<option value="custom">' + esc(rhy.name || 'Custom rhythm') + ' (edited)</option>';
     rhyEls.preset.innerHTML = html;
     rhyEls.preset.value = rhy.src;
     if (rhyEls.preset.value !== rhy.src) { rhy.src = 'custom'; renderPresetSelect(); return; }
@@ -3693,7 +3697,7 @@
     renderRhythm();
   }
 
-  /*  Engine: loops scheduled ahead on the shared AudioContext  */
+  /* ---------- Engine: loops scheduled ahead on the shared AudioContext ---------- */
   let noiseBuf = null;
   function playHit(t) {
     const ctx = audio.ctx;
@@ -3718,9 +3722,9 @@
     const ev = [], acc = accentStarts(), hitPos = [];
     rhy.cells.forEach((cell, b) => {
       ev.push({ pos: b, kind: 'beat', beat: b, accent: acc.has(b % rhy.beats) });
-      for (let i = 0; i < cell.length; i++) if (cell[i]  'x') { const pos = b + i / cell.length; ev.push({ pos: pos, kind: 'hit', beat: b, slot: i }); hitPos.push(pos); }
+      for (let i = 0; i < cell.length; i++) if (cell[i] === 'x') { const pos = b + i / cell.length; ev.push({ pos: pos, kind: 'hit', beat: b, slot: i }); hitPos.push(pos); }
     });
-    ev.sort((a, c) => a.pos - c.pos || (a.kind  'hit') - (c.kind  'hit'));
+    ev.sort((a, c) => a.pos - c.pos || (a.kind === 'hit') - (c.kind === 'hit'));
     rhyRun.ev = ev; rhyRun.evIdx = 0;
     rhyRun.beatDur = 60 / rhy.bpm;
     rhyRun.loopLen = rhy.cells.length * rhyRun.beatDur;
@@ -3742,11 +3746,11 @@
       const e = rhyRun.ev[rhyRun.evIdx];
       const t = rhyRun.loopStart + e.pos * rhyRun.beatDur;
       if (t > ctx.currentTime + 0.12) break;
-      if (e.kind  'beat') {
+      if (e.kind === 'beat') {
         if (rhy.click) playClick(t, e.accent ? 2 : 1, rhy.vol * 0.8, 'wood');
         rhyRun.beatQ.push({ t: t, beat: e.beat });
       } else {
-        if (rhy.mode  'listen' || rhy.hear) playHit(t);
+        if (rhy.mode === 'listen' || rhy.hear) playHit(t);
         if (rhy.mode !== 'listen') rhyRun.expected.push({ t: t, beat: e.beat, slot: e.slot, loop: rhyRun.loop, res: null });
       }
       rhyRun.evIdx++;
@@ -3754,7 +3758,7 @@
   }
   async function startRhy() {
     try { await ensureAudio(); } catch (e) { toast('This browser does not support Web Audio.', 'error'); return; }
-    if (rhy.mode  'mic' && !(await rhyMicOn())) return;
+    if (rhy.mode === 'mic' && !(await rhyMicOn())) return;
     if (metRun.on) stopMet();
     const ctx = audio.ctx;
     Object.assign(rhyRun, { on: true, loop: 0, beatQ: [], expected: [], loops: {}, shownLoop: -1 });
@@ -3784,7 +3788,7 @@
   const toggleRhy = () => (rhyRun.on ? stopRhy() : startRhy());
 
   function showRhyBeat(b) {
-    if (b  rhyRun.shownBeat) return;
+    if (b === rhyRun.shownBeat) return;
     const prev = rhyRun.shownBeat !== null && rhyEls.strip.querySelector('.rbeat[data-b="' + rhyRun.shownBeat + '"]');
     if (prev) prev.classList.remove('is-now');
     const cur = b !== null && rhyEls.strip.querySelector('.rbeat[data-b="' + b + '"]');
@@ -3792,7 +3796,7 @@
     rhyRun.shownBeat = b;
   }
   const clearMarks = () => rhyEls.strip.querySelectorAll('.nh').forEach(h => h.setAttribute('class', 'nh'));
-  const rhyLatency = () => (audio.ctx.outputLatency || audio.ctx.baseLatency || 0) + (rhy.mode  'mic' ? 0.03 : 0);
+  const rhyLatency = () => (audio.ctx.outputLatency || audio.ctx.baseLatency || 0) + (rhy.mode === 'mic' ? 0.03 : 0);
   const rhyWin = () => clamp(rhyRun.minGap * 0.45, 0.04, 0.15);
 
   function rhyFrame() {
@@ -3801,7 +3805,7 @@
     while (rhyRun.beatQ.length && rhyRun.beatQ[0].t <= heard) {
       const q = rhyRun.beatQ.shift();
       if (q.count) { rhyEls.status.textContent = 'Count-in: ' + q.count + ' of ' + rhy.beats; showRhyBeat(null); }
-      else if (q.loopStart !== undefined) { rhyRun.shownLoop = q.loopStart; clearMarks(); rhyEls.status.textContent = 'Loop ' + (q.loopStart + 1) + (rhy.mode  'listen' ? ' · listening' : ' · your turn'); }
+      else if (q.loopStart !== undefined) { rhyRun.shownLoop = q.loopStart; clearMarks(); rhyEls.status.textContent = 'Loop ' + (q.loopStart + 1) + (rhy.mode === 'listen' ? ' · listening' : ' · your turn'); }
       else showRhyBeat(q.beat);
     }
     if (rhy.mode !== 'listen') {
@@ -3809,11 +3813,11 @@
       rhyRun.expected.forEach(x => { if (!x.res && judgeNow > x.t + win) judge(x, null); });
       if (rhyRun.expected.length > 64) rhyRun.expected = rhyRun.expected.filter(x => !x.res);
     }
-    if (rhy.mode  'mic') micOnset(now);
+    if (rhy.mode === 'mic') micOnset(now);
   }
 
   function registerHit(T) {
-    if (!rhyRun.on || rhy.mode  'listen') return;
+    if (!rhyRun.on || rhy.mode === 'listen') return;
     const win = rhyWin();
     let best = null, bestD = 1e9;
     rhyRun.expected.forEach(x => { if (!x.res) { const d = Math.abs(T - x.t); if (d < bestD) { bestD = d; best = x; } } });
@@ -3827,17 +3831,17 @@
   }
   function judge(x, err) {
     let res, pts;
-    if (err  null) { res = 'miss'; pts = 0; }
+    if (err === null) { res = 'miss'; pts = 0; }
     else {
       const a = Math.abs(err);
       if (a <= 0.03) { res = 'perfect'; pts = 1; } else if (a <= 0.07) { res = 'good'; pts = 0.7; } else { res = err < 0 ? 'early' : 'late'; pts = 0.3; }
     }
     x.res = res;
-    if (x.loop  rhyRun.shownLoop) { const h = $('rh-' + x.beat + '-' + x.slot); if (h) h.setAttribute('class', 'nh r-' + res); }
+    if (x.loop === rhyRun.shownLoop) { const h = $('rh-' + x.beat + '-' + x.slot); if (h) h.setAttribute('class', 'nh r-' + res); }
     const L = rhyRun.loops[x.loop];
     if (!L) return;
     L.n++; L.sum += pts;
-    if (err  null) L.misses++; else L.errs.push(err);
+    if (err === null) L.misses++; else L.errs.push(err);
     if (L.n >= L.need) finishLoop(L);
   }
   function finishLoop(L) {
@@ -3851,12 +3855,12 @@
     const mean = L.errs.length ? avg(L.errs) * 1000 : 0;
     rhyEls.last.innerHTML = score + '<small>%</small>';
     rhyEls.best.innerHTML = rhyRun.best + '<small>%</small>';
-    rhyEls.streak.innerHTML = rhyRun.streak + '<small>' + (rhyRun.streak  1 ? 'loop' : 'loops') + '</small>';
+    rhyEls.streak.innerHTML = rhyRun.streak + '<small>' + (rhyRun.streak === 1 ? 'loop' : 'loops') + '</small>';
     const ms = Math.round(Math.abs(mean));
     rhyEls.timing.textContent = !L.errs.length ? '–' : ms < 10 ? 'Right on time' : ms < 30 ? 'Slightly ' + (mean < 0 ? 'ahead' : 'behind') + ' (' + ms + ' ms)' : (mean < 0 ? 'Rushing by ' : 'Dragging by ') + ms + ' ms';
     let tip;
     if (L.misses > L.need / 3) tip = 'You missed ' + L.misses + ' of ' + L.need + ' notes. Slow the tempo down until every note lands, then build it back up.';
-    else if (L.extra > 1) tip = rhy.mode  'mic' ? 'Extra notes were heard. If you didn’t play them, room noise may be getting picked up; raise the noise gate on the Tuner tab.' : 'Some extra taps were counted. Tap only the notes written in the rhythm.';
+    else if (L.extra > 1) tip = rhy.mode === 'mic' ? 'Extra notes were heard. If you didn’t play them, room noise may be getting picked up; raise the noise gate on the Tuner tab.' : 'Some extra taps were counted. Tap only the notes written in the rhythm.';
     else if (mean < -30) tip = 'You’re rushing: notes land ahead of the click. Relax and let the beat come to you.';
     else if (mean > 30) tip = 'You’re dragging behind the click. Feel the subdivisions in your head ("1 e & a") so you are ready for each note.';
     else if (score >= 90) tip = 'Great loop!' + (rhy.speedUp ? '' : ' Try it a few BPM faster.');
@@ -3925,13 +3929,13 @@
   function renderRhyRun() {
     rhyEls.play.textContent = rhyRun.on ? 'Stop' : 'Play';
     rhyEls.play.classList.toggle('is-on', rhyRun.on);
-    [...rhyEls.mode.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode  rhy.mode)));
+    [...rhyEls.mode.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === rhy.mode)));
     rhyEls.modeHint.textContent = MODE_HINTS[rhy.mode];
     rhyEls.pad.hidden = rhy.mode !== 'tap';
     rhyEls.micMeter.hidden = rhy.mode !== 'mic';
-    rhyEls.hearWrap.hidden = rhy.mode  'listen';
-    if (!rhyRun.on) rhyEls.status.textContent = rhy.mode  'listen' ? 'Press Play (or Space) to hear the rhythm.' : 'Press Play (or Space) to start. You get a one bar count in if it’s turned on.';
-    if (rhy.mode  'listen' && !rhyRun.history.length) rhyEls.tip.textContent = 'Choose Tap along or Play along to get scored.';
+    rhyEls.hearWrap.hidden = rhy.mode === 'listen';
+    if (!rhyRun.on) rhyEls.status.textContent = rhy.mode === 'listen' ? 'Press Play (or Space) to hear the rhythm.' : 'Press Play (or Space) to start. You get a one bar count in if it’s turned on.';
+    if (rhy.mode === 'listen' && !rhyRun.history.length) rhyEls.tip.textContent = 'Choose Tap along or Play along to get scored.';
     renderRunning();
   }
 
@@ -3950,18 +3954,18 @@
 
     rhyEls.preset.addEventListener('change', () => {
       const v = rhyEls.preset.value;
-      if (v.indexOf('p:')  0) loadRhythm(RHY_PRESETS[Number(v.slice(2))], v);
-      else if (v.indexOf('s:')  0) loadRhythm(myRhythms[Number(v.slice(2))], v);
+      if (v.indexOf('p:') === 0) loadRhythm(RHY_PRESETS[Number(v.slice(2))], v);
+      else if (v.indexOf('s:') === 0) loadRhythm(myRhythms[Number(v.slice(2))], v);
     });
     rhyEls.random.addEventListener('click', randomRhythm);
     rhyEls.beats.addEventListener('change', () => {
       reshape(Number(rhyEls.beats.value), rhyBars());
-      if (rhy.unit  8) rhy.groups = DEFAULT_GROUPS[rhy.beats] || '';
+      if (rhy.unit === 8) rhy.groups = DEFAULT_GROUPS[rhy.beats] || '';
       rhythmEdited(); renderRhythm();
     });
     rhyEls.unit.addEventListener('change', () => {
       rhy.unit = Number(rhyEls.unit.value);
-      rhy.groups = rhy.unit  8 ? (DEFAULT_GROUPS[rhy.beats] || '') : '';
+      rhy.groups = rhy.unit === 8 ? (DEFAULT_GROUPS[rhy.beats] || '') : '';
       rhythmEdited(); renderRhythm();
     });
     rhyEls.bars.addEventListener('change', () => { reshape(rhy.beats, Number(rhyEls.bars.value)); rhythmEdited(); renderRhythm(); });
@@ -3986,7 +3990,7 @@
       const b = e.target.closest('.pad');
       if (!b) return;
       const c = rhy.cells[rhy.sel].split(''), i = Number(b.dataset.i);
-      c[i] = c[i]  'x' ? '-' : 'x';
+      c[i] = c[i] === 'x' ? '-' : 'x';
       setCell(rhy.sel, c.join(''));
     });
     rhyEls.palette.addEventListener('click', e => { const b = e.target.closest('.pal'); if (b) setCell(rhy.sel, b.dataset.p); });
@@ -3996,7 +4000,7 @@
     rhyEls.save.addEventListener('click', () => {
       const name = rhyEls.name.value.trim() || 'My rhythm';
       const item = { name: name, beats: rhy.beats, unit: rhy.unit, cells: rhy.cells.slice(), groups: rhy.groups };
-      let i = myRhythms.findIndex(r => r.name  name);
+      let i = myRhythms.findIndex(r => r.name === name);
       if (i >= 0) myRhythms[i] = item; else { myRhythms.push(item); i = myRhythms.length - 1; }
       store_.set('ws.rhythms', myRhythms);
       rhy.name = name; rhy.src = 's:' + i;
@@ -4013,7 +4017,7 @@
     });
     rhyEls.mode.addEventListener('click', e => {
       const b = e.target.closest('button');
-      if (!b || b.dataset.mode  rhy.mode) return;
+      if (!b || b.dataset.mode === rhy.mode) return;
       if (rhyRun.on) stopRhy();
       rhy.mode = b.dataset.mode;
       saveRhy(); renderRhyRun();
@@ -4035,10 +4039,10 @@
     });
   }
 
-  /* 
+  /* =========================================================
      AI assistant: Claude, called from the browser with the
      player's own API key, given a snapshot of their app data
-      */
+     ========================================================= */
   const AI_MODEL = 'claude-opus-5-5';
   const AI_SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.133.0/+esm';
   const AI_SYSTEM = [
@@ -4078,7 +4082,7 @@
     const I = inst();
     const byInstrument = {};
     Object.keys(INSTRUMENTS).forEach(k => {
-      const notes = notesFromRaw(k  state.instrument ? store : store_.get('sit.v1.data.' + k, null));
+      const notes = notesFromRaw(k === state.instrument ? store : store_.get('sit.v1.data.' + k, null));
       if (!notes.length) return;
       const regs = INSTRUMENTS[k].regs, total = regs[regs.length - 1].hi - regs[0].lo + 1;
       byInstrument[INSTRUMENTS[k].label] = {
@@ -4163,7 +4167,7 @@
   function addMsg(kind, text) {
     const el = document.createElement('div');
     el.className = 'msg ' + kind;
-    if (kind  'user' || kind  'err') el.textContent = text; else el.innerHTML = mdLite(text);
+    if (kind === 'user' || kind === 'err') el.textContent = text; else el.innerHTML = mdLite(text);
     aiEls.msgs.appendChild(el);
     aiEls.body.scrollTop = aiEls.body.scrollHeight;
     return el;
@@ -4206,20 +4210,20 @@
         messages: ai.history
       });
       for await (const ev of stream) {
-        if (ev.type  'content_block_delta' && ev.delta.type  'text_delta') {
+        if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
           text += ev.delta.text;
           bubble.innerHTML = mdLite(text);
           aiEls.body.scrollTop = aiEls.body.scrollHeight;
         }
       }
       const final = await stream.finalMessage();
-      if (final.stop_reason  'refusal') {
+      if (final.stop_reason === 'refusal') {
         ai.history.pop();
         bubble.innerHTML = mdLite('I can’t help with that one. Try asking about your practice, your instrument or music.');
       } else {
         ai.history.push({ role: 'assistant', content: final.content });
         if (!text.trim()) bubble.innerHTML = mdLite('No answer came back. Please try again.');
-        else if (final.stop_reason  'max_tokens') bubble.innerHTML = mdLite(text + '\n\n(The answer was cut off. Ask me to continue.)');
+        else if (final.stop_reason === 'max_tokens') bubble.innerHTML = mdLite(text + '\n\n(The answer was cut off. Ask me to continue.)');
       }
     } catch (err) {
       ai.history.pop();
@@ -4244,7 +4248,7 @@
   function initAssistant() {
     aiEls.fab.addEventListener('click', () => openAi(true));
     aiEls.close.addEventListener('click', () => openAi(false));
-    aiEls.panel.addEventListener('keydown', e => { if (e.key  'Escape') { e.stopPropagation(); openAi(false); } });
+    aiEls.panel.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); openAi(false); } });
     aiEls.keySave.addEventListener('click', () => {
       const k = aiEls.key.value.trim();
       if (!/^sk-ant-/.test(k)) { toast('That doesn’t look like an Anthropic API key. It should start with sk-ant-.', 'error'); return; }
@@ -4254,10 +4258,10 @@
       aiEls.input.focus();
       toast('API key saved in this browser.');
     });
-    aiEls.key.addEventListener('keydown', e => { if (e.key  'Enter') { e.preventDefault(); aiEls.keySave.click(); } });
+    aiEls.key.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); aiEls.keySave.click(); } });
     aiEls.form.addEventListener('submit', e => { e.preventDefault(); aiAsk(aiEls.input.value); });
     aiEls.input.addEventListener('input', sizeAiInput);
-    aiEls.input.addEventListener('keydown', e => { if (e.key  'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(aiEls.input.value); } });
+    aiEls.input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsk(aiEls.input.value); } });
     aiEls.suggest.addEventListener('click', e => { const b = e.target.closest('button'); if (b) aiAsk(b.textContent); });
     aiEls.clear.addEventListener('click', () => { ai.history = []; aiEls.msgs.innerHTML = ''; aiEls.suggest.hidden = false; });
     aiEls.forget.addEventListener('click', () => {
@@ -4268,9 +4272,9 @@
     });
   }
 
-  /* 
+  /* =========================================================
      Menu, routing and the "running" chips
-      */
+     ========================================================= */
   const VIEWS = ['session', 'tuner', 'metronome', 'rhythm', 'drone', 'recorder', 'log'];
   const TITLES = { session: 'Session', tuner: 'Tuner', metronome: 'Metronome', rhythm: 'Rhythm trainer', drone: 'Drone', recorder: 'Recorder', log: 'Practice log' };
   function showView(v) {
@@ -4278,18 +4282,18 @@
     state.view = v;
     document.querySelectorAll('section.view').forEach(s => { s.hidden = s.dataset.view !== v; });
     document.querySelectorAll('.menu a').forEach(a => {
-      if (a.dataset.view  v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     document.title = TITLES[v] + ' · Woodshed';
     store_.set('ws.view', v);
-    if (v  'tuner') requestAnimationFrame(sizeTrace);
-    if (v  'log') renderLog();
+    if (v === 'tuner') requestAnimationFrame(sizeTrace);
+    if (v === 'log') renderLog();
     const cur = document.querySelector('.menu a[aria-current]');
     if (cur && cur.scrollIntoView && window.matchMedia('(max-width: 860px)').matches) cur.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
   function renderRunning() {
     const chips = [];
-    if (audio.mode  'mic') chips.push(['tuner', 'Mic on', 'Stop']);
+    if (audio.mode === 'mic') chips.push(['tuner', 'Mic on', 'Stop']);
     if (metRun.on) chips.push(['metronome', 'Metronome', met.bpm + ' BPM']);
     if (rhyRun.on) chips.push(['rhythm', 'Rhythm', rhy.bpm + ' BPM']);
     if (droneRun.on) chips.push(['drone', 'Drone', pcText(drone.pc)]);
@@ -4302,9 +4306,9 @@
     $('dotDrone').hidden = !droneRun.on;
   }
 
-  /* 
+  /* =========================================================
      Main loop
-      */
+     ========================================================= */
   let lastFrame = 0;
   function frame(ts) {
     requestAnimationFrame(frame);
@@ -4349,15 +4353,15 @@
     metFrame();
     rhyFrame();
     recFrame();
-    if (state.view  'tuner') {
+    if (state.view === 'tuner') {
       updateLiveUI(now, dt);
       drawTrace(now);
     }
   }
 
-  /* 
+  /* =========================================================
      Controls
-      */
+     ========================================================= */
   function setSampling(on) {
     state.sampling = on;
     if (!on) endNote();
@@ -4366,7 +4370,7 @@
   }
 
   function updateRunUI() {
-    const mic = audio.mode  'mic', dem = audio.mode  'demo';
+    const mic = audio.mode === 'mic', dem = audio.mode === 'demo';
     els.micBtn.innerHTML = (mic ? ICONS.stop : ICONS.mic) + '<span>' + (mic ? 'Stop microphone' : 'Start microphone') + '</span>';
     els.micBtn.classList.toggle('is-on', mic);
     els.demoBtn.innerHTML = (dem ? ICONS.stop : ICONS.play) + '<span>' + (dem ? 'Stop demo' : 'Play demo') + '</span>';
@@ -4377,7 +4381,7 @@
     renderRunning();
   }
 
-  function toggleMic() { if (audio.mode  'mic') stopMic(); else startMic(); }
+  function toggleMic() { if (audio.mode === 'mic') stopMic(); else startMic(); }
 
   function buildInstrumentMenu() {
     let html = '', g = '';
@@ -4419,7 +4423,7 @@
     els.toast.dataset.kind = kind || '';
     els.toast.classList.add('show');
     window.clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => els.toast.classList.remove('show'), kind  'error' ? 6500 : 4200);
+    toastTimer = window.setTimeout(() => els.toast.classList.remove('show'), kind === 'error' ? 6500 : 4200);
   }
 
   function exportCSV() {
@@ -4447,7 +4451,7 @@
   function buildTicks() {
     let html = '';
     for (let c = -50; c <= 50; c += 5) {
-      const cls = c  0 ? 'zero' : c % 25  0 ? 'major' : '';
+      const cls = c === 0 ? 'zero' : c % 25 === 0 ? 'major' : '';
       html += '<i class="' + cls + '" style="left:' + (c + 50) + '%"></i>';
     }
     els.ticks.innerHTML = html;
@@ -4491,42 +4495,42 @@
     els.running.addEventListener('click', e => {
       const b = e.target.closest('[data-run]'); if (!b) return;
       const k = b.dataset.run;
-      if (k  'tuner') stopMic();
-      else if (k  'metronome') stopMet();
-      else if (k  'rhythm') stopRhy();
-      else if (k  'drone') stopDrone();
-      else if (k  'recorder') stopRec();
+      if (k === 'tuner') stopMic();
+      else if (k === 'metronome') stopMet();
+      else if (k === 'rhythm') stopRhy();
+      else if (k === 'drone') stopDrone();
+      else if (k === 'recorder') stopRec();
     });
     window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
     document.addEventListener('keydown', e => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
       const tag = (e.target && e.target.tagName || '').toLowerCase();
-      if (tag  'select' || tag  'input' || tag  'textarea') return;
+      if (tag === 'select' || tag === 'input' || tag === 'textarea') return;
       const k = e.key.toLowerCase(), v = state.view;
-      if (v  'tuner' && k  'm') { e.preventDefault(); toggleMic(); }
-      else if (v  'tuner' && k  's') { e.preventDefault(); setSampling(!state.sampling); }
-      else if (v  'tuner' && e.key  'Escape') selectNote(null);
-      else if (v  'metronome' && e.key  ' ' && tag !== 'button') { e.preventDefault(); toggleMet(); }
-      else if (v  'metronome' && (e.key  'ArrowUp' || e.key  'ArrowRight')) { e.preventDefault(); setBpm(met.bpm + (e.shiftKey ? 5 : 1)); }
-      else if (v  'metronome' && (e.key  'ArrowDown' || e.key  'ArrowLeft')) { e.preventDefault(); setBpm(met.bpm - (e.shiftKey ? 5 : 1)); }
-      else if (v  'metronome' && k  't') { e.preventDefault(); tapTempo(); }
-      else if (v  'drone' && e.key  ' ' && tag !== 'button') { e.preventDefault(); toggleDrone(); }
-      else if (v  'recorder' && k  'r') { e.preventDefault(); toggleRec(); }
-      else if (v  'rhythm' && e.key  ' ') {
+      if (v === 'tuner' && k === 'm') { e.preventDefault(); toggleMic(); }
+      else if (v === 'tuner' && k === 's') { e.preventDefault(); setSampling(!state.sampling); }
+      else if (v === 'tuner' && e.key === 'Escape') selectNote(null);
+      else if (v === 'metronome' && e.key === ' ' && tag !== 'button') { e.preventDefault(); toggleMet(); }
+      else if (v === 'metronome' && (e.key === 'ArrowUp' || e.key === 'ArrowRight')) { e.preventDefault(); setBpm(met.bpm + (e.shiftKey ? 5 : 1)); }
+      else if (v === 'metronome' && (e.key === 'ArrowDown' || e.key === 'ArrowLeft')) { e.preventDefault(); setBpm(met.bpm - (e.shiftKey ? 5 : 1)); }
+      else if (v === 'metronome' && k === 't') { e.preventDefault(); tapTempo(); }
+      else if (v === 'drone' && e.key === ' ' && tag !== 'button') { e.preventDefault(); toggleDrone(); }
+      else if (v === 'recorder' && k === 'r') { e.preventDefault(); toggleRec(); }
+      else if (v === 'rhythm' && e.key === ' ') {
         e.preventDefault();
         if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-        if (rhyRun.on && rhy.mode  'tap') rhyTap(); else toggleRhy();
+        if (rhyRun.on && rhy.mode === 'tap') rhyTap(); else toggleRhy();
       }
-      else if (v  'rhythm' && e.key  'Escape') stopRhy();
+      else if (v === 'rhythm' && e.key === 'Escape') stopRhy();
     });
     if ('ResizeObserver' in window) new ResizeObserver(sizeTrace).observe(els.trace);
     else window.addEventListener('resize', sizeTrace);
     document.addEventListener('visibilitychange', () => { if (document.hidden) endNote(); });
   }
 
-  /* 
+  /* =========================================================
      Boot
-      */
+     ========================================================= */
   loadSettings();
   els.a4.value = String(state.a4);
   if (els.footA4) els.footA4.textContent = state.a4;
