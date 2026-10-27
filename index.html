@@ -3875,6 +3875,7 @@
     const h = rhyRun.history;
     rhyEls.hist.innerHTML = h.length
       ? h.map(v => '<div title="' + v + '%"><i style="height:' + Math.max(2, v * 0.56).toFixed(1) + 'px"></i><span>' + v + '</span></div>').join('')
+      : '';
   }
 
   async function rhyMicOn() {
@@ -4410,7 +4411,7 @@
     v = Math.round(clamp(Number(v) || 440, 415, 466) * 10) / 10;
     state.a4 = v;
     els.a4.value = v;
-    els.footA4.textContent = v;
+    if (els.footA4) els.footA4.textContent = v;
     saveSettings();
     updateRange();
     renderInspector();
@@ -4534,7 +4535,7 @@
      ========================================================= */
   loadSettings();
   els.a4.value = String(state.a4);
-  els.footA4.textContent = state.a4;
+  if (els.footA4) els.footA4.textContent = state.a4;
   buildTicks();
   buildInstrumentMenu();
   loadData();
